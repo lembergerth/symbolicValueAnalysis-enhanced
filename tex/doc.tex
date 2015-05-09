@@ -10,8 +10,16 @@
 
 \section{Introduction}
 \subsection{Motivation}
-\subsection{Existing problems of symbolic value analysis (short overview)}
+\subsubsection{Why Software Verification is important/needed}
+\subsubsection{Basic Value Analysis can't deal with non-deterministic values (+ Example)}
+\subsubsection{But symbolic value analysis pretty slow, as previous evaluation has shown (illustrate path explosion, sat checks)}
+\subsubsection{Goal: Try to speed up}
+\subsection{Our contribution: CEGAR and bounded loops}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Related work}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Theoretical background}
 \subsection{General Overview of configurable program analysis}
 \subsubsection{Configurable program analysis definition}
@@ -19,32 +27,122 @@
 \subsubsection{CPAchecker as a framework for configurable program analysis}
 
 \subsection{Basic definition of CPAs used in this paper}
+\subsubsection{PredicateCPA}
+\subsubsection{Value Analysis CPA}
 \subsubsection{Symbolic Value Analysis CPA}
 \subsubsection{Constraints CPA}
 \subsubsection{Composition of Location CPA, Symbolic Value Analysis CPA and Constraints CPA}
+\paragraph{Basic definition of CompositeCPA}
+\paragraph{Concrete definition of this composition}
 
-\section{Implementation of these CPAs in CPAchecker}
+\subsection{Basic CEGAR and its algorithm}
+\subsubsection{CEGAR in general}
+\subsubsection{CEGAR for value analysis}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Definitions of newly introduced concepts}
+
+\subsection{Different merge operators}
+\subsubsection{merge sep}
+\subsubsection{merge join}
+
+\subsection{Different less-or-equal operators}
+\subsubsection{Subset operator}
+\subsubsection{Aliased subset operator}
+\subsubsection{Implication operator}
+
+\subsection{CEGAR for Symbolic Value Analysis + ConstraintsCPA}
+\subsubsection{CEGAR for symbolic value analysis only}
+\paragraph{New strongest post operator (VA-Transfer + ConstraintsPrec transfer + strengthening)}
+\paragraph{New 'composite state' used in strongest post operator}
+\subsubsection{CEGAR for symbolic value analysis + ConstraintsCPA}
+\paragraph{interpolate sequentially (order might make a difference)}
+\paragraph{Use PredicateCPA refinement to compute precision}
+
+\subsection{Bounded loops with continuation after reached bound}
+\subsubsection{Idea}
+\subsubsection{Existing LoopstackCPA}
+\subsubsection{No continuation after reached bound: Existing AssumptionStorageCPA}
+\subsubsection{New: Jump out of loop at every possible exit and abstract information}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Implementations of used CPAs in CPAchecker}
 \subsection{Basic implementation}
 \subsubsection{LocationCPA already existed, implemented as defined}
 \subsubsection{Symbolic Value Analysis as extension to existing ValueAnalysisCPA}
 \subsubsection{ConstraintsCPA as new CPA}
+\subsubsection{CompositeCPA already existed, describe implementation (especially merge operator is important)}
+
 \subsection{Existing options/optimizations}
 \subsubsection{Constraints State simplifications}
 \paragraph{Computing definite assignments for symbolic values (+ strengthening in value analysis)}
-\paragraph{Handling of trivial constraints - completely trivial ones not even added to state, ones with definite assignment removed after sat check}
+\paragraph{Handling of trivial constraints - completely trivial ones not even added to state, ones with definite assignment removed after SAT check}
 \paragraph{Removing outdated constraints - building dependency map and removing ones without dependency}
+
+\subsection{New options/optimizations}
+\subsubsection{Do not remove definite assignments but just update their formulas, for simplicity}
 \subsubsection{Different merge operators}
 \paragraph{merge sep}
 \paragraph{merge join}
+\paragraph{Evaluation + Conclusion}
 \subsubsection{Different less-or-equal operators}
+\paragraph{Subset operator}
+\paragraph{Aliased subset operator}
+\paragraph{Implication operator}
+\paragraph{Evaluation + Conclusion}
+\subsubsection{Location/Frequency of SAT checks}
+\paragraph{Check after every assume edge}
+\paragraph{Check at target location}
+\paragraph{Evaluation + Conclusion}
 
-\section{Performance issues of implementation}
-\subsection{SAT checks}
-\subsection{Path explosion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Implementation of CEGAR}
+\subsection{Refactoring of ValueAnalysis CEGAR into general form}
+\subsubsection{New factory/manager classes}
+\subsubsection{Type parameter}
+\subsubsection{Dependency injection}
+\subsubsection{Hooks (abstract methods)}
 
-\section{CEGAR as general means of speed up}
+\subsection{Refinement of Symbolic Value Analysis + ConstraintsCPA}
+\subsubsection{Optimization: Perform basic Value Analysis refinement first}
+\subsubsection{Sequential interpolation}
+\paragraph{Strongest-post operator}
+\paragraph{Only use refineable precision on symbolic value analysis}
+\paragraph{First symbolic value analysis, then ConstraintsCPA interpolation}
+\paragraph{First ConstraintsCPA, then symbolic value analysis interpolation}
+\paragraph{Evaluation of different methods + Conclusion}
+\subsubsection{Extract precision from predicate refinement}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Implementation of bounded loops}
+\subsection{Existing LoopstackCPA and how it is used}
+\subsection{Modifications to ConstraintsCPA}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Evaluation}
+
+\subsection{Specification of evaluation environment}
+
+\subsection{Evaluation on symbolic value analysis without CEGAR}
+\subsubsection{Different merge operators}
+\subsubsection{Different less-or-equal operators}
+\subsubsection{SAT checks at different locations}
+
+\subsection{Comparison of Symbolic Value Analysis with CEGAR and without CEGAR}
+\subsection{Problems CEGAR can't solve/newly creates}
+\subsubsection{Many variables needed for proof can decrease performance}
+\subsubsection{Problem of long/endless loops and path explosion because of these can't be solved}
+
+\subsection{Changed impact of above mentioned options when using CEGAR}
+\subsection{Evaluation of Symbolic Value Analysis with CEGAR and bounded loops}
+
+\subsection{Comparison with basic Value Analysis and Predicate Analysis}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Future work}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusion}
 
 \end{document}
