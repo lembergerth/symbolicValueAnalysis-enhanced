@@ -1,3 +1,128 @@
 \section{Introduction}
-\input{introduction/Motivation}
-\input{introduction/Contribution}
+%\subsubsection{Why Software Verification is important/needed}
+Heutige Softwaresysteme sind so gro\ss\ und komplex, dass Fehler in ihrer Entwicklung unvermeidbar sind.
+Software ist vielen unterschiedliche Fehlerquellen unterworfen: Dem K\"onnen des Entwicklers und dem limitierten, menschlichen Verst\"andnis der Prinzipien von Software, Verst\"andnisprobleme und/oder unzureichende Dokumentation fremder Software und fremden Codes, unerwartete Wechselwirkungen zwischen unterschiedlichen Softwarekomponenten, usw.
+
+Aufgrund dessen ist Testen seit langer Zeit ein fundamentaler Teil von Softwareentwicklung, der oft ann\"ahernd 50\% der gesamten Entwicklungszeit und mehr als 50\% des Projektbudgets verbraucht.
+\glqq Software testing\grqq beschreibt die Ausf\"uhrung eines Programm(teil)s mit der Intention, Fehler in ihm zu finden.
+Der Tester (eine Person oder ein anderes Programm) verwendet bestimmte Eingaben und \"uberpr\"uft die Korrektheit der Ausgaben des Programms.
+Bereits durch diese Beschaffenheit der Methode, dass nur das Testen einer endlichen Menge von Eingaben m\"oglich ist, ist erfolgreiches Testen kein Garant f\"ur ein fehlerfreies Funktionieren der Software. Selbst f\"ur sehr einfache Programme ist es praktisch unm\"oglich, durch Testen bestimmte Eigenschaften eines Programmes \emph{sicherzustellen}.
+Auch ist das Finden guter Eingaben, die m\"oglichst viele Fehler provozieren, mehr eine Kunst, als Wissenschaft, die zudem oft nur sehr oberf\"achlicher gelehrt wird.\cite{Myers2011}
+
+Die n\"achste gro\ss e H\"urde f\"ur Testen als Mittel zur Verifikation von Programmen ist das Aufkommen des \glqq Ubiquitious Computing\grqq\ und das damit verbundene rasante Wachstum reaktiver Systeme. Systeme, die st\"andig laufen, mit Sensoren Informationen aus ihrer Umwelt aufnehmen, diese verarbeiten, auf sie reagieren und ihr Verhalten anpassen.
+Aufgrund des unglaublichen Spektrum von Eingabewerten und ihres Zusammenspiels ist es praktisch unm\"oglich, das Verhalten solcher Systeme mit Testen vorherzusagen.
+
+Eine Alternative zum Testen stellt die formale Verifikation dar, welche mithilfe mathematischer Methoden versucht, formale Aussagen zu treffen, die f\"ur jedes m\"ogliche Verhalten eines bestimmten Systems zutreffen. Diese Aussagen k\"onnen dann gegen eine bestimmte Spezifikation gepr\"uft werden, um das Abhandensein von Spezifikationsverletzungen zu beweisen.
+
+Ein Teilgebiet dieser Verifikationsweise ist die \emph{automatische Software Verifikation}, welche obiges Ziel durch Softwareprogramme, die ohne die Assistenz von Menschen arbeiten, zu erreichen versucht.
+Ein solches Programm, welches in den letzten Iterationen der \href{http://sv-comp.sosy-lab.org}{Competition on Software Verification} (SV-COMP) \cite{SV-COMP2013} \cite{SV-COMP2014} \cite{SV-COMP2015}\ sehr erfolgreich war, ist CPAchecker \cite{Beyer2011}.
+CPAchecker ist ein framework f\"ur Configurable Software Verification\cite{Beyer2007}, das unterschiedliche \emph{configurable program analyses} (CPAs) verwendet, um m\"ogliche Spezifikationsverletzungen in Programmen zu finden.
+Zwei popul\"are CPAs sind die \valueAnalysisCPA , welche mit konkreten Wertzuweisungen zu Programmen arbeitet, und die \predicateCPA , welche mit einer bestimmten Pr\"azision logische Pr\"adikate \"uber Programmpfaden bildet.
+W\"ahrend die \valueAnalysisCPA\ aufgrund ihrer Einfachheit sehr Effizient ist, allerdings nicht mit komplexeren Programmteilen wie Pointern oder Nichtdeterminismus umgehen kann, ist die Pr\"adikatenanalyse sehr m\"achtig, allerdings vergleichsweise ineffizient, da logische SAT checks notwendig sind, um die Erf\"ullbarkeit eines Pfades zu berechnen.
+
+\begin{figure}[t]
+\lstset{numbers=left}
+\begin{subfigure}[b]{.45\textwidth}
+\lstinputlisting[language=C]{exampleProgram.c}
+\caption{A simple non-deterministic program.}
+\label{lst:exProg}
+\end{subfigure}%
+\hfill
+\begin{subfigure}[b]{.45\textwidth}
+\begin{tikzpicture}[->,>=stealth, mynode/.style={circle, draw, minimum size=0.5cm}, every node/.style={font=\small}]
+
+  \node[mynode] (0) {4};
+  \node[mynode] (1) [below = 0.5cm of 0]{7};
+  \node[mynode] (2) [below left = 1cm of 1]{11};
+  \node[mynode] (4) [below right = 1cm of 1]{8};
+  \node[mynode] (3) [below = 0.5cm of 2]{12};
+  \node[mynode] (5) [below = 0.5cm of 4]{10};
+  \node[mynode] (6) [below right = 0.8cm of 3, label=north:merge]{14};
+  \node[mynode] (7) [below left = 1cm of 6]{17};
+  \node[mynode] (8) [below right = 1cm of 6]{16};
+  \coordinate[below = 0.5cm of 7] (e7);
+  \coordinate[below = 0.5cm of 8] (e8);
+
+  \path
+    (0) edge node [right] {\textbf{a = \_\_nondet\_int()}} (1)
+    (1) edge node [left, pos=0.5] {$\mathbf{![a \geq 0]}$} (2)
+    (1) edge node [right, pos=0.5] {$\mathbf{[a \geq 0]}$} (4)
+    (2) edge node [left] {\textbf{b = a + 1}} (3)
+    (4) edge node [right] {\textbf{b = a}} (5)
+    (3) edge (6)
+    (5) edge (6)
+    (6) edge node [left, pos=0.5] {$\mathbf{![b < a]}$} (7)
+    (6) edge node [right, pos=0.5] {$\mathbf{[b < a]}$} (8)
+    (7) edge node [left] {\textbf{return 0}} (e7)
+    (8) edge node [right] {\textbf{return -1}} (e8)
+  ;
+\end{tikzpicture}
+\label{fig:ex1ValueGraph}
+\caption{Analysis of the program to the left by the \valueAnalysisCPA.}
+\end{subfigure}
+\caption{Simple program and its execution by \valueAnalysisCPA.}
+\label{fig:ex1}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[->,>=stealth, mynode/.style={circle, draw, minimum size=0.5cm, inner sep =0pt}, every node/.style={font=\small}]
+
+  \node[mynode] (0) [label=0:{$(\{\}, \{\})$}]{4};
+  \node[mynode] (1) [below = 0.8cm of 0, label=0:{$(\{a \rightarrow s1\}, \{\})$}]{7};
+  \node[mynode] (2) [below left = 2cm of 1, label=west:{$(\{a \rightarrow s1\}, \{s1 < 0\})$}]{11};
+  \node[mynode] (4) [below right = 2cm of 1, label=0:{$(\{a \rightarrow s1\}, \{s1 \geq 0\})$}]{8};
+  \node[mynode] (3) [below = 0.8cm of 2, label=west:{$(\{a \rightarrow s1, b \rightarrow s1+1\}, \{s1 < 0\})$}]{12};
+  \node[mynode] (5) [below = 0.8cm of 4, label=0:{$(\{a \rightarrow s1, b \rightarrow s1 \}, \{s1 \geq 0\})$}]{10};
+  \node[mynode] (6) [below = 0.8cm of 3]{14};
+  \node[mynode] (6n) [below = 0.8cm of 5]{14'};
+  \node[mynode] (7) [below left = 1.5cm of 6, label={[align=left]west:{$(\{a \rightarrow s1, b \rightarrow s1+1\},$\\ $\{s1 < 0, s1+1 \geq s1\})$}}]{17};
+  \node[mynode] (8) [below right = 1.5cm of 6, fill=gray]{16};
+  \node[mynode] (8n) [below left = 1.5cm of 6n, fill=gray]{16'};
+  \node[mynode] (7n) [below right = 1.5cm of 6n, label={[align=left]0:{$(\{a \rightarrow s1, b \rightarrow s1\},$\\ $\{s1 < 0, s1 \geq s1\})$}}]{17'};
+  \coordinate[below = 1cm of 7] (e7);
+  \coordinate[below = 1cm of 7n] (e7n);
+
+  \path
+    (0) edge node [right] {\textbf{a = \_\_nondet\_int()}} (1)
+    (1) edge node [left, pos=0.5] {$\mathbf{![a \geq 0]}$} (2)
+    (1) edge node [right, pos=0.5] {$\mathbf{[a \geq 0]}$} (4)
+    (2) edge node [left] {\textbf{b = a + 1}} (3)
+    (4) edge node [right] {\textbf{b = a}} (5)
+    (3) edge (6)
+    (5) edge (6n)
+    (6) edge node [left, pos=0.2] {$\mathbf{![b < a]}$} (7)
+    (6) edge node [right, pos=0.2] {$\mathbf{[b < a]}$} (8)
+    (6n) edge node [left, pos=0.2] {$\mathbf{[b < a]}$} (8n)
+    (6n) edge node [right, pos=0.2] {$\mathbf{![b < a]}$} (7n)
+    (7) edge node [left] {\textbf{return 0}} (e7)
+    (7n) edge node [right] {\textbf{return 0}} (e7n)
+  ;
+\end{tikzpicture}
+\caption{Analysis of the program in Listing \ref{lst:exProg} by the \symbolicExecutionCPA.}
+\label{fig:ex1SymExGraph}
+\end{figure}
+
+%\subsubsection{Basic Value Analysis can't deal with non-deterministic values (+ Example)}
+Abbildung \ref{fig:ex1} zeigt ein Beispielprogramm, welches nichtdeterministische Werte verwendet und die Analyse des Programms mit klassischer \valueAnalysisCPA .
+Da die CPA keine Informationen bei nichtdeterministischen Zuweisungen speichert, sind bei Location 12 keine Informationen \"uber die Beziehung zwischen \textbf{a}\ und \textbf{b}\ vorhanden und beide Kanten werden als m\"oglich betrachtet. Dies produziert einen \emph{false alarm}.
+Im Gegensatz dazu kann die \symbolicExecutionCPA\ auch nicht-deterministische Werte verarbeiten und liefert als korrektes Ergebnis, dass das Programm korrekt ist.
+Abbildung \ref{fig:ex1SymEmxGraph} zeigt diese Analyse. Neben den Knoten ist jeweils der aktuelle Zustand von \valueAnalysisCPA und \constraintsCPA als Tupel.
+
+In einer vorherigen Arbeit \cite{Lemberger2015} haben wir bereits eine CPA entworfen, die die \valueAnalysisCPA\ um symbolische Werte f\"ur nichtdeterministische Zuweisungen erweitert
+und Abh\"angigkeiten zwischen Variablen sowie Einschr\"ankungen ihrer Werte durch Bedingungen im Programm, wie z.B. if-Statements, nachvollziehen kann. Da die CPA f\"ur diese Abh\"angigkeiten logische Formeln und damit auch SAT checks verwendet, kann sie thematisch zwischen der reinen \valueAnalysisCPA\ und der \predicateCPA\ eingeordnet werden. Wir nennen die Analyse \emph{\symbolicExecutionCPA}.
+Wir konnten bereits zeigen, dass diese CPA die Menge der false alarms deutlich reduzieren kann und automatische Software Verifikation somit zuverl\"assiger macht.
+
+%\subsubsection{But symbolic value analysis pretty slow, as previous evaluation has shown (illustrate path explosion, sat checks)}
+Die \symbolicExecutionCPA\ leidet in ihrer bisherigen Form allerdings unter gro\ss en Performance-Problemen. Da sie sowohl alle Variablen-Zuweisungen, egal ob deterministisch oder nichtdeterministisch, als auch alle auftretenden Bedingungen betrachtet, ist der Zustandsraum abh\"angig von der Anzahl von auftretenden Bedingungen exponentiell, bei auftretenden Endlosschleifen kann er sogar unendlich sein. Man spricht von \emph{path explosion}.\cite{Anand2008} Ein exponentieller Zustandsraum skaliert offensichtlich nicht mit gro\ss en Programmen. Zus\"atzlich ist der Aufwand f\"ur SAT checks exponentiell in Abh\"angigkeit von der Anzahl der in Constraints vorkommenden nichtdeterministischen Werten.
+Die Evaluation in \cite{Lemberger2015} hat bereits gezeigt, dass die Analyse bis zu 95\% ihrer Zeit f\"ur SAT checks braucht.
+
+%\subsubsection{Goal: Try to speed up}
+In dieser Arbeit konzipieren, implementieren und evaluieren wir deshalb unterschiedliche Ans\"atze, um die Performance der \symbolicExecutionCPA\ zu steigern.
+Neben unterschiedlichen Abwandlungen der urspr\"unglichen Analyse ist unser gr\"o\ss ter Beitrag die Einf\"uhrung
+der Anwendung von CEGAR \cite{Clarke2003} auf die Komposition der beiden stark voneinander abh\"angigen Analysen \valueAnalysisCPA\ und \constraintsCPA\ mit Precision Refinement beider CPAs mit einer jeweils eigenen Pr\"azision.
+
+Diese Arbeit besteht aus vier Teilen: Theoretischen Grundlagen und Beitr\"agen, deren Implementierung, deren Evaluation, sowie Future Work und eine Conclusion.
+Zuerst werden wir die dieser Arbeit zugrunde liegenden, grundlegenden Konzepte von Configurable Software Verification, CPAs und CEGAR vorstellen, bevor wir die theoretischen Spezifikationen unserer neuen Konzepte beleuchten.
+Anschlie\ss end werden wir Besonderheiten und Abweichungen der bestehenden Implementierung sowie unserer neuen Implementierungen von der Spezifikation beschreiben.
+Als letzter gro\ss er Teil folgt darauf die Evaluation aller vorgestellten Konzepte und ihr Vergleich mit der bisherigen Performance von \valueAnalysisCPA , \predicateCPA\ und \symbolicExecutionCPA , bevor wir mit einem kurzem Ausblick auf m\"ogliche zuk\"unftige Arbeiten und einem Fazit abschlie\ss en.
