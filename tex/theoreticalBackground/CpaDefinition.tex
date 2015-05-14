@@ -1,14 +1,195 @@
 \subsection{General Overview of configurable program analysis}
+\begin{figure}
+\lstset{numbers=left}
+\begin{subfigure}[b]{.48\textwidth}
+\lstinputlisting[language=C]{exampleProgram.c}
+\end{subfigure}%
+\hfill
+\begin{subfigure}[b]{.48\textwidth}
+\begin{tikzpicture}[->,>=stealth, mynode/.style={circle, draw, minimum size=0.5cm}, every node/.style={font=\small}]
+
+  \node[mynode] (1) {4};
+  \node[mynode] (2) [below = 0.6cm of 1]{7};
+  \node[mynode] (3) [below left = 1.2cm of 2]{11};
+  \node[mynode] (4) [below right = 1.2cm of 2]{8};
+  \node[mynode] (5) [below = 0.5cm of 3]{12};
+  \node[mynode] (6) [below = 0.5cm of 4]{10};
+  \node[mynode] (7) [below right = 1.2cm of 5]{14};
+  \node[mynode] (8) [below left = 1cm of 7]{17};
+  \node[mynode] (9) [below right = 1cm of 7]{16};
+
+  \path
+    (1) edge node [right] {\textbf{a $\assign$ \_\_nondet\_int()}} (2)
+    (2) edge node [left, pos=0.5] {$\mathbf{[!(a \geq 0)]}$} (3)
+    (2) edge node [right, pos=0.5] {$\mathbf{[a \geq 0]}$} (4)
+    (3) edge node [left] {\textbf{b $\assign$ a + 1}} (5)
+    (4) edge node [right] {\textbf{b $\assign$ a}} (6)
+    (5) edge (7)
+    (6) edge (7)
+    (7) edge node [left] {$\mathbf{[!(b < a)]}$} (8)
+    (7) edge node [right] {$\mathbf{[b < a]}$} (9)
+  ;
+\end{tikzpicture}
+\end{subfigure}
+\caption{An example CFA.}
+\label{fig:exCFA}
+\end{figure}
+
+For the sake of simplicity, we focus on a programming language that only consists of variable assignments (e.g. $x \assign 5$ or $y \assign x$) and assumptions (e.g. $[x > 5]$ or $[y < x]$).
+We represent a program by a \emph{control flow automaton} (CFA) \cite{BeyerBook}\cite{Beyer2012a}.
+A CFA $A = (L, l_0, G)$ is a directed graph whose nodes $L$ represent the program locations of the program.
+The initial node $l_0 \in L$ represents the program entry.
+An edge $g \in G \subseteq L \times Ops \times L$ exists between two nodes if a program statement exists that transfers control between the program locations represented by the nodes.
+Each edge is labeled with the operation that transfers the control.
+If a node has no leaving edges it is a final node. Final nodes represent the program exit.
+A CFA for the previously mentioned example program can be seen in Figure \ref{fig:exCFA}.
+The set $X$ is the set of all program variables occurring in a program.
+
+The basis of automatic software verification is the reachability problem: For a given specification it is derived whether a program state is reachable that violates this specification.
+Traditionally, two major approaches exist, both working on a reachability tree: Model checking and program analysis, sometimes called data flow analysis.
+While model checking is mostly concerned with finding a program abstraction with a precision high enough to eliminate false alarms,
+which in turn only allows it to handle small programs because of poor performance,
+program analysis tries to reach high efficiency by looking at only a few chosen characteristics of a program. %\cite{Beyer2007}%cite here or below? out of lecture notes, so cite in some other way? 
+It does so by using abstract states of a specific, chosen abstract domain to abstract from concrete program states.
+
+%\subsubsection{Concrete state definition}
+A concrete state $c$ is a total function $c: X \cup \{pc\} \rightarrow \integerset$ that assigns a specific value of $\integerset$ to every program variable $x \in X$ and to the program counter $pc$. The program counter $pc$ represents the current location in the program.
+The set of all concrete states of a program is $C$. A set $r \subseteq C$ is called a \emph{region}.
+For the reachability problem the region of concrete states that violate a given specification is called the \emph{target region} $\targetRegion$.
+
+%\subsubsection{Abstract state definition}
+An abstract domain \cite{Beyer2007} $D = (C, \semilattice, \concretization)$ consists of a set of possible concrete states $C$, a semi-lattice $\semilattice$ that describes the abstract states and their possible relation to each other and a concretization function $\concretization : \semilattice \rightarrow 2^C$ which maps each element of $\semilattice$ to a subset of $C$.
+
+A semi-lattice $\semilattice = (E, \top, \bot, \lesserEqual, \join)$ consists of a set $E$ of elements, a top element $\top \in E$, a partial order $\lesserEqual\ \subseteq (E \times E)$
+and the total function $\join : (E \times E) \rightarrow E$ called join operator.
+
+Program analysis starts with an initial abstract state, usually $\top$, and uses a transfer relation to derive new abstract states from old abstract states and program statements.
+A transfer relation \cite{Beyer2007} $\transfer\ \subseteq (E \times G \times E)$ assigns to each abstract state $e \in E$ possible abstract successors $e' \in E$. $G$ is the set of all program statements.
+For every program statement $g \in G$ we write $e \gtransfer e'$ if $(e, g, e') \in \gtransfer$ and $e \transfer e'$ if a program statement $g$ with $e \gtransfer e'$ exists.
+
+For soundness (i.e. if a property violation exists, it is always found) and progress of the program analysis, the following requirements have to be fulfilled:\cite{Beyer2007}
+\begin{enumerate}[label=\alph*)]
+\item the top element of abstract states has to represent all possible concrete states and the bottom element must represent none, formally put $\llbracket \top \rrbracket = C$ and $\llbracket \bot \rrbracket = \varnothing$,
+\item the join operator has to be precise or over-approximating. That means the join of two abstractes states always has to represent the same or more concrete states than the union of the concrete states both abstract states represent. This can be formally expressed as $\forall e, e' \in E: \llbracket e \join e' \rrbracket \supseteq \llbracket e \rrbracket \cup \llbracket e' \rrbracket$,
+\item the transfer relation $\transfer$ has to be total, that is $\forall e \in E: \exists e' \in E: e \transfer e'$, and
+\item the transfer relation has to be precise or over-approximating. That means the union of all concrete states represented by all possible abstract successors of an abstract state $e$ and a program statement $g$ have to be the same or more than the union of all concrete successors of statement $g$ and all concrete states represented by $e$.
+This can be formally expressed as $\forall e \in E, g \in G: \bigcup_{e \gtransfer e'} \llbracket e' \rrbracket\ \supseteq \bigcup_{c \in \llbracket e \rrbracket} \{ c' |\ c \overset{g}{\rightarrow} c' \}$
+\end{enumerate}
+Customization of program analysis usually means to choose one or more abstract interpreters, that is the abstract domains, transfer functions and widening operators to use.\cite{Beyer2007}
+
+Configurable software verification tries to bridge the gap of precision finding of model checking and the efficiency focus of program analysis to allow for arbitrary algorithms between these two extremes by providing the possibility to control the precision and efficiency of the algorithm by choosing all of the following:
+\begin{enumerate}[label=\alph*)]
+\item one or more abstract interpretations, that is the abstract domains to work in and the transfer functions that describe the possible transfers between abstract states,
+\item a merge operator which controls when two nodes of the reachability tree are merged, i.e. when two abstract states are merged, and
+\item a stop operator that controls when the exploration of a path is stopped, i.e. when a state is already covered by the existing reached states. This is also called termination check.
+\end{enumerate}
+These elements are encapsulated in a \emph{configurable program analysis} (CPA) \cite{Beyer2007} , which is used by the CPA algorithm.
+
 \subsubsection{Configurable program analysis definition}
-\subsubsection{Location CPA as example CPA}
-\subsubsection{CPAchecker as a framework for configurable program analysis}
+A CPA $\cpa = (D, \transfer, \cpaMerge, \cpaStop)$ consists of an abstract domain $D$, a transfer relation $\transfer$, both defined as above, a merge operator $\cpaMerge : E \times E \rightarrow E$ and a stop operator $\cpaStop : E \times 2^E \rightarrow \booleanset$.
+
+The merge operator weakens the information of the second given state based on the first state. The result of $\cpaMerge(e, e')$ can be anywhere between $e'$ and $\top$.
+Two characteristic merge operators are \[\cpaMerge^{sep}(e, e') = e'\] and \[\cpaMerge^{join}(e, e') = e \join e'.\]
+\begin{algorithm}[t]
+\caption{$CPA(\cpa, e_0)$}
+\label{alg:CPA}
+\begin{algorithmic}[1]
+
+\Input a CPA $\cpa = (D, \transfer, \cpaMerge, \cpaStop)$ 
+	    and an initial abstract state $e_0 \in E$ with $E$ being the set of elements of $D$
+\Output the set of abstract states reachable from $e_0$
+\Variables \reachedSet\ and \waitlistSet , both sets of elements of $E$
+\State $\waitlistSet \assign \{e_0\}$
+\State $\reachedSet \assign \{e_0\}$
+\While{$\waitlistSet \neq \varnothing$}
+	\State pop $e$ from \waitlistSet
+	\ForAll{$e'$ with $e \transfer e'$}
+		\ForAll{$e'' \in \reachedSet$} \label{alg:cpa:mergeStart}
+			\State $e_{new} \assign \cpaMerge(e', e'')$ \Comment Combine with existing abstract state
+			\If{$e_{new} \neq e''$}
+				\State $\waitlistSet \assign (\waitlistSet \cup \{ e_{new} \}) \setminus \{ e'' \}$
+				\State $\reachedSet \assign (\reachedSet \cup \{ e_{new} \}) \setminus \{ e'' \}$
+			\EndIf
+		\EndFor \label{alg:cpa:mergeStop}
+		\If{$\neg \cpaStop(e', \reachedSet)$} \label{alg:cpa:stopCheck}
+			\State $\waitlistSet \assign \waitlistSet \cup \{e'\}$
+			\State $\reachedSet \assign \reachedSet \cup \{e'\}$
+		\EndIf
+	\EndFor
+\EndWhile\\ 
+\Return \reachedSet
+\end{algorithmic}
+\end{algorithm}
+
+The stop operator checks if the given abstract state is covered by the set of abstract states given as second parameter.
+$\cpaStop(e, R) = true$ always has to imply $\llbracket e \rrbracket \subseteq \bigcup_{e' \in R} \llbracket e' \rrbracket$ to ensure soundness.
+Two characteristic stop operators are \[\cpaStop^{sep}(e, R) = \exists e' \in R : e \lesserEqual e'\] and \[\cpaStop^{join}(e, R) = e \lesserEqual \bigjoin_{e' \in R} e'.\]
+For $\cpaStop^{join}$, the abstract domain has to be a powerset domain, that means $e \lesserEqual e' \Rightarrow e \supseteq e'$ for abstract states $e, e'$.
+
+The CPA algorithm \cite{Beyer2007} described in Algorithm \ref{alg:CPA} uses an arbitrary CPA of this form to solve the reachability problem.
+Given a CPA $\cpa$ and an initial abstract state $e_0$ to start its computation at, the algorithm computes the set \reachedSet\ of reachable abstract states.
+As long as the set of abstract states that still have to be processed (\waitlistSet) is not empty, an abstract state $e \in \waitlistSet$ is removed from the waitlist
+and each possible abstract successor $e'$ is examined:
+First, each already reached abstract state $e'' \in \reachedSet$ is individually merged with the new state $e'$ and, if the merge weakened $e''$, it is replaced with the weakened state in \reachedSet\ and \waitlistSet\ (Lines \ref{alg:cpa:mergeStart} - \ref{alg:cpa:mergeStop}).
+Next, the termination check $\cpaStop(e', \reachedSet)$ checks whether the new abstract successor $e'$ is already covered by the current reached set.
+If it is not, it is added to \waitlistSet\ and \reachedSet.
+After this it is continued with the next element in the waitlist.
+If the waitlist is empty, there are no more reachable states and the reached set is returned.
+
+The target region $\targetRegion \subseteq C$ is reachable if any of its concrete states are represented by any abstract state computed as reachable by the CPA algorithm:
+\[\bigcup_{e \in CPA(\cpa, e_0)} \llbracket e \rrbracket\ \cap\ \targetRegion \neq \varnothing\]
 
 \subsection{Basic definition of CPAs used in this paper}
-\subsubsection{PredicateCPA}
-\subsubsection{Value Analysis CPA}
-\subsubsection{Symbolic Value Analysis CPA}
-\subsubsection{Constraints CPA}
-\subsubsection{Composition of Location CPA, Symbolic Value Analysis CPA and Constraints CPA}
-\paragraph{Basic definition of CompositeCPA}
-\paragraph{Concrete definition of this composition}
+A definition of all CPAs important to this paper follows.
+
+\subsubsection{\LocationCPA}
+The \locationCPA\ \cite{BeyerBook} $\locCPA = (D_\locCPA, \transfer_\locCPA, \cpaMerge^{sep}, \cpaStop^{sep})$ is a CPA that analyses the syntactical reachability of program locations.
+It does not consider any semantics and is mostly used to track the program location for other CPAs.
+This allows for simpler CPAs since they do not have to care about location tracking individually.
+The \locationCPA\ contains:
+\begin{enumerate}[leftmargin=*, label=\arabic*.]
+\item The abstract domain $D_\locCPA = (C, \loclattice, \concretization)$. It consists of the set  $C$ of possible concrete states, the semi-lattice $\loclattice$ and the concretization function $\concretization$.
+	$\loclattice = (L \cup \{\top\}, \top_\locCPA, \bot, \lesserEqual, \join)$ is defined by its lesser-equal operator $\lesserEqual$, which has the following properties:
+	$l \lesserEqual \top_\locCPA$, $l \neq l' \Rightarrow l \nlesserEqual l'$ and $\bot \lesserEqual l$ for all $l, l' \in L$
+	(this implies $\top_\locCPA \join l = \top_\locCPA$ and $l \join l' = \top_\locCPA$ for all $l, l' \in L$ with $l \neq l'$) A semi-lattice with 	these properties is also called \emph{flat semi-lattice}.
+	The concretization function is defined as $\llbracket \top_\locCPA \rrbracket = C$, $\llbracket l \rrbracket = \{ c \in C |\ c(pc) = l\}$ for all $l \in L$.
+\item The transfer relation $\transfer_\locCPA$, which has the transfer $l \gtransfer_\locCPA l'$ if $g = (l, op, l')$ for any operation $op$
+	and the transfer $\top_\locCPA \gtransfer_\locCPA \top_\locCPA$ for all $g \in G$.
+\item The already mentioned merge operator $\cpaMerge^{sep}$, defined as $\cpaMerge^{sep}(l, l') = l'$ for all $l, l' \in \loclattice$ and
+\item the already mentioned termination check $\cpaStop^{sep}$, defined as $\cpaStop^{sep}(l, R) = \exists l' \in R : l \lesserEqual l'$.
+\end{enumerate}
+\subsubsection{\PredicateCPA}
+The \predicateCPA\ \cite{BeyerBook} uses predicate abstraction \cite{Ball2001} to compute abstract states from a formula $\phi$ and a set $\pi$ of predicates.
+Two different kinds of predicate abstraction exist:
+The cartesian predicate abstraction $(\phi)^{\pi}_C$ is the strongest conjunction of predicates from $\pi$ that is implied by $\phi$.
+The boolean predicate abstraction $(\phi)^{\pi}_B$ is the strongest boolean combination of predicates from $\pi$ that is implied by $\phi$.
+In this work, we will only look at cartesian predicate abstraction because of its greater simplicity.
+For a set $r \subseteq \pi$, $\varphi_r$ denotes the conjunction of all predicates in $r$, with $\varphi_{\{\}} = true$.
+
+The \predicateCPA\ $\predCPA = (D_\predCPA, \transfer_\predCPA, \cpaMerge^{sep}, \cpaStop^{sep})$ consists of:
+\begin{enumerate}[leftmargin=*, label=\arabic*.]
+\item The abstract domain
+	$D_\predCPA = (C, \predicatelattice, \concretization)$ with concrete states $C$, the semi-lattice $\predicatelattice$ and the concretization function $\concretization$.
+	The semi-lattice is defined by $\predicatelattice = (2^{\pi}, \top_\predCPA, \bot, \lesserEqual, \join)$. Its abstract states are subsets of the precision $\pi$.
+	An abstract state can be interpreted as the conjunction of all its formulas. $\top_\predCPA = \varnothing$ is an abstract state without any constraints (\emph{true}) and represents all possible concrete states.
+	The bottom element $\bot = \{false\}$ represents no concrete state. A state $r$ is less or equal another state $r'$, if $r$ contains all predicates of $r'$, formally $r \lesserEqual r'$ if $r \supseteq r'$.
+	The join of two states $r, r'$ is defined by $r \join r' = r \cap r'$.
+
+	The concretization function $\concretization$ is defined by $\llbracket r \rrbracket = \{ c \in C |\ c \satisfies \varphi_r\}$
+
+\item The transfer relation $\transfer_\predCPA$ has the transfer $r \gtransfer_\predCPA r'$ if $\strongestPost(\varphi_r, g)$ is satisfiable
+	and $r'$ is the largest set of predicates so that $\varphi_r \Rightarrow \weakestPre(p, g)$ for each $p \in r'$.
+	The operations $\strongestPost(\varphi, g)$ and $\weakestPre(\varphi, g)$ describe the strongest post-condition and the weakest pre-condition for a formula $\varphi$ and an operation $g$.
+	They are defined such that
+	\[\llbracket \strongestPost(\varphi, g) \rrbracket = \{c' \in C |\ \exists c \in C : c \gtransfer c' \logicAnd c \satisfies \varphi \}\] and
+	\[\llbracket \weakestPre(\varphi, g) \rrbracket = \{c \in C |\ \exists c' \in C : c \gtransfer c' \logicAnd c' \satisfies \varphi \}.\]
+\item The already mentioned merge operator $\cpaMerge^{sep}$, defined as $\cpaMerge^{sep}(r, r') = r'$ for all $r, r' \in \predicatelattice$ and
+\item the already mentioned termination check $\cpaStop^{sep}$, defined as $\cpaStop^{sep}(r, R) = \exists r' \in R : r \lesserEqual r'$.
+\end{enumerate}
+
+\subsubsection{\ValueAnalysisCPA}
+\subsubsection{\SymbolicValueAnalysisCPA}
+\subsubsection{\ConstraintsCPA}
+\subsubsection{\CompositeCPA}
+\subsubsection{\SymbolicExecutionCPA : Composition of Location CPA, Symbolic Value Analysis CPA and Constraints CPA}
 
