@@ -36,7 +36,8 @@
 \end{figure}
 
 For the sake of simplicity, we focus on a programming language that only consists of variable assignments (e.g. $x \assign 5$ or $y \assign x$) and assumptions (e.g. $[x > 5]$ or $[y < x]$).
-We represent a program by a \emph{control flow automaton} (CFA) \cite{BeyerBook}\cite{Beyer2012a}.
+All values are integers.
+We represent a program by a \emph{control flow automaton} (CFA) \cite{BeyerBook}\cite{Beyer2012}.
 A CFA $A = (L, l_0, G)$ is a directed graph whose nodes $L$ represent the program locations of the program.
 The initial node $l_0 \in L$ represents the program entry.
 An edge $g \in G \subseteq L \times Ops \times L$ exists between two nodes if a program statement exists that transfers control between the program locations represented by the nodes.
@@ -123,7 +124,7 @@ Two characteristic merge operators are \[\cpaMerge^{sep}(e, e') = e'\] and \[\cp
 
 The stop operator checks if the given abstract state is covered by the set of abstract states given as second parameter.
 $\cpaStop(e, R) = true$ always has to imply $\llbracket e \rrbracket \subseteq \bigcup_{e' \in R} \llbracket e' \rrbracket$ to ensure soundness.
-Two characteristic stop operators are \[\cpaStop^{sep}(e, R) = \exists e' \in R : e \lesserEqual e'\] and \[\cpaStop^{join}(e, R) = e \lesserEqual \bigjoin_{e' \in R} e'.\]
+Two characteristic stop operators are \[\cpaStop^{sep}(e, R) = \exists e' \in R : e \lesserEqual e'\] and \[\cpaStop^{join}(e, R) = e \lesserEqual \bigjoin\limits_{e' \in R} e'.\]
 For $\cpaStop^{join}$, the abstract domain has to be a powerset domain, that means $e \lesserEqual e' \Rightarrow e \supseteq e'$ for abstract states $e, e'$.
 
 The CPA algorithm \cite{Beyer2007} described in Algorithm \ref{alg:CPA} uses an arbitrary CPA of this form to solve the reachability problem.
@@ -142,14 +143,34 @@ The target region $\targetRegion \subseteq C$ is reachable if any of its concret
 \subsection{Basic definition of CPAs used in this paper}
 A definition of all CPAs important to this paper follows.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{\CompositeCPA}
+It is often useful, in our case even necessary, to combine multiple CPAs to use their individual strengths and mitigate their weaknesses.
+A composition of multiple CPAs can be expressed as a \compositeCPA\ \cite{BeyerBook}\ $\compCPA = (\cpa_1, ..., \cpa_i, \transfer_\times, \cpaMerge_\times, \cpaStop_\times)$.
+It consists of:
+\begin{enumerate}[leftmargin=*, label=\arabic*.]
+
+\item An arbitrary number $i \geq 2$ of CPAs $\cpa_1$ to $\cpa_i$. All CPAs have to share the same set of concrete states $C$, but can differ in any other way.
+\item \label{it:compTransfer} A composite transfer relation $\transfer_\times \subseteq (E_1 \times ... \times E_i) \times G \times (E_1 \times ... \times E_i)$.
+\item \label{it:compMerge} A composite merge operator $\cpaMerge_\times : (E_1 \times ... \times E_i) \times (E_1 \times ... \times E_i) \rightarrow (E_1 \times ... \times E_i)$.
+\item \label{it:compStop} A composite termination check $\cpaStop_\times : (E_1 \times ... \times E_i) \times 2^{E_1 \times ... \times E_i} \rightarrow \booleanset$.
+\end{enumerate}
+The three composite operators \ref{it:compTransfer} - \ref{it:compStop} use the corresponding operators of the contained CPAs $\cpa_1$ to $\cpa_i$ as well as multiple \emph{strenghtening operators} $\strengthen_j$ and \emph{compare relations} $\compare_j$. They only alter lattice elements through these components.
+
+A strengthening operator $\strengthen : E_k \times E_l \rightarrow E_k$ with $1 \leq k, l \leq i$ and $k \neq l$ computes a stronger abstract state of the type $E_k$ by using the information of an abstract state of the type $E_l$. It has to meet the requirement $\strengthen(e, e') \lesserEqual e$.
+The use of strengthening operators in the transfer relation $\transfer_\times$ allows the use of a transfer relation that is stronger than the simple combination of the transfer relations of $\cpa_1$ to $\cpa_i$.
+
+A compare relation $\compare\ \subseteq E_k \times E_l$ allows the comparison of two abstract states of different types.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{\LocationCPA}
 The \locationCPA\ \cite{BeyerBook} $\locCPA = (D_\locCPA, \transfer_\locCPA, \cpaMerge^{sep}, \cpaStop^{sep})$ is a CPA that analyses the syntactical reachability of program locations.
-It does not consider any semantics and is mostly used to track the program location for other CPAs.
+It does not consider any semantics and is mostly used to track the program location for other CPAs by using a \compositeCPA.
 This allows for simpler CPAs since they do not have to care about location tracking individually.
 The \locationCPA\ contains:
 \begin{enumerate}[leftmargin=*, label=\arabic*.]
 \item The abstract domain $D_\locCPA = (C, \loclattice, \concretization)$. It consists of the set  $C$ of possible concrete states, the semi-lattice $\loclattice$ and the concretization function $\concretization$.
-	$\loclattice = (L \cup \{\top\}, \top_\locCPA, \bot, \lesserEqual, \join)$ is defined by its lesser-equal operator $\lesserEqual$, which has the following properties:
+	$\loclattice = (L \cup \{\top\}, \top_\locCPA, \bot, \lesserEqual, \join)$ is defined by its less-or-equal operator $\lesserEqual$, which has the following properties:
 	$l \lesserEqual \top_\locCPA$, $l \neq l' \Rightarrow l \nlesserEqual l'$ and $\bot \lesserEqual l$ for all $l, l' \in L$
 	(this implies $\top_\locCPA \join l = \top_\locCPA$ and $l \join l' = \top_\locCPA$ for all $l, l' \in L$ with $l \neq l'$) A semi-lattice with 	these properties is also called \emph{flat semi-lattice}.
 	The concretization function is defined as $\llbracket \top_\locCPA \rrbracket = C$, $\llbracket l \rrbracket = \{ c \in C |\ c(pc) = l\}$ for all $l \in L$.
@@ -158,6 +179,8 @@ The \locationCPA\ contains:
 \item The already mentioned merge operator $\cpaMerge^{sep}$, defined as $\cpaMerge^{sep}(l, l') = l'$ for all $l, l' \in \loclattice$ and
 \item the already mentioned termination check $\cpaStop^{sep}$, defined as $\cpaStop^{sep}(l, R) = \exists l' \in R : l \lesserEqual l'$.
 \end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{\PredicateCPA}
 The \predicateCPA\ \cite{BeyerBook} uses predicate abstraction \cite{Ball2001} to compute abstract states from a formula $\phi$ and a set $\pi$ of predicates.
 Two different kinds of predicate abstraction exist:
@@ -187,9 +210,182 @@ The \predicateCPA\ $\predCPA = (D_\predCPA, \transfer_\predCPA, \cpaMerge^{sep},
 \item the already mentioned termination check $\cpaStop^{sep}$, defined as $\cpaStop^{sep}(r, R) = \exists r' \in R : r \lesserEqual r'$.
 \end{enumerate}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{\ValueAnalysisCPA}
-\subsubsection{\SymbolicValueAnalysisCPA}
-\subsubsection{\ConstraintsCPA}
-\subsubsection{\CompositeCPA}
-\subsubsection{\SymbolicExecutionCPA : Composition of Location CPA, Symbolic Value Analysis CPA and Constraints CPA}
+The \valueAnalysisCPA\ \cite{Beyer2013} \cite{Beyer2015} tracks integer values for all program variables explicitly.
+It does so by using \emph{abstract variable assignments}. An abstract variable assignment $v: X \partialFunc \integerset \cup \{\bot\}$ is a partial function that maps program variables $x \in X$ to integer values if their assignment is known or to $\bot$, which represents an impossible variable assignment.
+We define the \emph{definition range} of a partial function $f$ as $\defRange(f) = \{ x |\ \exists y : (x, y) \in f \}$ and
+the \emph{restriction} of a partial function $f$ to a new definition range $Y$ as $f_\restrictedTo{Y} = f \cap ( Y \times (\valueset \cup \{ \bot \}))$.
 
+The \valueAnalysisCPA\ $\valCPA = (D_\valCPA, \transfer_\valCPA, \cpaMerge^{sep}, \cpaStop^{sep})$ consists of the following components:
+\begin{enumerate}[leftmargin=*, label=\arabic*.]
+\item The abstract domain $D_\valCPA = (C, \vallattice, \concretization)$ contains the set $C$ of possible concrete states, the semi-lattice $\vallattice$ and the concretization function $\concretization$.
+	The semi-lattice $\vallattice = (\valAssignment, \top_\valCPA, \bot, \lesserEqual, \join)$ consists of the set $\valAssignment = X \partialFunc \valueset$ of abstract variable assignments,
+	with $X$ being the set of program variables and $\valueset = \integerset \cup \{ \bot_\valueset \}$ the set of integer values and the bottom element.
+	The top element $\top_\valCPA$ of the abstract domain is defined as $\top_\valCPA = \varnothing$. It represents an unknown assignment for all program variables.
+	The bottom element $\bot$ is defined as $\bot(x) = \bot_\valueset$ for all $x \in X$.
+	It represents an impossible variable assignment, that is a state that cannot be reached in the program execution.
+	The less-or-equal operator $\lesserEqual\ \subseteq \valAssignment \times \valAssignment$ defines $v \lesserEqual v'$ if $\defRange(v') \subseteq \defRange(v)$ and for all $x \in \defRange(v'): v(x) = v'(x)$ or $v(x) = \bot_\valueset$.
+	This means that a state $v$ is less or equal a state $v'$ if $v$ contains all variable assignments of $v'$ or restricts them even further.
+
+	The join operator $\join$ defines the least upper bound of two abstract variable assignments, but is never used in our configuration.
+	
+	The concretization function $\concretization$ assigns to each abstract state $v$ the concrete states it represents, $\llbracket v \rrbracket = \{ c \in C |\ c(x) = v(x) \text{ for all } x \in \defRange(v)\}$.
+	If an abstract state $v$ contains an impossible variable assignment, that is $v(x) = \bot_\valueset$ for any $x \in \defRange(v)$, then it represents no concrete state: $\llbracket v \rrbracket = \varnothing$.
+\item The transfer relation $\transfer_\valCPA$ has the transfer $v \gtransfer_\valCPA v'$ if one of the following is true:
+	\begin{enumerate}[label=\alph*)]
+	\item $g = (\cdot, \assume(p), \cdot)$ and for all $x \in \defRange(v')$:
+		\[ v'(x) = \begin{dcases}
+			\bot_\valueset & \text{ if } \exists y \in X : v(y) = \bot_\valueset \text{ or } p_\using{v} \text{ unsatisfiable}\\
+			c & \text{ if $c$ is the only satisfying assignment of $p_\using{v}$ for $x$}\\
+			v(x) & \text{ otherwise }
+		\end{dcases}\]
+		$p_\using{v}$ is the interpretation of a predicate $p$ using the known variable assignments of $v$, that is
+		$p_\using{v} = p \logicAnd \biglogicAnd\limits_{x \in \defRange(v), v(x) \in \integerset}  x = v(x) \logicAnd \neg \exists x \in \defRange(v) : v(x) = \bot_\valueset$.
+	\item $g = (\cdot, w \assign exp, \cdot)$ and
+		\[ v'(x) = \begin{dcases}
+			exp_\using{v} & \text{ if } x = w \text{ and } exp_\using{v} \neq \top_\valueset\\
+			v(x) & \text{ if } x \neq w \text{ and } x \in \defRange(v)\\
+		\end{dcases}\]
+		$exp_\using{v}$ denotes the interpretation of an expression $exp$ using the values of abstract variable assignment $v$, that is
+		\[exp_\using{v} = \begin{dcases}
+			\bot_\valueset & \text{ if } \exists y : v(y) = \bot_\valueset\\
+			\top_\valueset  & \parbox[t]{.6\textwidth}{if $y \not\in \defRange(v)$ for some $y \in X$ that occurs in $exp$}\\
+			c & \parbox[t]{.6\textwidth}{ otherwise, where expression $exp$ is evaluated to $c$ after replacing each occurrence of variable $x \in \defRange(v)$ in $exp$ with $v(x)$}
+		\end{dcases}\]
+		with $\top_\valueset$ denoting an unknown value.
+	\end{enumerate}
+\item The previously mentioned merge operator $\cpaMerge^{sep}$. That means that no merge is performed. This is the only aspect in which \constantpropagationCPA\ \cite{BeyerBook} and \valueAnalysisCPA\ differ.
+\item The previously mentioned termination check $\cpaStop^{sep}$, which checks every abstract state individually.
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{\SymbolicValueAnalysisCPA}
+The \symbolicValueAnalysisCPA\ \cite{Lemberger2015} is an extension to the \valueAnalysisCPA. It introduces \emph{symbolic values} to handle non-deterministic values and expressions of unknown value.
+
+The \symbolicValueAnalysisCPA\ $\symValCPA = (D_\symValCPA, \transfer_\symValCPA, \cpaMerge^{sep}, \cpaStop^{sep})$ consists of:
+\begin{enumerate}[leftmargin=*, label=\arabic*.]
+\item The abstract domain $D_\symValCPA = (C, \symvallattice, \concretization)$ with the set $C$ of concrete states,
+	the semi-lattice $\symvallattice$ and
+	the concretization function $\concretization$.
+	The semi-lattice $\symvallattice = (\symvalAssignment, \top_\symValCPA, \bot, \lesserEqual, \join)$ is defined by
+	the set of abstract symbolic value assignments $\symvalAssignment = X \partialFunc \symvalset$ mapping program variables in its definition range to values of
+	$\symvalset = \integerset \cup \symValues \cup \{ \bot_\valueset \}$.
+	The value range of an abstract variable assignment of the type $\symvalAssignment$ consists of the set $\integerset$ of concrete integer values,
+	the set $\symValues$ of symbolic values and the bottom element $\bot_\valueset$, which represents an impossible variable assignment.
+	$\symValues = \symIds \cup \symExpressions$ consists of \emph{symbolic identifiers} $\symIds$ and \emph{symbolic expressions} $\symExpressions$.
+	Each expression that contains at least one symbolic identifier is a symbolic expression.
+	The definition range of an abstract variable assignment of $\symvalAssignment$ consists of all program variables whose value is known as either a concrete value (of $\integerset$),
+	a symbolic value (of $\symValues$) or as invalid ($\bot_\valueset$).
+	The top element $\top_\symValCPA = \varnothing$ represents no known assignment.
+
+	For two abstract states $v, v' \in \symvalAssignment$, $v \lesserEqual v'$, if all of the following conditions hold:
+	(a) $v'$ must only contain value assignments of $v$, that is $\defRange(v') \subseteq \defRange(v)$,
+	(b) for every concrete or invalid assignment of $v$, $v'$ must contain the same or a weaker one, that means the same value or a concrete value for $\bot_\valueset$, formally put
+	\[\forall x \in \defRange(v') : v(x) \in \integerset \cup \{\bot_\valueset\} \Rightarrow v'(x) = v(x) \logicOr v(x) = \bot_\valueset\]
+	(c) A bijective function $\aliasFunc : \symIds \rightarrow \symIds$ exists that maps each symbolic identifier of $\symIds$ to another symbolic identifier, so that
+	$\forall x \in \defRange(v') : v'(x) \in \symValues \Rightarrow v(x)$ results from $v'(x)$ by replacing all $i \in \symIds$ occurring in $v'(x)$ with $\aliasFunc(i)$.
+	It can be thought of simpler or more precise less-or-equal operators. Such operators will be examined later.
+	Here, we use this operator (with some fixes to its origin) simply because it was used in our previous work \cite{Lemberger2015}.
+
+	Note that with this operator $v' \lesserEqual v \Rightarrow \llbracket v' \rrbracket \subseteq \llbracket v \rrbracket$, but in general $\llbracket v' \rrbracket \subseteq \llbracket v \rrbracket \not\Rightarrow v' \lesserEqual v$.
+
+	The join $\join : \symvalAssignment \times \symvalAssignment$ is defined as
+	\[(v \join v')(x) = \begin{dcases}
+		v(x) & \text{ if } v(x) = v'(x)\\
+		\bot_\valueset & \text{ if } v(x) = \bot_\valueset \text{ or } v'(x) = \bot_\valueset
+	\end{dcases}\]
+	for all $x \in \defRange(v \join v')$.
+
+\item The transfer relation $\transfer_\symValCPA$ contains the transfer $v \gtransfer_\symValCPA v''$, if one of the following conditions is true:
+	\begin{enumerate}[label = \alph*)]
+		\item $g = (\cdot, \assume(p), \cdot)$, $p_\using{v}$ is satisfiable and for all $x \in \defRange(v'')$
+			\[ v''(x) = \begin{dcases}
+				c & \parbox[t]{.6\textwidth}{ if $c$ is the only satisfying assignment for $p_\using{v}$ and $x \not\in \defRange(v)$}\\
+				y & \parbox[t]{.6\textwidth}{ if $x \not\in \defRange(v)$ and $x$  appears in $p$. $y \in \symIds$ is a new symbolic values that has not been used in any other state before}\\
+				v(x) & \text{ if } x \in \defRange(v)
+			\end{dcases}\]
+			$p_\using{v}$ performs an over-approximation in this case, as variables with a symbolic assignment are not considered.
+			Reminder: \[p_\using{v} = p \logicAnd \biglogicAnd\limits_{x \in \defRange(v), v(x) \in \integerset}  x = v(x) \logicAnd \neg \exists x \in \defRange(v) : v(x) = \bot_\valueset\]
+
+		\item $g = (\cdot, w \assign e, \cdot)$ and
+			\[ v''(x) = \begin{dcases}
+				\evalFunc(e, v') & \text{ if } x = w\\
+				v'(x) & \text{ if } x \in \defRange(v) \text{ and } x \neq w
+			\end{dcases}\]
+			with
+			\[v'(x) = \begin{dcases}
+				y & \parbox[t]{.6\textwidth}{if $x \not \in \defRange(v)$ and $x$ appears in $e$. $y \in \symIds$ is a new symbolic identifier that has not been used in any other state before}\\
+				v(x) & \text{ if } x \in \defRange(v)
+			\end{dcases}\]
+			and $\evalFunc(e, v')$ defined as before. If any symbolic value occurs in expression $e$ after replacing all occurences $x \in X$ in $e$ with $v'(x)$,
+			the expression is not evaluated. In this case $\evalFunc(e, v') \in \symValues$.
+		\item $v'' = \top_\symValCPA$.
+	\end{enumerate}
+
+\item The use of $\cpaMerge^{sep}$ means that no merge of abstract states is performed.
+\item The termination check $\cpaStop^{sep}$ already mentioned multiple times considers every state independently when checking for coverage.
+
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{\ConstraintsCPA}
+
+The \constraintsCPA\ tracks constraints (i.e. boolean formulas) on symbolic identifiers created by assume edges.
+For this, it relies on the values provided by the \symbolicValueAnalysisCPA\ to partially evaluate assume edges and create constraints out of them.
+The \constraintsCPA\ $\constrCPA = (D_\constrCPA, \transfer_\constrCPA, \cpaMerge^{sep}, \cpaMerge^{sep})$ is defined by:
+\begin{enumerate}[leftmargin=*,label=\arabic*.]
+\item The abstract domain $D_\constrCPA = (C, \constraintslattice, \concretization)$,
+	which consists of concrete states $C$, the semi-lattice $\constraintslattice$ and the concretization function $\concretization$.
+	
+	The abstract states described by $\constraintslattice = (2^\constraintsset, \top_\constrCPA, \bot, \lesserEqual, \join)$ are subsets of the set $\constraintsset$ of all possible boolean expressions over the possible values of the \symbolicValueAnalysisCPA, $\symvalset$, and program variables, $X$. This includes concrete and symbolic values. An abstract state $a \subseteq \constraintsset$ can be interpreted as the conjunction of all its constraints, where each symbolic identifier $i \in \symIds$ is handled as a variable.
+	The top element $\top_\constrCPA = \varnothing$ contains no constraints (it represents $true$). The bottom element $\bot$ represents a program state that can never be reached. It represents $false$.
+	$\lesserEqual$ is defined in the following way: For two given states $a, a' \subseteq \constraintsset$, $a$ is less or equal $a'$, that is $a \lesserEqual a'$, if a bijective function $\aliasFunc : \symIds \rightarrow \symIds$ exists, so that $a'' \subseteq a$ with $a''$ resulting from $a'$ by replacing all symbolic identifiers $i \in \symIds$ occurring in the constraints of $a'$ with $\aliasFunc(i)$.
+	The join $\join$ computes the least upper bound of two abstract states, but is never used.
+
+	The concretization function $\concretization$ maps an abstract state to all concrete states that satisfy its constraints:
+	\[ \llbracket a \rrbracket = \{ c \in C |\ c \satisfies \varphi_a \} \]
+	with $\varphi_a$ denoting the conjunction of all predicates in $a$, $\varphi_a = \biglogicAnd\limits_{p \in a} p$.
+
+\item The transfer relation $\transfer_\constrCPA$ contains the transfer $a \gtransfer_\constrCPA a'$ if one of the following is true:
+	\begin{enumerate}[label=\alph*)]
+		\item $g = (\cdot, \assume(p), \cdot)$, $a' = a \cup p$ and
+			$a$ does not contain any variable $x \in X$.
+			We just add the condition of the assume as a new constraint to the abstract state.
+			Since $a$ may not contain any program variables we enforce that
+			variables must always be replaced by concrete or symbolic values through immediate strengthening at the same edge. Or,
+		\item $g = (\cdot, w \assign e, \cdot)$ and $a' = a$. \ConstraintsCPA\ only cares about assume edges.
+	\end{enumerate}
+	
+\item The merge operator $merge^{sep}$. No merge is performed when the control flow meets. We will introduce an alternative merge operator later on.
+\item The termination check $stop^{sep}(e, R) = \exists e' \in R: e \lesserEqual e'$ considers every reached abstract state individually.
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{\SymbolicExecutionCPA : Composition of Location CPA, Symbolic Value Analysis CPA and Constraints CPA}
+The \symbolicExecutionCPA\ \cite{Lemberger2015}\ is the composition of \locationCPA, \symbolicValueAnalysisCPA\ and \constraintsCPA.
+Besides connecting the \locationCPA\ to the other CPAs so abstract states can be mapped to a program location, its most important task is the definition of a strengthening operator that creates new constraints in the \constraintsCPA\ and checks their satisfiability.
+
+The \symbolicExecutionCPA\ $\symExCPA = (\locCPA, \symValCPA, \constrCPA, \transfer_\symExCPA, \cpaMerge_\symExCPA, \cpaStop_\symExCPA)$ is a \compositeCPA\ that consists of:
+\begin{enumerate}[leftmargin=*, label=\arabic*.]
+\item The three CPAs $\locCPA$, $\symValCPA$ and $\constrCPA$ defined above.
+\item The transfer relation $\transfer_\symExCPA : (D_\locCPA \times D_\symValCPA \times D_\constrCPA) \rightarrow (D_\locCPA \times D_\symValCPA \times D_\constrCPA)$.
+	It contains the transfer $(l, v, a) \gtransfer_\symExCPA (l', v', a')$ if $l \gtransfer_\locCPA l'$, $v \gtransfer_\symValCPA v'$ and if one of the following conditions is true:
+	\begin{enumerate}[label=\alph*)]
+		\item $g = (\cdot, \assume(p), \cdot)$ and $\strengthenOp{\constrCPA}{\symValCPA}(a'', v') = a'$ is defined, with $a \gtransfer_\constrCPA a''$.
+
+		\item $g = (\cdot, w \assign e, \cdot)$ and $a = a'$.
+	\end{enumerate}
+	It uses the strengthening operator $\strengthenOp{\constrCPA}{\symValCPA} : \constraintslattice \times \symvallattice \rightarrow \constraintslattice$ that strengthens an abstract state of the \constraintsCPA\ by using an abstract state of the \symbolicValueAnalysisCPA.
+	$\strengthenOp{\constrCPA}{\symValCPA}(a'', v) = a'$ is defined if both of the following conditions are true:
+	\begin{enumerate}[label=\alph*)]
+		\item $a'$ results from $a''$ by replacing all program variables $x$ occurring in the constraints of $a''$ by their abstract value assignment $v(x)$.
+			$v(x)$ can be a concrete or symbolic value as well as $\bot_\valueset$.
+		\item  $\varphi_{a'}$ is satisfiable.
+	\end{enumerate}
+\item The merge operator
+	$\cpaMerge_\symExCPA : (\loclattice \times \symvallattice \times \constraintslattice) \times (\loclattice \times \symvallattice \times \constraintslattice) \rightarrow (\loclattice \times \symvallattice \times \constraintslattice)$ uses the merge operators of each CPA on the corresponding abstract states individually.
+\item The stop operator $\cpaStop_\symExCPA : (\loclattice \times \symvallattice \times \constraintslattice) \times 2^{\loclattice \times \symvallattice \times \constraintslattice}$
+	uses the stop operators of each CPA on the corresponding abstract state and reached set individually.
+\end{enumerate}
