@@ -44,6 +44,11 @@ An edge $g \in G \subseteq L \times Ops \times L$ exists between two nodes if a 
 Each edge is labeled with the operation that transfers the control.
 If a node has no leaving edges it is a final node. Final nodes represent the program exit.
 A CFA for the previously mentioned example program can be seen in Figure \ref{fig:exCFA}.
+A \emph{path} $\sigma$ \cite{Beyer2015} is a sequence $\langle (op_1, l_1), ..., (op_n, l_n)$ of program locations and their corresponding operations.
+A path $\sigma$ is a \emph{program path}, if $\sigma$ represents a syntactic walk through the CFA, that means for every $1 \leq i \leq n$ a CFA edge $g = (l_{i-1}, op_i, l_i)$ exists and $l_0$ is the initial program location.
+Every path $\sigma = \langle (op_1, l_1), ..., (op_n, l_n) \rangle$ defines a \emph{constraint sequence} $\gamma_\sigma = \langle op_1, ..., op_n \rangle$.
+The \emph{conjunction} of two constraint sequences $\gamma = \langle op_1, ..., op_n \rangle$ and $\gamma' = \langle op'_1, .., op'_n \rangle$ is defined as their concatenation,
+that means $\gamma \logicAnd \gamma' = \langle op_1, ..., op_n, op'_1, ..., op'_n \rangle$.
 The set $X$ is the set of all program variables occurring in a program.
 
 The basis of automatic software verification is the reachability problem: For a given specification it is derived whether a program state is reachable that violates this specification.
@@ -100,11 +105,14 @@ Two characteristic merge operators are \[\cpaMerge^{sep}(e, e') = e'\] and \[\cp
 	    and an initial abstract state $e_0 \in E$ with $E$ being the set of elements of $D$
 \Output the set of abstract states reachable from $e_0$
 \Variables \reachedSet\ and \waitlistSet , both sets of elements of $E$
-\State $\waitlistSet \assign \{e_0\}$
 \State $\reachedSet \assign \{e_0\}$
+\State $\waitlistSet \assign \{e_0\}$
 \While{$\waitlistSet \neq \varnothing$}
-	\State pop $e$ from \waitlistSet
+	\State choose $e$ from \waitlistSet \State remove $e$ from \waitlistSet
 	\ForAll{$e'$ with $e \transfer e'$}
+		\If{$\isTargetState{e'}$} \label{alg:cpa:isTarget}
+			\Return $\reachedSet \cup \{ e' \}$
+		\EndIf
 		\ForAll{$e'' \in \reachedSet$} \label{alg:cpa:mergeStart}
 			\State $e_{new} \assign \cpaMerge(e', e'')$ \Comment Combine with existing abstract state
 			\If{$e_{new} \neq e''$}
@@ -128,17 +136,22 @@ Two characteristic stop operators are \[\cpaStop^{sep}(e, R) = \exists e' \in R 
 For $\cpaStop^{join}$, the abstract domain has to be a powerset domain, that means $e \lesserEqual e' \Rightarrow e \supseteq e'$ for abstract states $e, e'$.
 
 The CPA algorithm \cite{Beyer2007} described in Algorithm \ref{alg:CPA} uses an arbitrary CPA of this form to solve the reachability problem.
+We adjusted the algorithm from \cite{Beyer2007}\ to better fit a later introduced, more sophisticated version. The behaviour of the algorithm stays exactly the same, though.
 Given a CPA $\cpa$ and an initial abstract state $e_0$ to start its computation at, the algorithm computes the set \reachedSet\ of reachable abstract states.
 As long as the set of abstract states that still have to be processed (\waitlistSet) is not empty, an abstract state $e \in \waitlistSet$ is removed from the waitlist
 and each possible abstract successor $e'$ is examined:
-First, each already reached abstract state $e'' \in \reachedSet$ is individually merged with the new state $e'$ and, if the merge weakened $e''$, it is replaced with the weakened state in \reachedSet\ and \waitlistSet\ (Lines \ref{alg:cpa:mergeStart} - \ref{alg:cpa:mergeStop}).
+
+First, it is checked whether $e'$ represents any concrete state that violates a property. This is done by $\isTargetStateFunc : E \rightarrow \booleanset$ in Line \ref{alg:cpa:isTarget}, whose behaviour can be defined arbitrarily.
+In classic reachability computation, the complete reachable set would be computed first.
+If we did this (by defining $\isTargetState{e} = false$ for all $e$),
+the target region $\targetRegion \subseteq C$ would be reachable if any of its concrete states were represented by any abstract state computed as reachable by the CPA algorithm:
+\[\bigcup_{e \in CPA(\cpa, e_0)} \llbracket e \rrbracket\ \cap\ \targetRegion \neq \varnothing .\]
+
+As next step of the examination of $e'$, each already reached abstract state $e'' \in \reachedSet$ is individually merged with the new state $e'$ and, if the merge weakened $e''$, it is replaced with the weakened state in \reachedSet\ and \waitlistSet\ (Lines \ref{alg:cpa:mergeStart} - \ref{alg:cpa:mergeStop}).
 Next, the termination check $\cpaStop(e', \reachedSet)$ checks whether the new abstract successor $e'$ is already covered by the current reached set.
 If it is not, it is added to \waitlistSet\ and \reachedSet.
 After this it is continued with the next element in the waitlist.
 If the waitlist is empty, there are no more reachable states and the reached set is returned.
-
-The target region $\targetRegion \subseteq C$ is reachable if any of its concrete states are represented by any abstract state computed as reachable by the CPA algorithm:
-\[\bigcup_{e \in CPA(\cpa, e_0)} \llbracket e \rrbracket\ \cap\ \targetRegion \neq \varnothing\]
 
 \subsection{Basic definition of CPAs used in this paper}
 A definition of all CPAs important to this paper follows.
@@ -211,9 +224,18 @@ The \predicateCPA\ $\predCPA = (D_\predCPA, \transfer_\predCPA, \cpaMerge^{sep},
 \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{\ValueAnalysisCPA}
+\subsubsection{\ValueAnalysisCPA}\label{sec:valueAnalysis}
 The \valueAnalysisCPA\ \cite{Beyer2013} \cite{Beyer2015} tracks integer values for all program variables explicitly.
-It does so by using \emph{abstract variable assignments}. An abstract variable assignment $v: X \partialFunc \integerset \cup \{\bot\}$ is a partial function that maps program variables $x \in X$ to integer values if their assignment is known or to $\bot$, which represents an impossible variable assignment.
+It does so by using \emph{abstract variable assignments} \cite{Beyer2013}. An abstract variable assignment $v: X \partialFunc \integerset \cup \{\bot\}$ is a partial function that maps program variables $x \in X$ to integer values - if their assignment is known - or to $\bot$, if no possible value assignment exists.
+An abstract variable assignment $v$ is \emph{contradicting} if $v(x) = \bot$ for any $x \in \defRange(v)$.
+For two abstract variable assignments $v$ and $v'$, $v$ is \emph{implied} by $v'$, that is $v' \Rightarrow v$, if $v'$ is contradicting or if $\defRange(v') \subseteq \defRange(v)$ and for each variable $x \in \defRange(v) \cap \defRange(v') : v(x) = v'(x)$.
+The \emph{conjunction} $v \logicAnd v'$ is defined as
+\[(v \logicAnd v')(x) = \begin{dcases}
+	\bot & \text{ if } x \in \defRange(v) \cap \defRange(v') \text{ and } v(x) \neq v'(x)\\
+	v(x) & \text{ if } x \in \defRange(v)\\
+	v'(x) & \text{ if } x \in \defRange(v')
+\end{dcases}\]
+
 We define the \emph{definition range} of a partial function $f$ as $\defRange(f) = \{ x |\ \exists y : (x, y) \in f \}$ and
 the \emph{restriction} of a partial function $f$ to a new definition range $Y$ as $f_\restrictedTo{Y} = f \cap ( Y \times (\valueset \cup \{ \bot \}))$.
 
@@ -238,7 +260,7 @@ The \valueAnalysisCPA\ $\valCPA = (D_\valCPA, \transfer_\valCPA, \cpaMerge^{sep}
 		\[ v'(x) = \begin{dcases}
 			\bot_\valueset & \text{ if } \exists y \in X : v(y) = \bot_\valueset \text{ or } p_\using{v} \text{ unsatisfiable}\\
 			c & \text{ if $c$ is the only satisfying assignment of $p_\using{v}$ for $x$}\\
-			v(x) & \text{ otherwise }
+			v(x) & \text{ if none of the above and } x \in \defRange(v)
 		\end{dcases}\]
 		$p_\using{v}$ is the interpretation of a predicate $p$ using the known variable assignments of $v$, that is
 		$p_\using{v} = p \logicAnd \biglogicAnd\limits_{x \in \defRange(v), v(x) \in \integerset}  x = v(x) \logicAnd \neg \exists x \in \defRange(v) : v(x) = \bot_\valueset$.
@@ -303,28 +325,28 @@ The \symbolicValueAnalysisCPA\ $\symValCPA = (D_\symValCPA, \transfer_\symValCPA
 			\[ v''(x) = \begin{dcases}
 				c & \parbox[t]{.6\textwidth}{ if $c$ is the only satisfying assignment for $p_\using{v}$ and $x \not\in \defRange(v)$}\\
 				y & \parbox[t]{.6\textwidth}{ if $x \not\in \defRange(v)$ and $x$  appears in $p$. $y \in \symIds$ is a new symbolic values that has not been used in any other state before}\\
-				v(x) & \text{ if } x \in \defRange(v)
+				v(x) & \text{ if none of the above and } x \in \defRange(v)
 			\end{dcases}\]
 			$p_\using{v}$ performs an over-approximation in this case, as variables with a symbolic assignment are not considered.
 			Reminder: \[p_\using{v} = p \logicAnd \biglogicAnd\limits_{x \in \defRange(v), v(x) \in \integerset}  x = v(x) \logicAnd \neg \exists x \in \defRange(v) : v(x) = \bot_\valueset\]
 
-		\item $g = (\cdot, w \assign e, \cdot)$ and
+		\item $g = (\cdot, w \assign exp, \cdot)$ and
 			\[ v''(x) = \begin{dcases}
-				\evalFunc(e, v') & \text{ if } x = w\\
+				exp_\using{v'} & \text{ if } x = w\\
 				v'(x) & \text{ if } x \in \defRange(v) \text{ and } x \neq w
 			\end{dcases}\]
 			with
 			\[v'(x) = \begin{dcases}
-				y & \parbox[t]{.6\textwidth}{if $x \not \in \defRange(v)$ and $x$ appears in $e$. $y \in \symIds$ is a new symbolic identifier that has not been used in any other state before}\\
+				y & \parbox[t]{.6\textwidth}{if $x \not \in \defRange(v)$ and $x$ appears in $exp$. $y \in \symIds$ is a new symbolic identifier that has not been used in any other state before}\\
 				v(x) & \text{ if } x \in \defRange(v)
 			\end{dcases}\]
-			and $\evalFunc(e, v')$ defined as before. If any symbolic value occurs in expression $e$ after replacing all occurences $x \in X$ in $e$ with $v'(x)$,
-			the expression is not evaluated. In this case $\evalFunc(e, v') \in \symValues$.
+			and $exp_\using{v'}$ defined as before. If any symbolic value occurs in $exp$ after replacing all occurences $x \in X$ in $exp$ with $v'(x)$,
+			the expression is only partially evaluated. In this case $exp_\using{v'} \in \symValues$.
 		\item $v'' = \top_\symValCPA$.
 	\end{enumerate}
 
 \item The use of $\cpaMerge^{sep}$ means that no merge of abstract states is performed.
-\item The termination check $\cpaStop^{sep}$ already mentioned multiple times considers every state independently when checking for coverage.
+\item The termination check $\cpaStop^{sep}$ already mentioned considers every state independently when checking for coverage.
 
 \end{enumerate}
 
