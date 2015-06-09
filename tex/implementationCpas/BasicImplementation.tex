@@ -1,5 +1,21 @@
 \subsection{Basic implementation}
-\subsubsection{LocationCPA already existed, implemented as defined}
-\subsubsection{Symbolic Value Analysis as extension to existing ValueAnalysisCPA}
-\subsubsection{ConstraintsCPA as new CPA}
-\subsubsection{CompositeCPA already existed, describe implementation (especially merge operator is important)}
+We implemented our algorithm in the framework for configurable program verification \cpaChecker \cite{Beyer2011}.
+%\subsubsection{CompositeCPA already existed, describe implementation (especially merge operator is important)}
+The composite \symbolicExecutionCPA\ was implemented by using the existing CompositeCPA.
+This CPA already uses the merge-agree operator $\mergeAgree$ and delegates the precision adjustment to each individual CPA's precision adjustment operator not only with the precision to adjust to,
+but also \emph{all} abstract states of the composite state, not only the one of the CPA delegated to.
+This way it is possible to implement a precision adjustment function directly for a CPA whose precision uses location-specific tracking, like $\Pi_\symValCPA$.
+As such we implemented the two auxiliary precision functions $\auxiliaryPrec_\symValCPA$ and $\auxiliaryPrec_\constrCPA$ directly as the precision adjustment of the \symbolicValueAnalysisCPA\ and \constraintsCPA.
+By just specifying the wanted CPAs as components of the \compositeCPA\ through an option we composed the \symbolicExecutionCPA.
+%\subsubsection{LocationCPA already existed, implemented as defined}
+ We use the existing \locationCPA\ without any modifications. It was already implemented in \cpaChecker.
+
+%\subsubsection{Symbolic Value Analysis as extension to existing ValueAnalysisCPA}R
+Both the \symbolicValueAnalysisCPA, a direct extension of the existing \valueAnalysisCPA,
+%\subsubsection{ConstraintsCPA as new CPA}
+and the \constraintsCPA, a completely new CPA, were mostly used as they were implemented in our work for \cite{Lemberger2015}.
+The \constraintsCPA\ transfer relation's complete syntax is in the strengthening by the \symbolicValueAnalysisCPA\ to forgo the need for constraints made of program variables which are then instantly replaced with constraints made of symbolic values.
+This way, a constraints state always only contains constraints over explicit and symbolic values. This means that all constraints are of $\goodconstraintsset$.
+To be able to handle conditions like ''each constraint that originates from program variable $x$'' (for example as used when using the precision type $\Pi_\symValCPA$ for the \constraintsCPA, see Section \ref{sec:constraintsCPA} and \ref{sec:assignmentRefinement}),
+we also store for each symbolic value that is assigned to an variable the variable \emph{in} the symbolic value.
+This way it is always possible to transform a constraint of $\goodconstraintsset$ back to its original representation.
