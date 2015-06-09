@@ -14,34 +14,10 @@ Since the problem of finding the coarsest possible refinement of an abstraction 
 Interpolation \cite{Henzinger2004}\ is one such technique in a boolean context that is used for refinement of both the \predicateCPA\ and \valueAnalysisCPA.
 
 \subsubsection{CEGAR and interpolation in the context of configurable software verification}
-To apply CEGAR and interpolation to configurable software verification and value analysis in particular, which is not based on formulas, but abstract value assignments, some modifications have to be made.
-First, the notion of CPAs and the CPA algorithm is extended to allow the weakening and strengthening of abstract states  based on some precision, which represents the ''abstraction'' referred to previously.
-To do so, a CPA has to define a precision and precision adjustment and its other components have to consider the current precision.
-A CPA using dynamic precision adjustment \cite{Beyer2008} \[ \cpaPlus = (D, \Pi, \transfer, \cpaMerge, \cpaStop, \cpaPrec ) \] consists of:
-\begin{enumerate}[leftmargin=*, label=\arabic*.]
-\item An abstract domain $D = (C, \semilattice, \concretization)$ with concrete states $C$, the semi-lattice $\semilattice = (E, \top, \bot, \lesserEqual, \join)$ and the concretization function $\concretization$, as already defined.
-\item A set of \emph{precisions} $\Pi$. A precision $\pi \in \Pi$ defines the information that should be kept in the abstract states after each transfer.
-\item A transfer relation $\transfer : E \times (E \times \Pi)$ that not only computes the possible successors of an abstract state of $E$, but also their precisions. The precision computed by the transfer relation will be used on the computed abstract state in the new CPA algorithm shown below.
-\item A merge operator $\cpaMerge : E \times E \times \Pi \rightarrow E$ that uses an abstract state and a precision to weaken or strengthen an abstract state.
-\item A termination check $\cpaStop : E \times 2^{E} \times \Pi \rightarrow \booleanset$ that computes whether a given abstract state is covered by a given set of abstract states, using a specific precision.
-\item A \emph{precision adjustment} $\cpaPrec : E \times \Pi \rightarrow E \times \Pi$ with $E$ being the elements of the semi-lattice of $D$. This operator computes a new abstract state and precision based on a given abstract state and precision.
-\end{enumerate}
-It is easy to convert an existing CPA without precision adjustment into one that fits the above type, if no precision adjustment is wanted (e.g. in the \locationCPA\ precision adjustment would not make any sense):
-\begin{enumerate}[leftmargin=*, label=\arabic*.]
-\item Keep the abstract domain as it is.
-\item Introduce a single precision $\singletonPrecision$. It will only be used as a dummy.
-\item Extend the existing transfer relation to always return $\singletonPrecision$ in addition to its abstract states:
-	$e \transfer (e', \singletonPrecision)$ if  $e \transfer' e'$ exists, with $\transfer'$ being the old transfer relation.
-\item Adjust the type of operators $\cpaMerge$ and $\cpaStop$, but keep their behaviour without regarding the precision given to them.
-\item Define the precision adjustment $\cpaPrec$ so it does not change anything: $\cpaPrec(e, \pi) = (e, \pi)$. 
-\end{enumerate}
-Keeping to this scheme, the common operators for $\cpaMerge$ and $\cpaStop$ are defined as:
-\[\begin{aligned}
-& \cpaMerge^{sep} (e, e', \pi) = e'\\
-& \cpaMerge^{join} (e, e', \pi) = e \join e'\\
-& \cpaStop^{sep} (e, R, \pi) = \exists e' \in R : e \lesserEqual e'\\
-& \cpaStop^{join} (e, R, \pi) = e \lesserEqual \bigjoin\limits_{e' \in R} e'
-\end{aligned}\]
+\label{sec:cegarBasics}
+To apply CEGAR and interpolation to configurable software verification, a simple modification has to be made to the CPA algorithm.
+Instead of passing it an initial state $e_0$ and an initial precision $\pi_0$, we use an initial reached set $R_0$ and initial waitlist $W_0$ (Alg. \ref{alg:cpaPlus}).
+This way we can control at which point the analysis continues after a refinement was performed.
 
 \begin{algorithm}[t]
 \caption{$CPA(\cpaPlus, R_0, W_0)$, adapted from \cite{Beyer2013}}
@@ -54,38 +30,14 @@ Keeping to this scheme, the common operators for $\cpaMerge$ and $\cpaStop$ are 
 	    with $E$ being the set of elements of $D$
 \Output a set of abstract states reachable from $R_0$ with their precision and
 	   a subset of frontier abstract states with their precision
-\Variables \reachedSet\ and \waitlistSet , both sets of elements of $E \ times \Pi$
+\Variables \reachedSet\ and \waitlistSet , both subsets of $E \times \Pi$
 \State $\reachedSet \assign R_0$
 \State $\waitlistSet \assign W_0$
-\While{$\waitlistSet \neq \varnothing$}
-	\State choose $(e, \pi)$ from \waitlistSet
-	\State remove $(e, \pi)$ from \waitlistSet
-	\ForAll{$e'$ with $e \transfer (e', \pi)$}
-		\State $(\hat{e}, \hat{\pi}) \assign \cpaPrec(\hat{e}, \pi, \reachedSet)$ \Comment Precision adjustment \label{alg:cpaPlus:precAdj}
-		\If{$\isTargetState{\hat{e}}$}
-			\State %empty state so that the return statement below is in a new line
-			\Return $(\reachedSet \cup \{ (\hat{e}, \hat{\pi}) \},\ \waitlistSet)$
-		\EndIf
-		\ForAll{$(e'', \pi '') \in \reachedSet$}
-			\State $e_{new} \assign \cpaMerge(\hat{e}, e'', \hat{\pi})$ \Comment Combine with existing state
-			\If{$e_{new} \neq e''$}
-				\State $\waitlistSet \assign (\waitlistSet \cup \{ (e_{new}, \hat{\pi}) \}) \setminus \{ (e'',\pi '') \}$
-				\State $\reachedSet \assign (\reachedSet \cup \{ (e_{new}, \hat{\pi}) \}) \setminus \{ (e'', \pi '') \}$
-			\EndIf
-		\EndFor
-		\If{$\neg \cpaStop(e', \{ e |\ (e, \cdot) \in \reachedSet \}, \hat{\pi})$}
-			\State $\waitlistSet \assign \waitlistSet \cup \{ (\hat{e}, \hat{\pi}) \}$
-			\State $\reachedSet \assign \reachedSet \cup \{ (\hat{e}, \hat{\pi}) \}$
-		\EndIf
-	\EndFor
-\EndWhile\\ 
-\Return $(\reachedSet, \varnothing)$ \Comment Return reached set and the now empty waitlist
+\While{$\waitlistSet \neq \varnothing$} \Comment from here on the same as before
+\State ...
+\EndWhile
 \end{algorithmic}
 \end{algorithm}
-
-In addition to this, the CPA algorithm (Algorithm \ref{alg:CPA}) is adjusted to use these new components.
-Algorithm \ref{alg:cpaPlus} shows the modified version of the CPA algorithm. We not only add the precision adjustment (Line \ref{alg:cpaPlus:precAdj}), but also pass the algorithm the initial waitlist and initial reached set instead of just one initial state. This way it is possible to control at which state(s) the algorithm starts.
-We use this so we can control at which point the analysis continues after a refinement was performed.
 
 \begin{algorithm}[t]
 \caption{$CEGAR(\cpaPlus, e_0, \pi_0)$, adapted from \cite{Beyer2013}}
@@ -136,8 +88,6 @@ It is refined based on the infeasible error path by using $\refineFunc : \Sigma 
 After this, the reached set and waitlist are reset to their initial values and the algorithm repeats analysis with the refined precision.
 It is important to notice that the return type of $\refineFunc$ has to be equal to the precision type $\Pi$ used in $\cpaPlus$.
 Because of this, CPAs are not exchangeable without changing refinement, too, in general.
-As we are interested in using CEGAR with the \symbolicExecutionCPA, which uses both linear arithmetics (\constraintsCPA ) and abstract variable assignments (\valueAnalysisCPA ),
-we will first describe the existing refinement procedures of these two domains, as they are used in conjunction with the \predicateCPA\ and \valueAnalysisCPA, for example.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Refinement in general
@@ -152,6 +102,7 @@ A boolean formula $\craigItp$ is a Craig interpolant \cite{Craig1957}\ for two b
 It is proven that such an interpolant always exists in the domain of abstract variable assignments \cite{Beyer2013} as well as in the theory of linear arithmetics \cite{Craig1957}.
 
 %\subsubsection{Refinement for the domain of abstract variable assignments}
+Our work is strongly based on the refinement technique for abstract variable assignments.
 The strongest-post operator $\strongestPostOp_{op}$ describes the semantics of an operation $op \in Ops$.
 It is the analogy to the transfer relation in the domain of CPAs.
 It maps a region of concrete states, implied by an abstract variable assignment, to the region of all concrete states that can be reached by executing $op$.
@@ -223,15 +174,19 @@ From these, the interpolant is built (Lines \ref{alg:interpolateExplicit:itpStar
 \end{algorithm}
 
 The interpolants produced are used in the refinement of the precision (Alg. \ref{alg:refinementExplicit}).
-As the type of the precision can be chosen freely, we use a location-specific precision $\pi : L \rightarrow 2^X$ that returns for a program location $l \in L$ all program variables of $X$ which are relevant for the analysis at this location. This approach realizes the lazy abstraction technique \cite{Henzinger2002}.
+We use a location-specific precision $\pi : L \rightarrow 2^X$ that returns for a program location $l \in L$ all program variables of $X$ which are relevant for the analysis at this location. This approach realizes the lazy abstraction technique \cite{Henzinger2002}.
 The algorithm starts with an initial, empty interpolant $\Gamma$ and empty precision $\pi$ with $\pi(l) = \varnothing$ for all $l \in L$.
 For each location $(l_i, op_i)$ on the error path, the suffix $\suffix$ of this location are set and the interpolant is computed inductively from the existing interpolant in conjunction with the current operation $op_i$ and the suffix (Line \ref{alg:refinementExplicit:interpolation}).
-It is not only sufficient, but also required to use $\Gamma \logicAnd \langle op_i \rangle$ instead of the full prefix $\prefix = \langle op_1, ..., op_1 \rangle$. All information necessary for proving the infeasibility of the remaining error path is present here. The full prefix cannot be used as it has to be assured that the precision resulting from these consecutive interpolations proves the error path infeasible.
+A precision for the current program location is then extracted from the interpolant.
+One straightforward way to do this is by using all program variables with a valid assignment in the  abstract variable assignment resulting from the application of the strongest-post operator to our interpolant:
+\[\extractPrecision{\Gamma} = \{ x |\ (x, z) \in \strongestPostOpExplicit_\Gamma (\varnothing ) \text{ and } z \neq \bot_\valueset \}.\]
+It is not only sufficient, but also required to use $\Gamma \logicAnd \langle op_i \rangle$ instead of the full prefix $\prefix = \langle op_1, ..., op_1 \rangle$ for interpolation. The full prefix cannot be used as it has to be assured that the precision resulting from these consecutive interpolations proves the error path infeasible. All information necessary for proving the infeasibility of the remaining error path is present in the current interpolant and operation.
 
-\subsubsection{Refinement for the domain of linear arithmetics}
-\PredicateCPA\ uses a standard approach to refinement based on lazy abstraction and Craig interpolation.
+This refinement procedure can be used in CEGAR (Alg. \ref{alg:cegar}) in combination with a CPA with precision adjustment that expects these precision types, like the \valueAnalysisCPA\ in combination with refinement for abstract variable assignments.
 
-These refinement procedures can be used in CEGAR (Alg. \ref{alg:cegar}) in combination with a CPA with precision adjustment that expects these precision types, like the \valueAnalysisCPA\ in combination with refinement for abstract variable assignments.
+%\subsubsection{Refinement for the domain of linear arithmetics}
+Refinement in the domain of linear arithmetics, as used for the \predicateCPA, uses a standard approach to refinement based on lazy abstraction and Craig interpolation.
+The task of interpolation is delegated to an off-the-shelf SMT solver.
 
 %\subsubsection{\ValueAnalysisCPA\ with precision adjustment}
 %The \valueAnalysisCPA\ with dynamic precision adjustment \cite{Beyer2013} \[\valCPAPlus = (D_\valCPA, \Pi_\valCPAPlus, \transfer_\valCPAPlus, \cpaMerge^{sep}, \cpaStop^{sep}, %\cpaPrec_\valCPAPlus)\] is a CPA that can be, and is, used with the refinement for abstract variable assignments as described above.
@@ -245,4 +200,4 @@ These refinement procedures can be used in CEGAR (Alg. \ref{alg:cegar}) in combi
 %\item The precision adjustment $\cpaPrec_\valCPAPlus$. Given an abstract state $v$ and a precision $\pi$, all abstract assignments of variables that do not occur in $\pi$ are removed from %$v$. This is done by restricting the partial function: $\cpaPrec_\valCPAPlus(v, \pi) = (v_\restrictedTo{\pi}, \pi)$. The given precision is returned as it is.
 %\end{enumerate}
 
-In this chapter, we gave an overview of all theoretical concepts that are necessary to describe our own work. We introduced the concept of configurable software verification and configurable program analyses (CPAs), a very versatile approach to automated software verification. We introduced different CPAs we use in this work and CEGAR with precision refinement for both linear arithmetics and abstract variable assignments, which we will combine when using CEGAR with the \symbolicExecutionCPA.
+In this chapter, we gave an overview of all theoretical concepts that are necessary to describe our own work. We introduced the concept of configurable software verification and configurable program analyses (CPAs), a very versatile approach to automated software verification. We introduced different CPAs we use in this work and CEGAR with precision refinement for both linear arithmetics and abstract variable assignments, which we will use when applying CEGAR to the \symbolicExecutionCPA.

@@ -5,6 +5,7 @@
 \usepackage{tikz}
 \usetikzlibrary{positioning}
 \usepackage{subcaption}
+\usepackage{wrapfig}
 \usepackage{enumitem}
 \usepackage{algorithm}
 \usepackage{algorithmicx}
@@ -42,14 +43,29 @@
 \newcommand{\CompositeCPA}{Composite CPA}
 \newcommand{\locationCPA}{location CPA}
 \newcommand{\LocationCPA}{Location CPA}
+\newcommand{\cpaChecker}{CPAChecker}
+\newcommand{\CpaChecker}{CPAChecker}
+
+\newcommand{\predCPA}{\mathbb{P}}
+\newcommand{\valCPA}{\mathbb{C}}
+\newcommand{\valCPAPlus}{\valCPA}
+\newcommand{\locCPA}{\mathbb{L}}
+\newcommand{\symValCPA}{\mathbb{C_{S}}}
+\newcommand{\symExCPA}{\mathbb{S}}
+\newcommand{\constrCPA}{\mathbb{A}}
+\newcommand{\compCPA}{\mathcal{C}}
 
 %% Commands specific to specification of CPAs
 \newcommand{\cpa}{\mathbb{D}}
-\newcommand{\cpaPlus}{{\cpa^{+}}}
+\newcommand{\cpaPlus}{\cpa}
 \newcommand{\cpaMerge}{\texttt{merge}}
+\newcommand{\mergeAgree}{{\cpaMerge^{agree}}}
 \newcommand{\cpaStop}{\texttt{stop}}
 \newcommand{\cpaPrec}{\texttt{prec}}
+\newcommand{\singletonPrec}{\widetilde{\texttt{prec}}}
+\newcommand{\auxiliaryPrec}{\text{prec}}
 \newcommand{\singletonPrecision}{{\widetilde{\pi}}}
+\newcommand{\singletonPi}{{\widetilde{\Pi}}}
 \newcommand{\reachedSet}{\texttt{reached}}
 \newcommand{\targetRegion}{\sigma^{t}}
 \newcommand{\waitlistSet}{\texttt{waitlist}}
@@ -59,32 +75,35 @@
 \newcommand{\extractErrorPath}[1]{\extractErrorPathFunc(#1)}
 \newcommand{\isFeasibleFunc}{\texttt{isFeasible}}
 \newcommand{\isFeasible}[1]{\isFeasibleFunc(#1)}
-\newcommand{\refineFunc}{\texttt{Refine}}
+\newcommand{\refineFunc}{\texttt{refine}}
 \newcommand{\refine}[1]{\refineFunc(#1)}
-\newcommand{\refineExplicitFunc}{{\texttt{Refine}^V}}
+\newcommand{\refineExplicitFunc}{\refineFunc}
 \newcommand{\refineExplicit}[1]{\refineExplicitFunc(#1)}
-\newcommand{\refineBoolFunc}{{\texttt{Refine}^\booleanset}}
-\newcommand{\refineBool}[1]{\refineBoolFunc(#1)}
+\newcommand{\refinePredFunc}{\refineFunc_\predCPA}
+\newcommand{\refinePred}[1]{\refinePredFunc(#1)}
+\newcommand{\refineSymbolicFunc}{\refineFunc_\symExCPA}
+\newcommand{\refineSymbolic}[1]{\refineSymbolicFunc(#1)}
+\newcommand{\refineSymbolicPredFunc}{\refineFunc'_\symExCPA}
+\newcommand{\refineSymbolicPred}[1]{\refineSymbolicPredFunc(#1)}
 \newcommand{\strongestPostOp}{\text{SP}}
 %\newcommand{\strongestPostOpBool}{\text{SP}^\booleanset} % We don't need this one
 \newcommand{\strongestPostOpExplicit}{\strongestPostOp}
+\newcommand{\strongestPostOpSym}{\strongestPostOp^\symExCPA}
 
-\newcommand{\interpolate}{\texttt{Interpolate}}
-\newcommand{\interpolateBool}{{\interpolate^\booleanset}}
-\newcommand{\interpolateExplicit}{{\interpolate^V}}
-\newcommand{\extractPrecision}[1]{\texttt{ExtractPrecision}(#1)}
+\newcommand{\interpolate}{\texttt{interpolate}}
+\newcommand{\interpolateExplicit}{\interpolate}
+\newcommand{\interpolateSym}{\interpolate_\symExCPA}
+\newcommand{\extractPrecisionFunc}{\texttt{extractPrecision}}
+\newcommand{\extractPrecision}[1]{\texttt{extractPrecision}(#1)}
+\newcommand{\extractPrecisionLoc}[1]{\extractPrecisionFunc_\locCPA(#1)}
+\newcommand{\extractPrecisionSym}[1]{\extractPrecisionFunc_\symExCPA(#1)}
+\newcommand{\extractPrecisionSymVal}[1]{\extractPrecisionFunc_\symValCPA(#1)}
+\newcommand{\extractPrecisionConstr}[1]{\extractPrecisionFunc_\constrCPA(#1)}
+\newcommand{\extractPrecisionConstrAlt}[1]{\extractPrecisionConstr{#1}}
+\newcommand{\extractPrecisionSymPred}[1]{\extractPrecisionFunc'_\symExCPA(#1)}
 \newcommand{\craigItp}{\psi}
 \newcommand{\prefix}{{\gamma^{-}}}
 \newcommand{\suffix}{{\gamma^{+}}}
-
-\newcommand{\predCPA}{\mathbb{P}}
-\newcommand{\valCPA}{\mathbb{C}}
-\newcommand{\valCPAPlus}{{\mathbb{C}_+}}
-\newcommand{\locCPA}{\mathbb{L}}
-\newcommand{\symValCPA}{\mathbb{C_{S}}}
-\newcommand{\symExCPA}{\mathbb{S}}
-\newcommand{\constrCPA}{\mathbb{A}}
-\newcommand{\compCPA}{\mathcal{C}}
 
 \newcommand{\transfer}{\rightsquigarrow}
 \newcommand{\gtransfer}{\overset{g}{\transfer}}
@@ -96,6 +115,8 @@
 \newcommand{\rrbracket}{]\!]}
 \newcommand{\concretization}{\llbracket \cdot \rrbracket}
 \newcommand{\lesserEqual}{\sqsubseteq}
+\newcommand{\lesserEqualSub}{{\lesserEqual_{sub}}}
+\newcommand{\lesserEqualImpl}{{\lesserEqual_{impl}}}
 \newcommand{\nlesserEqual}{\not\sqsubseteq}
 \newcommand{\join}{\sqcup}
 \newcommand{\bigjoin}{\bigsqcup}
@@ -116,6 +137,7 @@
 \newcommand{\booleanset}{\mathbb{B}}
 \newcommand{\symvalset}{{\mathscr{Z}_\symValCPA}}
 \newcommand{\constraintsset}{\gamma}
+\newcommand{\goodconstraintsset}{{\gamma^+}}
 
 \newcommand{\semilattice}{\mathscr{E}}
 \newcommand{\loclattice}{\mathscr{L}}
@@ -150,7 +172,7 @@
 
 \begin{document}
 
-\title{Tuning symbolic execution in CPAchecker using CEGAR and other means}
+\title{Effective Symbolic Execution in CPAchecker using CEGAR}
 \maketitle
 \setcounter{tocdepth}{5}
 \setcounter{secnumdepth}{5}
@@ -169,7 +191,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \input{implementationCegar/doc}
 %%%%%%%%%%%%%%%%%%%%%%%%
-\input{implementationBoundedLoops/doc}
+%\input{implementationBoundedLoops/doc}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \input{evaluation/doc}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
