@@ -58,14 +58,14 @@ This way we can control at which point the analysis continues after a refinement
 	\If{$\waitlistSet = \varnothing$}
 		\Return \safe
 	\Else
-		\State $\sigma \assign \extractErrorPath{\reachedSet}$
-		\If{\isFeasible{$\sigma$}} \Comment error path feasible: report bug
+		\State $\sigma \assign \extractErrorPath{\reachedSet}$ \label{alg:cegar:extraction}
+		\If{\isFeasible{$\sigma$}} \Comment error path feasible: report bug \label{alg:cegar:feasibilityCheck}
 			\State % empty state for new line after if
 			\Return \unsafe 
 		\Else \Comment error path infeasible: refine and restart from the beginning
 			\State $\pi \assign \pi \cup \refine{\sigma}$
 			\State $\reachedSet \assign (e_0, \pi)$
-			\State $\waitlistSet \assign (e_0, \pi)$
+			\State $\waitlistSet \assign (e_0, \pi)$ \label{alg:cegar:end}
 		\EndIf
 	\EndIf
 \EndWhile
@@ -164,7 +164,7 @@ From these, the interpolant is built (Lines \ref{alg:interpolateExplicit:itpStar
 \Variables interpolating constraint sequence $\Gamma$
 \State $\Gamma \assign \langle \rangle$
 \State $\pi(l) \assign \varnothing$ for all program locations $l$
-\For{$i \assign 1$ to $n - 1$}
+\For{$i \assign 1$ to $n - 1$}\label{alg:refinementExplicit:loopStart}
 	\State $\suffix \assign \langle op_{i+1}, ..., op_n \rangle$
 	\State $\Gamma \assign \interpolateExplicit(\Gamma \logicAnd \langle op_i \rangle, \suffix)$ \Comment inductive interpolation \label{alg:refinementExplicit:interpolation}
 	\State $\pi(l_i) \assign \extractPrecision{\Gamma}$

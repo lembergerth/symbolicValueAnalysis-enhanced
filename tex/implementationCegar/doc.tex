@@ -1,3 +1,20 @@
 \section{Implementation of CEGAR}
+For applying CEGAR to the \symbolicExecutionCPA, the CEGAR algorithm implementation already present in \cpaChecker\ is used.
+To use it, the configuration option \configOption{analysis.algorithm.CEGAR = true} has to be set.
+In addition, the refinement procedure has to be set with property \configOption{cegar.refiner}.
+Its value has to be the name of a class containing a method
+\begin{lstlisting}
+public static Refiner create(ConfigurableProgramAnalysis)
+\end{lstlisting}
+which is called before starting the CEGAR algorithm to get the refinement procedure.
+The class name has to be given with its package description starting at
+\objectName{org.sosy\_lab.cpachecker}.
+If the class to use were
+\objectName{org.sosy\_lab.cpachecker.cpa.value.refiner.ValueAnalysisRefiner},
+the option \configOption{cegar.refiner = cpa.value.refiner.ValueAnalysisRefiner} would have to be set.
+
+In \cpaChecker, refinement for multiple CPA's precisions is already implemented.
+Since our precision refinement for the \symbolicExecutionCPA\ based on abstract variable assignments (Section~\ref{sec:assignmentRefinement}) is very similar to the refinement of the \valueAnalysisCPA, we refactored it to be able to reuse most code.
+
 \input{implementationCegar/Refactoring}
 \input{implementationCegar/Refinement}

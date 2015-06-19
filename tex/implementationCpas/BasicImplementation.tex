@@ -1,14 +1,29 @@
 \subsection{Basic implementation}
 We implemented our algorithm in the framework for configurable program verification \cpaChecker \cite{Beyer2011}.
+\CpaChecker\ is a command-line tool that is able to handle C programs without recursive function calls or multi-threading.
+It parses a C program, creates a CFA representing the program, and executes the CPA or CEGAR algorithm on it.
+The CPAs and, in the case of using CEGAR, the refinement procedure to use have to be defined in a configuration file that can be specified on the command line using the parameter
+\configParam{-config <FILE>}.
+The specification to check must be defined as a temporal logic formula and is represented by an own CPA.
+This CPA represents the $\isTargetStateFunc$ function of the CPA algorithm.
+
+A wide array of CPA implementations already exists, which we can utilize.
+The CPA interface equals the theoretical definition, but is extended with an initial state and initial precision, which are used as initial parameters of the CPA algorithm.
+The interface of the transfer relation is extended to include strengthening for the designated CPA, as almost always a \compositeCPA\ is used.
+Instead of defining one strengthen operator for each combination of two states, as done in theory ,the strengthen method gets all states of the current composite state, so that it can choose which to use for strengthening its own state.
+
 %\subsubsection{CompositeCPA already existed, describe implementation (especially merge operator is important)}
-The composite \symbolicExecutionCPA\ was implemented by using the existing CompositeCPA.
-This CPA already uses the merge-agree operator $\mergeAgree$ and delegates the precision adjustment to each individual CPA's precision adjustment operator not only with the precision to adjust to,
+One implementation for the \compositeCPA\ exists, called CompositeCPA.
+It allows arbitrary composition of CPAs by using their transfer relations, strengthen operators, 
+the merge-agree operator $\mergeAgree$, a stop operator that only returns $true$ if all subordinate stop operators return $true$,  and by delegating the precision adjustment to each individual CPA's precision adjustment operator not only with the precision to adjust to,
 but also \emph{all} abstract states of the composite state, not only the one of the CPA delegated to.
-This way it is possible to implement a precision adjustment function directly for a CPA whose precision uses location-specific tracking, like $\Pi_\symValCPA$.
-As such we implemented the two auxiliary precision functions $\auxiliaryPrec_\symValCPA$ and $\auxiliaryPrec_\constrCPA$ directly as the precision adjustment of the \symbolicValueAnalysisCPA\ and \constraintsCPA.
-By just specifying the wanted CPAs as components of the \compositeCPA\ through an option we composed the \symbolicExecutionCPA.
+We used this CPA to create our \symbolicExecutionCPA.
+
+The way the precision adjustment of CompositeCPA works, it is possible to implement a precision adjustment function directly for a CPA whose precision uses location-specific tracking, like $\Pi_\symValCPA$.
+As such we implemented the two auxiliary precision functions $\auxiliaryPrec_\symValCPA$ and $\auxiliaryPrec_\constrCPA$ as the precision adjustment of the \symbolicValueAnalysisCPA\ and \constraintsCPA.
+By just specifying the wanted CPAs as components of the \compositeCPA\ in a configuration file we composed the \symbolicExecutionCPA.
 %\subsubsection{LocationCPA already existed, implemented as defined}
- We use the existing \locationCPA\ without any modifications. It was already implemented in \cpaChecker.
+We use the existing \locationCPA\ without any modifications. It was already implemented in \cpaChecker.
 
 %\subsubsection{Symbolic Value Analysis as extension to existing ValueAnalysisCPA}R
 Both the \symbolicValueAnalysisCPA, a direct extension of the existing \valueAnalysisCPA,
@@ -16,6 +31,9 @@ Both the \symbolicValueAnalysisCPA, a direct extension of the existing \valueAna
 and the \constraintsCPA, a completely new CPA, were mostly used as they were implemented in our work for \cite{Lemberger2015}.
 The \constraintsCPA\ transfer relation's complete syntax is in the strengthening by the \symbolicValueAnalysisCPA\ to forgo the need for constraints made of program variables which are then instantly replaced with constraints made of symbolic values.
 This way, a constraints state always only contains constraints over explicit and symbolic values. This means that all constraints are of $\goodconstraintsset$.
+
+SAT checks over the constraints of a constraints state are performed by creating a conjunction of boolean formulas, each of which represents one constraint of the state, with symbolic identifiers being transformed to variables in the formulas. This conjunction is then given to a SMT solver.
+
 To be able to handle conditions like ''each constraint that originates from program variable $x$'' (for example as used when using the precision type $\Pi_\symValCPA$ for the \constraintsCPA, see Section \ref{sec:constraintsCPA} and \ref{sec:assignmentRefinement}),
 we also store for each symbolic value that is assigned to an variable the variable \emph{in} the symbolic value.
 This way it is always possible to transform a constraint of $\goodconstraintsset$ back to its original representation.

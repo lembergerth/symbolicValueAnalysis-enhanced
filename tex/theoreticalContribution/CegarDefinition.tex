@@ -1,5 +1,4 @@
 \subsection{CEGAR for Symbolic Value Analysis + ConstraintsCPA}
-
 For using the \symbolicExecutionCPA\ with CEGAR, we have to define a refinement procedure that returns a precision of type $\Pi_\symExCPA$ that fits the precision of the \symbolicExecutionCPA. We designed two such refinement procedures:
 The first uses adjusted versions of the refinement and interpolation algorithms as used for abstract variable assignments,
 with an adjusted strongest-post operator and a precision type that fits $\Pi_\symExCPA$.
@@ -35,25 +34,25 @@ Because of this, the amount of calls of the strongest-post operator can make a n
 \Variables an abstract variable assignment $v$ and a constraints state $a$
 
 \State $(v, a) \assign \strongestPostOpSym_\prefix(\varnothing)$
-\ForAll{$x \in \defRange(v)$} \label{alg:interpolateSym:vInterpolationBegin}
-	\If{$\strongestPostOpSym_\suffix(v_\restrictedTo{\defRange(v) \setminus \{x\}}, a)$ is contradicting}
-		\State $v \assign v_\restrictedTo{\defRange(v) \setminus \{x\}}$ \Comment $x$ not relevant, should not occur in interpolant
-	\EndIf
-\EndFor\label{alg:interpolateSym:vInterpolationEnd}
 
 \ForAll{$p \in a$} \label{alg:interpolateSym:aInterpolationBegin}
 	\If{$\strongestPostOpSym_\suffix (v, a \setminus \{ p \})$ is contradicting}
 		\State $a \assign a \setminus \{ p \}$ \Comment $p$ not relevant, should not occur in interpolant
 	\EndIf
 \EndFor \label{alg:interpolateSym:aInterpolationEnd}
+\ForAll{$x \in \defRange(v)$} \label{alg:interpolateSym:vInterpolationBegin}
+	\If{$\strongestPostOpSym_\suffix(v_\restrictedTo{\defRange(v) \setminus \{x\}}, a)$ is contradicting}
+		\State $v \assign v_\restrictedTo{\defRange(v) \setminus \{x\}}$ \Comment $x$ not relevant, should not occur in interpolant
+	\EndIf
+\EndFor\label{alg:interpolateSym:vInterpolationEnd}
 
 \State $\Gamma \assign \langle \rangle$
-\ForAll{$x \in \defRange(v)$} \label{alg:interpolateSym:itpVStart}
-	\State $\Gamma \assign \Gamma \logicAnd \langle x \assign v(x)\rangle$ \label{alg:interpolateSym:vBuildInterpolant}
-\EndFor \label{alg:interpolateSym:itpVEnd}
 \ForAll{$p \in a$} \label{alg:interpolateSym:itpAStart}
 	\State $\Gamma \assign \Gamma \logicAnd \langle \assume(p) \rangle$
 \EndFor \label{alg:interpolateSym:itpAEnd}
+\ForAll{$x \in \defRange(v)$} \label{alg:interpolateSym:itpVStart}
+	\State $\Gamma \assign \Gamma \logicAnd \langle x \assign v(x)\rangle$ \label{alg:interpolateSym:vBuildInterpolant}
+\EndFor \label{alg:interpolateSym:itpVEnd}
 \State %Empty state so return has new line and line number
 \Return $\Gamma$
 \end{algorithmic}
@@ -62,17 +61,20 @@ Because of this, the amount of calls of the strongest-post operator can make a n
 Using this strongest-post operator for interpolation (Alg. \ref{alg:interpolateSym}) allows the computation of an interpolant for a prefix $\prefix$ and a suffix $\suffix$ at a specific program location based on the semantics of the \symbolicExecutionCPA.
 Since we want to create an interpolant $\Gamma$ that contains all information necessary for proving that $\strongestPostOpSym_{\Gamma \logicAnd \suffix}$ is contradicting, not only abstract variable assignments but also constraints have to be considered.
 First, we compute the strongest-post condition $(v, a)$ for the prefix $\prefix$.
-Similar to interpolation for abstract variable assignments, we then eliminate all assignments from $v$ that are not required for proving that $\suffix$ is contradicting.
-Next, we remove all constraints from $a$ that are not required. This way we try to get the weakest interpolant possible.
-We then build the interpolant from all left assignments of $v$ and all left constraints in $a$.
+Similar to interpolation for abstract variable assignments, we then eliminate all constraints from $a$ that are not necessary for proving that $\suffix$ is contradicting.
+Next, we remove all assignments from $v$ that are not required. This way we try to get the weakest interpolant possible.
+We then build the interpolant from all left constraints in $a$ and all left assignments of $v$.
 Contrary to Algorithm \ref{alg:interpolateSym}, we build the interpolant $\Gamma$ not by using $\assume$ operations for each $x \in \defRange(v)$, but assignment operations.
 By using $\assume$ operations only for the constraints of $a$ we can easily distinguish between both domains.
 It is not wrong to only use $\assume$ operations, but it would unnecessarily increase the precision for the \constraintsCPA and the constraints sets used in the inductive interpolations, as all assumptions are added here.
 This could significantly decrease performance during interpolation due to the for-loop over all constraints in Line \ref{alg:interpolateSym:itpAStart} and the strongest-post operators bad performance.
 It might even be more effective to just use all constraints and not perform these additional strongest-post computations
 by omitting Lines \ref{alg:interpolateSym:aInterpolationBegin} - \ref{alg:interpolateSym:aInterpolationEnd} of the algorithm.
-Additionaly, it is also possible to eliminate unnecessary constraints first, and variables second.
-We will examine all three possibilities later in detail.
+Additionaly, it is also possible to eliminate variable assignments first, and constraints second.
+We will examine all three possibilities later in detail.%, but expect the best result from the proposed variant.
+%If more than one possibility exists to prove $\suffix$ infeasible, all possibilities but one are discarded.
+%A possibility is discarded, as long as it is not the last one, when an element (either a variable assignment or a constraint) that is only used by this one possibility is probed by the interpolation algorithm.
+%Since other possibilities exist for proving $\suffix$ as contradicting, that do not require the current element, it is removed and as such the possibility, also.
 
 \begin{algorithm}[t]
 \caption{$\refineSymbolic{\sigma}$, a modified version of Alg. \ref{alg:refinementExplicit}.}
@@ -110,6 +112,7 @@ The precision of the \constraintsCPA\ is the set of all tracked constraints, so 
 The adjusted refinement procedure is shown in Algorithm \ref{alg:refineSym1}.
 
 \subsubsection{Refinement based on refinement for \predicateCPA}
+\label{sec:predicateRefinement}
 Another possible way of refinement is to delegate the procedure to the refinement of the \predicateCPA\ and extract  a precision of type $\Pi_\symExCPA$ from the created predicate precision.
 This might not always work as the \predicateCPA\ is able to handle more complex operations than the \symbolicExecutionCPA, for example non-deterministic arrays.
 Even if an error path $\sigma$ is infeasible by using the \symbolicExecutionCPA\ with full precision, the interpolant (and resulting precision) computed by the \predicateCPA 's refinement could rely on unsupported operations.
@@ -124,6 +127,11 @@ Despite these problems this approach might still yield better performance then $
 Though both have to rely on SMT solvers, our own procedure performs one SAT check for every constraint, while the \predicateCPA's refinement utilizes a SMT solver to handle the complete interpolation process, which is presumably more performant due to its specialization.
 Algorithm \ref{alg:refineSym2} shows the refinement procedure delegating to \predicateCPA's refinement.
 After computing the precision $\pi'$ of the \predicateCPA, the variables used in the predicates of $\pi'$ are extracted and assigned as the precision $\pi_\symValCPA(l)$ for every location $l$. The precision $\pi_\symValCPA$ is then returned as precision for both \symbolicValueAnalysisCPA\ and \constraintsCPA.
+
+Figure~\ref{fig:symExCegarComparison1} shows the benefit of using CEGAR with the \symbolicExecutionCPA.
+The figure shows how analysis without CEGAR creates a lot of abstract states with information not necessary for proving that, increasing exponentially with the amount of assumptions in the program.
+In contrast, analysis with CEGAR consists of two iterations: While the target state is reachable in the analysis with empty precision, it is infeasible in the analysis with refined precision.
+Both runs themselves need far lesser abstract states than analysis without CEGAR, as only necessary information is tracked.
 
 \begin{algorithm}[t]
 \caption{$\refineSymbolicPred{\sigma}$}
@@ -140,9 +148,130 @@ After computing the precision $\pi'$ of the \predicateCPA, the variables used in
 \end{algorithmic}
 \end{algorithm}
 
+\begin{figure}[t]
+\begin{subfigure}{\linewidth}
+\center
+\begin{tikzpicture}[->,>=stealth, mynodes/.style={rectangle, draw, minimum height=0.2cm, minimum width=0.6cm}]
 
-\begin{figure}[H!]
-\begin{tikzpicture}
+\node[mynodes] (root) {};
+\node[mynodes] (l1) [below left = 0.4cm and 1.8cm of root] {};
+\node[mynodes] (r1) [below right = 0.4cm and 1.8cm of root] {};
+\node[mynodes] (l2) [below = 0.4cm of l1] {};
+\node[mynodes] (r2) [below = 0.4cm of r1] {};
+\node[mynodes] (ll3) [below left = 0.4cm and 0.6cm of l2] {};
+\node[mynodes] (lr3) [below right = 0.4cm and 0.6cm of l2] {};
+\node[mynodes] (rl3) [below left = 0.4cm and 0.6cm of r2] {};
+\node[mynodes] (rr3) [below right = 0.4cm and 0.6cm of r2] {};
+\node[mynodes] (ll4) [below = 0.4cm of ll3] {};
+\node[mynodes] (lr4)[below = 0.4cm of lr3] {};
+\node[mynodes] (rl4)[below = 0.4cm of rl3] {};
+\node[mynodes] (rr4)[below = 0.4cm of rr3] {};
+\node[mynodes] (lll5)[below left = 0.4cm and 0.1cm of ll4] {};
+\node[mynodes] (llr5)[below right = 0.4cm and 0.1cm of ll4, very thick, draw=red, fill=gray] {};
+\node[mynodes] (lrl5)[below left = 0.4cm and 0.1cm of lr4] {};
+\node[mynodes] (lrr5)[below right = 0.4cm and 0.1cm of lr4, very thick, draw=red, fill=gray] {};
+\node[mynodes] (rll5)[below left = 0.4cm and 0.1cm of rl4] {};
+\node[mynodes] (rlr5)[below right = 0.4cm and 0.1cm of rl4, very thick, draw=red, fill=gray] {};
+\node[mynodes] (rrl5)[below left = 0.4cm and 0.1cm of rr4] {}; % error state
+\node[mynodes] (rrr5)[below right = 0.4cm and 0.1cm of rr4, very thick, draw=red, fill=gray] {};
+
+\path
+(root) edge (l1)
+(root) edge (r1)
+(l1) edge [draw, densely dotted] (l2)
+(r1) edge [draw, densely dotted] (r2)
+(l2) edge (ll3)
+(l2) edge (lr3)
+(r2) edge (rl3)
+(r2) edge (rr3)
+(ll3) edge [draw, densely dotted] (ll4)
+(lr3) edge [draw, densely dotted] (lr4)
+(rl3) edge [draw, densely dotted] (rl4)
+(rr3) edge [draw, densely dotted] (rr4)
+(ll4) edge [draw, densely dotted] (lll5)
+(ll4) edge [draw, densely dotted] (llr5)
+(lr4) edge [draw, densely dotted] (lrl5)
+(lr4) edge [draw, densely dotted] (lrr5)
+(rl4) edge [draw, densely dotted] (rll5)
+(rl4) edge [draw, densely dotted] (rlr5)
+(rr4) edge [draw, densely dotted] (rrl5)
+(rr4) edge [draw, densely dotted] (rrr5)
+;
+
+%\draw let \p{l1}=(l1), \p{ll4}=(ll4) in
+%[decorate, decoration={brace, amplitude=10pt, mirror}, -] (-4.65, \y{l1}) -- (-4.65, \y{ll4}) node [black, midway, xshift=-1.2cm] {\tiny $n$ \mbox{assumptions}};
+\draw 
+[decorate, decoration={brace, amplitude=10pt, mirror}, -, transform canvas={yshift=-0.2cm}] (lll5.south west) -- (rrr5.south east) node [black, midway, yshift=-0.5cm] {\scriptsize $n$ assumptions $\Rightarrow 2^n$ states};
+\end{tikzpicture}
+\caption{Analysis without CEGAR}
+\label{fig:symExNoCegarEx1}
+\end{subfigure}\\[5ex]
+\begin{subfigure}{.48\textwidth}
+\center
+\begin{tikzpicture}[->,>=stealth, mynodes/.style={rectangle, draw, minimum height=0.2cm, minimum width=0.6cm,font=\scriptsize}]
+
+\node[mynodes] (root){};
+\node[mynodes] (l1) [below left = 0.4cm and 0.1cm of root] {};
+\node[mynodes] (r1) [below right = 0.4cm and 0.1cm of root] {};
+\node[mynodes] (c2) [below right = 0.4cm and 0.1cm of l1] {};
+\node[mynodes] (l3) [below left = 0.4cm and 0.1cm of c2] {};
+\node[mynodes] (r3) [below right = 0.4cm and 0.1cm of c2] {};
+\node[mynodes] (c4) [below right = 0.4cm and 0.1cm of l3] {};
+\node[mynodes] (l5) [below left = 0.4cm and 0.1cm of c4] {};
+\node[mynodes] (r5) [below right = 0.4cm and 0.1cm of c4,  draw=red, very thick] {};
+
+\path
+(root) edge (l1)
+(root) edge (r1)
+(l1) edge [densely dotted] (c2)
+(r1) edge [densely dotted] (c2)
+(c2) edge (l3)
+(c2) edge (r3)
+(l3) edge [densely dotted] (c4)
+(r3) edge [densely dotted] (c4)
+(c4) edge (l5)
+(c4) edge (r5)
+;
 
 \end{tikzpicture}
+\caption{Analysis with CEGAR, first iteration: Empty precision}
+\end{subfigure}%
+\hfill
+\begin{subfigure}{.48\textwidth}
+\center
+\begin{tikzpicture}[->,>=stealth, mynodes/.style={rectangle, draw, minimum height=0.2cm, minimum width=0.6cm, font=\scriptsize}]
+
+\node[mynodes] (root){};
+\node[mynodes] (l1) [below left = 0.4cm and 0.1cm of root] {};
+\node[mynodes] (r1) [below right = 0.4cm and 0.1cm of root] {};
+\node[mynodes] (c2) [below right = 0.4cm and 0.1cm of l1] {};
+\node[mynodes] (l3) [below left = 0.4cm and 0.6cm of c2] {};
+\node[mynodes] (r3) [below right = 0.4cm and 0.6cm of c2] {};
+\node[mynodes] (l4) [below = 0.4cm of l3] {};
+\node[mynodes] (r4) [below = 0.4cm of r3] {};
+\node[mynodes] (ll5) [below left = 0.4cm and 0.1cm of l4] {};
+\node[mynodes] (lr5) [below right = 0.4cm and 0.1cm of l4, fill = gray, draw=red, very thick] {};
+\node[mynodes] (rl5) [below left = 0.4cm and 0.1cm of r4] {};
+\node[mynodes] (rr5) [below right = 0.4cm and 0.1cm of r4, fill = gray, draw=red, very thick] {};
+
+\path
+(root) edge (l1)
+(root) edge (r1)
+(l1) edge [densely dotted] (c2)
+(r1) edge [densely dotted] (c2)
+(c2) edge (l3)
+(c2) edge (r3)
+(l3) edge [densely dotted] (l4)
+(r3) edge [densely dotted] (r4)
+(l4) edge (ll5)
+(l4) edge (lr5)
+(r4) edge (rl5)
+(r4) edge (rr5)
+;
+\end{tikzpicture}
+\caption{Analysis with CEGAR, second iteration: Refined precision}
+\end{subfigure}
+\caption{Symbolic execution analysis of a program with and without CEGAR.
+The red rectangles are abstract states at an infeasible target location. If they are filled grey, the analysis sees them as infeasible.}
+\label{fig:symExCegarComparison1}
 \end{figure}

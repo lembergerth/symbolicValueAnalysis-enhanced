@@ -1,7 +1,7 @@
-extern __nondet_int();
+extern __VERIFIER_nondet_int();
 
 int main() {
-  int a = __nondet_int();
+  int a = __VERIFIER_nondet_int();
   int b;
 
   if (a >= 0) {

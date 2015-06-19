@@ -1,31 +1,36 @@
 \section{Introduction}
 %\subsubsection{Why Software Verification is important/needed}
-Heutige Softwaresysteme sind so gro\ss\ und komplex, dass Fehler in ihrer Entwicklung unvermeidbar sind.
-Software ist vielen unterschiedliche Fehlerquellen unterworfen: Dem K\"onnen des Entwicklers und dem limitierten, menschlichen Verst\"andnis der Prinzipien von Software, Verst\"andnisprobleme und/oder unzureichende Dokumentation fremder Software und fremden Codes, unerwartete Wechselwirkungen zwischen unterschiedlichen Softwarekomponenten, usw.
+Software systems are prone to error due to multiple factors: The developers skills, humans' limited understanding of software principles, communication problems in development, missing or sparse documentation and unforeseen interdependencies between software components are just some of them.
 
-Aufgrund dessen ist Testen seit langer Zeit ein fundamentaler Teil von Softwareentwicklung, der oft ann\"ahernd 50\% der gesamten Entwicklungszeit und mehr als 50\% des Projektbudgets verbraucht.
-\glqq Software testing\grqq beschreibt die Ausf\"uhrung eines Programm(teil)s mit der Intention, Fehler in ihm zu finden.
-Der Tester (eine Person oder ein anderes Programm) verwendet bestimmte Eingaben und \"uberpr\"uft die Korrektheit der Ausgaben des Programms.
-Bereits durch diese Beschaffenheit der Methode, dass nur das Testen einer endlichen Menge von Eingaben m\"oglich ist, ist erfolgreiches Testen kein Garant f\"ur ein fehlerfreies Funktionieren der Software. Selbst f\"ur sehr einfache Programme ist es praktisch unm\"oglich, durch Testen bestimmte Eigenschaften eines Programmes \emph{sicherzustellen}.
-Auch ist das Finden guter Eingaben, die m\"oglichst viele Fehler provozieren, mehr eine Kunst, als Wissenschaft, die zudem oft nur sehr oberf\"achlicher gelehrt wird.\cite{Myers2011}
+Because of this testing has been an integral part of software development for quite some time, often claiming about 50\% of development effort and more than 50\% of the budget.
+\emph{Software testing} describes the execution of a program with the intention of finding errors.
+The tester, either a person or another program, uses different inputs and checks that the proper output is produced.
+The nature of this approach determines that only a finite amount of inputs is possible in finite time.
+As a result, it is impossible to ensure the errorless execution of a program with arbitrary input.
+Additionally, human testing is a technique only shortly touched in most software engineering educations, resembling art more than science.\cite{Myers2011}
 
-Die n\"achste gro\ss e H\"urde f\"ur Testen als Mittel zur Verifikation von Programmen ist das Aufkommen des \glqq Ubiquitious Computing\grqq\ und das damit verbundene rasante Wachstum reaktiver Systeme. Systeme, die st\"andig laufen, mit Sensoren Informationen aus ihrer Umwelt aufnehmen, diese verarbeiten, auf sie reagieren und ihr Verhalten anpassen.
-Aufgrund des unglaublichen Spektrum von Eingabewerten und ihres Zusammenspiels ist es praktisch unm\"oglich, das Verhalten solcher Systeme mit Testen vorherzusagen.
+Along with these points, the rise of ubiquitious computing and reactive systems complicates the process of reliable verification by testing even more.
+Always running systems that gather, evaluate and adapt their behaviour to information of their environment pose an immense amount of possible inputs and interactions due to these.
+This makes it almost impossible to predict the behaviour of such systems through testing.
 
-Eine Alternative zum Testen stellt die formale Verifikation dar, welche mithilfe mathematischer Methoden versucht, formale Aussagen zu treffen, die f\"ur jedes m\"ogliche Verhalten eines bestimmten Systems zutreffen. Diese Aussagen k\"onnen dann gegen eine bestimmte Spezifikation gepr\"uft werden, um das Abhandensein von Spezifikationsverletzungen zu beweisen.
-
-Ein Teilgebiet dieser Verifikationsweise ist die \emph{automatische Software Verifikation}, welche obiges Ziel durch Softwareprogramme, die ohne die Assistenz von Menschen arbeiten, zu erreichen versucht.
-Ein solches Programm, welches in den letzten Iterationen der \href{http://sv-comp.sosy-lab.org}{Competition on Software Verification} (SV-COMP) \cite{SV-COMP2013} \cite{SV-COMP2014} \cite{SV-COMP2015}\ sehr erfolgreich war, ist CPAchecker \cite{Beyer2011}.
-CPAchecker ist ein framework f\"ur Configurable Software Verification\cite{Beyer2007}, das unterschiedliche \emph{configurable program analyses} (CPAs) verwendet, um m\"ogliche Spezifikationsverletzungen in Programmen zu finden.
-Zwei popul\"are CPAs sind die \valueAnalysisCPA , welche mit konkreten Wertzuweisungen zu Programmen arbeitet, und die \predicateCPA , welche mit einer bestimmten Pr\"azision logische Pr\"adikate \"uber Programmpfaden bildet.
-W\"ahrend die \valueAnalysisCPA\ aufgrund ihrer Einfachheit sehr Effizient ist, allerdings nicht mit komplexeren Programmteilen wie Pointern oder Nichtdeterminismus umgehen kann, ist die Pr\"adikatenanalyse sehr m\"achtig, allerdings vergleichsweise ineffizient, da logische SAT checks notwendig sind, um die Erf\"ullbarkeit eines Pfades zu berechnen.
+An alternative to testing is formal verification, which tries to produce formal statements that are true for all possible behaviours of a system, using mathematical methods.
+These statements are then used for proving that a specific specification is met.
+One area of formal verification is \emph{automated software verification}. It tries to reach the above goal by only using software that works without the help or feedback of humans.
+\CpaChecker\ \cite{Beyer2011} is such a program that yielded excellent performance in the last iterations of  the \href{http://sv-comp.sosy-lab.org}{Competition on Software Verification} (SV-COMP) \cite{SV-COMP2013} \cite{SV-COMP2014} \cite{SV-COMP2015}.
+\CpaChecker\ is a framework for \emph{Configurable Software Verification} \cite{Beyer2007} utilizing different \emph{configurable program analyses} (CPAs) to locate possible property violations of a specification in a program.
+Three such CPAs are the \valueAnalysisCPA, which uses concrete variable assignments, the \predicateCPA, which creates predicates for describing properties of program paths,
+and the \symbolicExecutionCPA, which uses an extension of the \valueAnalysisCPA\ tracking non-deterministic values as symbolic ones in combination with the \constraintsCPA, which tracks constraints to symbolic values on program paths.
+While the \valueAnalysisCPA\ has high efficiency due to her simplicity, it can't handle complex program characteristics like pointers or non-deterministic values.
+The \predicateCPA, in constrast, is very expressive, but has low efficiency since SAT checks are necessary for computing the feasibility of a program path.
+The \symbolicExecutionCPA\ poses something in between those two, not being able to handle some complex program characteristics as it is partly based on the \valueAnalysisCPA, but being able to handle non-deterministic values.
+On the other hand, it uses SAT checks, too, though less often and over smaller formulas.
 
 \begin{figure}[t]
 \lstset{numbers=left}
 \begin{subfigure}[b]{.45\textwidth}
 \lstinputlisting[language=C]{exampleProgram.c}
-\caption{A simple non-deterministic program.}
-\label{lst:exProg}
+%\caption{A simple non-deterministic program.}
+%\label{lst:exProg}
 \end{subfigure}%
 \hfill
 \begin{subfigure}[b]{.45\textwidth}
@@ -57,10 +62,10 @@ W\"ahrend die \valueAnalysisCPA\ aufgrund ihrer Einfachheit sehr Effizient ist, 
     (8) edge node [right] {\textbf{return -1}} (e8)
   ;
 \end{tikzpicture}
-\label{fig:ex1ValueGraph}
-\caption{Analysis of the program to the left by the \valueAnalysisCPA.}
+%\label{fig:ex1ValueGraph}
+%\caption{Analysis of the program to the left by the \valueAnalysisCPA.}
 \end{subfigure}
-\caption{Simple program and its execution by \valueAnalysisCPA.}
+\caption{Simple program and its execution by the \valueAnalysisCPA.}
 \label{fig:ex1}
 \end{figure}
 
@@ -104,25 +109,30 @@ W\"ahrend die \valueAnalysisCPA\ aufgrund ihrer Einfachheit sehr Effizient ist, 
 \end{figure}
 
 %\subsubsection{Basic Value Analysis can't deal with non-deterministic values (+ Example)}
-Abbildung \ref{fig:ex1} zeigt ein Beispielprogramm, welches nichtdeterministische Werte verwendet und die Analyse des Programms mit klassischer \valueAnalysisCPA .
-Da die CPA keine Informationen bei nichtdeterministischen Zuweisungen speichert, sind bei Location 12 keine Informationen \"uber die Beziehung zwischen \textbf{a}\ und \textbf{b}\ vorhanden und beide Kanten werden als m\"oglich betrachtet. Dies produziert einen \emph{false alarm}.
-Im Gegensatz dazu kann die \symbolicExecutionCPA\ auch nicht-deterministische Werte verarbeiten und liefert als korrektes Ergebnis, dass das Programm korrekt ist.
-Abbildung \ref{fig:ex1SymEmxGraph} zeigt diese Analyse. Neben den Knoten ist jeweils der aktuelle Zustand von \valueAnalysisCPA und \constraintsCPA als Tupel.
+Figure \ref{fig:ex1} displays an example program that uses non-deterministic values and its analysis using the classic \valueAnalysisCPA.
+Since the CPA does not store any information about non-deterministic assignments, no information about the relation between \textbf{a}\ and \textbf{b}\ exists and the property violation is reachable according to the analysis. This produces a \emph{false alarm}.
+In constrast to this, the \symbolicExecutionCPA\ is able to handle the non-deterministic assignment to \textbf{a}\ a and its later usage. It returns that the program is safe, correctly.
+Figure \ref{fig:ex1SymExGraph} shows this analysis. 
 
-In einer vorherigen Arbeit \cite{Lemberger2015} haben wir bereits eine CPA entworfen, die die \valueAnalysisCPA\ um symbolische Werte f\"ur nichtdeterministische Zuweisungen erweitert
-und Abh\"angigkeiten zwischen Variablen sowie Einschr\"ankungen ihrer Werte durch Bedingungen im Programm, wie z.B. if-Statements, nachvollziehen kann. Da die CPA f\"ur diese Abh\"angigkeiten logische Formeln und damit auch SAT checks verwendet, kann sie thematisch zwischen der reinen \valueAnalysisCPA\ und der \predicateCPA\ eingeordnet werden. Wir nennen die Analyse \emph{\symbolicExecutionCPA}.
-Wir konnten bereits zeigen, dass diese CPA die Menge der false alarms deutlich reduzieren kann und automatische Software Verifikation somit zuverl\"assiger macht.
-
+\SymbolicExecutionCPA's ability to track non-deterministic values is able to reduce the number of false alarms to a great extent, as we already showed in \cite{Lemberger2015}.
 %\subsubsection{But symbolic value analysis pretty slow, as previous evaluation has shown (illustrate path explosion, sat checks)}
-Die \symbolicExecutionCPA\ leidet in ihrer bisherigen Form allerdings unter gro\ss en Performance-Problemen. Da sie sowohl alle Variablen-Zuweisungen, egal ob deterministisch oder nichtdeterministisch, als auch alle auftretenden Bedingungen betrachtet, ist der Zustandsraum abh\"angig von der Anzahl von auftretenden Bedingungen exponentiell, bei auftretenden Endlosschleifen kann er sogar unendlich sein. Man spricht von \emph{path explosion}.\cite{Anand2008} Ein exponentieller Zustandsraum skaliert offensichtlich nicht mit gro\ss en Programmen. Zus\"atzlich ist der Aufwand f\"ur SAT checks exponentiell in Abh\"angigkeit von der Anzahl der in Constraints vorkommenden nichtdeterministischen Werten.
-Die Evaluation in \cite{Lemberger2015} hat bereits gezeigt, dass die Analyse bis zu 95\% ihrer Zeit f\"ur SAT checks braucht.
+Runtime wise, it performs poorly, though, when compared to the \valueAnalysisCPA.
+Since it considers all variable assignments, both deterministic and non-deterministic, and all occurring assumptions, its state space is exponential to the amount of occuring assumptions.
+If a infinite loop occurs, the state space is infinite, too.
+This problem is called \emph{path explosion}.\cite{Anand2008}
+Obviously, an exponential amount of states does not scale to large programs.
+In addition, the cost for SAT checks, which are performed at every assumption, are exponential to the amount of non-deterministic values occuring in all encountered assumptions on the currently considered program path.
+Evaluation in \cite{Lemberger2015} showed that the \symbolicExecutionCPA\ spends up to 95\% of its runtime for SAT checks.
 
 %\subsubsection{Goal: Try to speed up}
-In dieser Arbeit konzipieren, implementieren und evaluieren wir deshalb unterschiedliche Ans\"atze, um die Performance der \symbolicExecutionCPA\ zu steigern.
-Neben unterschiedlichen Abwandlungen der urspr\"unglichen Analyse ist unser gr\"o\ss ter Beitrag die Einf\"uhrung
-der Anwendung von CEGAR \cite{Clarke2003} auf die Komposition der beiden stark voneinander abh\"angigen Analysen \valueAnalysisCPA\ und \constraintsCPA\ mit Precision Refinement beider CPAs mit einer jeweils eigenen Pr\"azision.
+In this work we design, implement and evaluate different approaches to increasing the performance of the \symbolicExecutionCPA.
+Our main contribution is, along with variations to the existing merge and less-or-equal operators of the CPA,
+the application of CEGAR \cite{Clarke2003} to the composition of the two strongly intertwined CPAs \valueAnalysisCPA\ and \constraintsCPA\ with precision refinement for both CPAs
+with two different precision types.
 
-Diese Arbeit besteht aus vier Teilen: Theoretischen Grundlagen und Beitr\"agen, deren Implementierung, deren Evaluation, sowie Future Work und eine Conclusion.
-Zuerst werden wir die dieser Arbeit zugrunde liegenden, grundlegenden Konzepte von Configurable Software Verification, CPAs und CEGAR vorstellen, bevor wir die theoretischen Spezifikationen unserer neuen Konzepte beleuchten.
-Anschlie\ss end werden wir Besonderheiten und Abweichungen der bestehenden Implementierung sowie unserer neuen Implementierungen von der Spezifikation beschreiben.
-Als letzter gro\ss er Teil folgt darauf die Evaluation aller vorgestellten Konzepte und ihr Vergleich mit der bisherigen Performance von \valueAnalysisCPA , \predicateCPA\ und \symbolicExecutionCPA , bevor wir mit einem kurzem Ausblick auf m\"ogliche zuk\"unftige Arbeiten und einem Fazit abschlie\ss en.
+This work is divided into four parts: Theoretical background and contributions, their implementation, their evaluation, and future work and a conclusion.
+First we will describe the concepts that are the basis for our work, such as Configurable Software Verification, used CPAs and CEGAR.
+Next, we will illustrate the theory behind our own contribution,
+before explaining details about the existing and newly added implementation and deviations from theory.
+We will evaluate all presented concepts and compare them to the performance of the \valueAnalysisCPA, \predicateCPA, and \symbolicExecutionCPA\ of our old work.
+Last, we will give a short outlook to possible future work in this field and close with a conclusion.

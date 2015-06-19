@@ -1,5 +1,77 @@
 \subsection{Existing options/optimizations}
-\subsubsection{Constraints State simplifications}
-\paragraph{Computing definite assignments for symbolic values (+ strengthening in value analysis)}
-\paragraph{Handling of trivial constraints - completely trivial ones not even added to state, ones with definite assignment removed after SAT check}
-\paragraph{Removing outdated constraints - building dependency map and removing ones without dependency}
+To use symbolic values in the \valueAnalysisCPA, the configuration option \configOption{cpa.value.symbolic.useSymbolicValues = true} has to be set.
+Since structures and arrays in C may have a lot of entries, which might not even be important for the analysis,
+it can prove useful not to track them at all, if their assignments are non-deterministic.
+This increases the probability of coverage of a state, for example
+\begin{lstlisting}
+someStruct a;
+int b = 1;
+if (__nondet_int()) {
+	a = __VERIFIER_nondet_pointer();
+} else {
+	a = __VERIFIER_nondet_pointer();
+}
+if (b < 1) {
+ERROR:
+	return -1;
+}
+\end{lstlisting}
+results in two different abstract states when the control flow meets and $b < 1$ is checked twice, if non-deterministic structure assignments are tracked.
+If they are not tracked, analysis will terminate for one abstract state when the control flow meets and unnecessary computation is avoided.
+The options \configOption{cpa.value.symbolic.handleArrays} and \configOption{cpa.value.symbolic.handleStructs}
+can be used to disable the tracking of non-deterministic assignments to structs and arrays.
+This will only disable the tracking of non-deterministic assignments of the type struct or arrays, i.e.\ assignments to members of structs and array elements
+are always tracked, despite the value of those two options.
+When analysing
+\begin{lstlisting}
+int[] b = new int[5];
+b[0] = __VERIFIER_nondet_int();
+\end{lstlisting}
+with the \symbolicExecutionCPA, $b$ is always tracked.
+Arrays of unknown length are never tracked, though.
+
+Multiple optimizations are applied to the \constraintsCPA\ implementation in CPAchecker.
+%\subsubsection{Constraints State simplifications}
+%\paragraph{Compute definite assignments}
+First, we use the SMT solver to create a model (a mapping of variables to concrete values) that satisfies the conjunction $F$ of all constraints of a state.
+This model is used to compute all \emph{definite assignments}, i.e.\ the variables for which only one valid assignment exists.
+
+\begin{algorithm}
+\caption{GetDefiniteAssignments($F, M$)}
+\label{alg:defAssignments}
+\begin{algorithmic}
+\Input A boolean formula $F$ and a model $M = \symIds \rightarrow \integerset$ that satisfies $F$
+\Output A map $D\subseteq M$ of definite assignments
+
+\ForAll{$(s, n) \in M$}
+\If{$F \logicAnd s \neq n$ is unsatisfiable}
+	\State $D \assign D \cup (s, n)$
+\EndIf
+\EndFor
+\Return $D$
+\end{algorithmic}
+\end{algorithm}
+For each variable assignment $s = n$ of the model,
+we check whether $n$ is the only assignment for variable $s$ that satisfies $F$ by checking whether $F \logicAnd s \neq n$ is unsatisfiable.
+If it is, $s = n$ is necessary for the formula to be true and we can store it as a definite assignment. (Alg. \ref{alg:defAssignments})
+
+%\paragraph{Completely trivial constraints not added to state, trivial ones removed (this is removed by us - causes!)}
+In addition, we only store constraints that contain at least one symbolic identifier.
+If a constraint does not contain a symbolic identifier, we call it \emph{trivial}.
+Its representing boolean formula then does not contain any variables and it can be checked whether it is satisifiable or not independently of all other constraints, as it can't influence any symbolic identifier's possible concrete values.
+If the constraint is unsatisfiable, the path using this assumption is infeasible and no valid transfer to a new state exists.
+Otherwise, the old state is used without adding the trivial constraint.
+In our basic implementation, if a constraint that already is in the current abstract state becomes trivial because all symbolic identifiers occurring in it have definite assignments, the constraint was removed, too, while the definite assignments were preserved.
+This was done for the same reason as not adding trivial constraints in the first place, but resulted in more complex code, as the definite assignments had to be considered every time a constraints state was examined. For simplicity and less error-prone code, this is changed in our current implementation (see Section \ref{sec:newOptions}).
+
+%\paragraph{Removing outdated constraints - building dependency map and removing ones without dependency}
+As a third optimization, we periodically delete all constraints that do not hold any information, directly or indirectly, about a variable with symbolic value.
+This is the case for a constraint if none of the symbolic identifiers it contains are present in the current value analysis state and if either none of them occur in another constraint that holds information about a program variable with symbolic value, or if at least one of them only occurs in this one constraint and does not have a definite value.
+By doing this, we reduce the number of constraints to the minimum without losing any information and accelerate the SAT checks at every assumption edge due to fewer variables in boolean formulas.
+
+Last, we do not create boolean formulas for each constraint every time we want to perform a SAT check, but store them and only create formulas for constraints for which none exist yet.
+This way we have to synchronize the set of constraints with an additional set of formulas, but save lots of redundant object creations.
+
+%\paragraph{Strengthening in value analysis}
+We perform strenghtening of the \valueAnalysisCPA\ by using constraints states.
+If an abstract assignment of a symbolic identifier with a definite assignment to a program variable exists in the value analysis state, the symbolic identifier is replaced by the definite assignment's value. This way we reduce the number of existing symbolic identifiers to the necessary minimum and create constraints with fewer symbolic identifiers.
