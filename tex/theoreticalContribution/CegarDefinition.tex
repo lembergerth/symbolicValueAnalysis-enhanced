@@ -1,10 +1,10 @@
-\subsection{CEGAR for Symbolic Value Analysis + ConstraintsCPA}
+\section{CEGAR for Symbolic Value Analysis + ConstraintsCPA}
 For using the \symbolicExecutionCPA\ with CEGAR, we have to define a refinement procedure that returns a precision of type $\Pi_\symExCPA$ that fits the precision of the \symbolicExecutionCPA. We designed two such refinement procedures:
 The first uses adjusted versions of the refinement and interpolation algorithms as used for abstract variable assignments,
 with an adjusted strongest-post operator and a precision type that fits $\Pi_\symExCPA$.
 The second refinement procedure extracts a precision for the \symbolicExecutionCPA\ from the precision created by the refinement of the \predicateCPA, which is based on interpolation in the domain of linear arithmetics.
 
-\subsubsection{Refinement based on refinement for abstract variable assignments}
+\subsection{Refinement based on refinement for abstract variable assignments}
 \label{sec:assignmentRefinement}
 We adjust the refinement algorithm for abstract variable assignments (Alg. \ref{alg:refinementExplicit}).
 The feasibility check of an error path $\sigma$ is performed by executing the \symbolicExecutionCPA\ with full precision for all program locations $l$.
@@ -111,7 +111,7 @@ We simply use the existing $\extractPrecisionFunc$ for this CPA.
 The precision of the \constraintsCPA\ is the set of all tracked constraints, so the constraints that result from applying the strongest-post operator to the interpolant provide the precision needed at the current location for proving the current error path as infeasible in future analysis.
 The adjusted refinement procedure is shown in Algorithm \ref{alg:refineSym1}.
 
-\subsubsection{Refinement based on refinement for \predicateCPA}
+\subsection{Refinement based on refinement for \predicateCPA}
 \label{sec:predicateRefinement}
 Another possible way of refinement is to delegate the procedure to the refinement of the \predicateCPA\ and extract  a precision of type $\Pi_\symExCPA$ from the created predicate precision.
 This might not always work as the \predicateCPA\ is able to handle more complex operations than the \symbolicExecutionCPA, for example non-deterministic arrays.
@@ -133,7 +133,7 @@ The figure shows how analysis without CEGAR creates a lot of abstract states wit
 In contrast, analysis with CEGAR consists of two iterations: While the target state is reachable in the analysis with empty precision, it is infeasible in the analysis with refined precision.
 Both runs themselves need far lesser abstract states than analysis without CEGAR, as only necessary information is tracked.
 
-\begin{algorithm}[t]
+\begin{algorithm}[t!]
 \caption{$\refineSymbolicPred{\sigma}$}
 \label{alg:refineSym2}
 \begin{algorithmic}[1]

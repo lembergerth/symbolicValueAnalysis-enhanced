@@ -1,4 +1,4 @@
-\subsection{Refactoring of ValueAnalysis CEGAR into general form}
+\section{Refactoring of ValueAnalysis CEGAR into general form}
 The refinement procedures for \valueAnalysisCPA\ and \symbolicExecutionCPA\ differ in the following ways, in theory:
 \begin{enumerate}
 \item
@@ -18,14 +18,14 @@ This has to be considered in the \extractPrecisionFunc, also.
 
 \begin{figure}
 \centering
-\includegraphics[width=1.2\linewidth]{implementationCegar/ValueAnalysisRefinementBefore}
+\includegraphics[width=\linewidth]{implementationCegar/ValueAnalysisRefinementBefore}
 \caption{Structure of \valueAnalysisCPA\ refinement before refactoring}
 \label{fig:valRefinementBefore}
 \end{figure}
 
 Keeping these points  in mind, we first take a look at the old structure of the \valueAnalysisCPA's refinement implementation.
 
-\subsubsection{Structure of \ValueAnalysisCPA\ Refinement}
+\subsection{Structure of \ValueAnalysisCPA\ Refinement}
 Figure \ref{fig:valRefinementBefore} shows the structure of the default refinement procedure for the \valueAnalysisCPA.
 The class \objectName{ValueAnalysisRefiner}\ is acting as interface for the refinement procedure.
 A deviation from the CEGAR algorithm (Alg.~\ref{alg:cegar}) is that the refinement procedure does not get the error path extracted from the reached set, but the reached set itself.
@@ -61,12 +61,12 @@ The algorithm for determining infeasible prefixes also uses the strongest-post o
 In addition, the infeasibility of a chosen prefix is checked again by using the \objectName{Value\-Analysis\-Feasibility\-Checker} since it is possible to be feasible due to imprecision when structs or arrays occur.
 
 \begin{figure}
-\includegraphics[width=1.2\linewidth]{implementationCegar/RefinementInterfaces}
+\includegraphics[width=\linewidth]{implementationCegar/RefinementInterfaces}
 \caption{Interfaces used in refinement}
 \label{fig:refInterfaces}
 \end{figure}
 
-\subsubsection{Introduction of interfaces}
+\subsection{Introduction of interfaces}
 Except for \objectName{Value\-Analysis\-Refiner} and \objectName{Value\-Analysis\-Prefix\-Provider}, none of these classes are accessed through an interface.
 So first, we created interfaces with type parameters that represent all components required for refinement in the domain of abstract variable assignments, based on the existing implementation of the value analysis refinement. These interfaces are displayed in Figure \ref{fig:refInterfaces} next to the \objectName{Refiner} interface.
 \objectName{Feasibility\-Checker}, \objectName{Path\-Inter\-po\-lator}, \objectName{Edge\-Inter\-po\-lator}, \objectName{Inter\-po\-lant} are based on their counterpart in value analysis refinement.
@@ -84,9 +84,9 @@ The third and last type parameter, \typeParam{I}, describes the concrete \object
 The use of a type parameter describing a concrete implementation instead of just using \objectName{Interpolant<S>} everywhere
 allows implementing classes to use methods specific to certain implementations.
 
-\subsubsection{Creation of generic refinement classes based on refactoring of value analysis refinement}
+\subsection{Creation of generic refinement classes based on refactoring of value analysis refinement}
 \begin{figure}[h!]
-\includegraphics[width=1.2\linewidth]{implementationCegar/RefinementRefactored}
+\includegraphics[width=\linewidth]{implementationCegar/RefinementRefactored}
 \caption{Structure of generic refinement procedure for abstract variable assignments}
 \label{fig:refGeneric}
 \end{figure}

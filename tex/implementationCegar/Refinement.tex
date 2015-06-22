@@ -1,7 +1,7 @@
-\subsection{Refinement of Symbolic Value Analysis + ConstraintsCPA}
+\section{Refinement of Symbolic Value Analysis + ConstraintsCPA}
 
 \begin{figure}[h!]
-\includegraphics[width=1.2\linewidth]{implementationCegar/RefinementSymEx}
+\includegraphics[width=\linewidth]{implementationCegar/RefinementSymEx}
 \caption{Structure of refinement procedure for symbolic execution}
 \label{fig:refSymbolic}
 \end{figure}
@@ -25,7 +25,7 @@ We can't use the functionality of \objectName{Generic\-Edge\-Inter\-po\-lator} s
 testing both constraints and/or variable assignments for their necessity.
 The generic edge interpolator only tests program variables (\objectName{Me\-mo\-ry\-Lo\-cations}), though.
 
-\subsubsection{Optimization: Perform basic Value Analysis refinement first}
+\subsection{Optimization: Perform basic Value Analysis refinement first}
 The strongest-post operator $\strongestPostOpSym$ of symbolic execution refinement performs a SAT check at every assume operation, just like the \symbolicExecutionCPA's transfer relation.
 To minimize these expensive computations, we refine using the semantics of value analysis's strongest-post operator $\strongestPostOpExplicit$ only, if possible.
 To do this, we can't just use value analysis refinement because of the wrong interpolant type of $\Gamma$ and the different precision type.
@@ -45,7 +45,7 @@ This way we only use SAT checks in refinement and only increase the precision of
 It is possible to choose the precision type to use for the \constraintsCPA\ with configuration property \configOption{cpa.constraints.refinement.precisionType}.
 Possible values are \configOption{CONSTRAINTS} and \configOption{LOCATION} for the corresponding types.
 
-\subsubsection{Extract precision from predicate refinement}
+\subsection{Extract precision from predicate refinement}
 For using the refinement procedure extracting a precision from the predicate precision created by \predicateCPA's refinement, \predicateCPA's refinement is just executed
 and all program variables are extracted from the predicates of the resulting precision for each location.
 These program variables are then used for the precision of the \valueAnalysisCPA, while the locations are used as precision for the \constraintsCPA, since it is not possible to derive an original assume statement from the predicates created by \predicateCPA's refinement.

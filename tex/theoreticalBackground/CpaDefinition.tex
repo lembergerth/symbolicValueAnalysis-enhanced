@@ -1,4 +1,4 @@
-\subsection{General Overview of configurable program analysis}
+\section{General Overview of configurable program analysis}
 \begin{figure}
 \lstset{numbers=left}
 \begin{subfigure}[b]{.48\textwidth}
@@ -82,7 +82,7 @@ Configurable software verification tries to bridge the gap of precision finding 
 \end{enumerate}
 These elements are encapsulated in a \emph{configurable program analysis} (CPA) \cite{Beyer2008}, which is used by the CPA algorithm.
 
-\subsubsection{Configurable program analysis definition}
+\subsection{Configurable program analysis definition}
 A CPA with dynamic precision adjustment $\cpa = (D, \Pi, \transfer, \cpaMerge, \cpaStop, \cpaPrec )$ consists of:
 
 \begin{enumerate}[leftmargin=*, label=\arabic*.]
@@ -184,11 +184,11 @@ If it is not, it is added to \waitlistSet\ and \reachedSet.
 After this it is continued with the next element in the waitlist.
 If the waitlist is empty, there are no more reachable states and the reached set is returned.
 
-\subsection{Basic definition of CPAs used in this paper}
+\section{Basic definition of CPAs used in this paper}
 A definition of all CPAs important to this paper follows.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{\CompositeCPA}
+\subsection{\CompositeCPA}
 It is often useful to combine multiple CPAs to use their individual strengths and mitigate their weaknesses.
 A composition of two CPAs \cite{Beyer2008} can be expressed as $(\cpa_1, \cpa_2, \Pi_\times, \transfer_\times, \cpaMerge_\times, \cpaStop_\times, \cpaPrec_\times)$.
 We will extend this definition to allow the composition of an arbitrary number of CPAs.
@@ -228,7 +228,7 @@ A special merge operator in this context is \[\mergeAgree : (E_1 \times E_2) \ti
 \end{align*}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{\LocationCPA}
+\subsection{\LocationCPA}
 The \locationCPA\ \cite{BeyerBook} \cite{Beyer2008} $\locCPA = (D_\locCPA, \singletonPi, \transfer_\locCPA, \cpaMerge^{sep}, \cpaStop^{sep}, \singletonPrec)$ is a CPA that analyses the syntactical reachability of program locations.
 It does not consider any semantics and is mostly used to track the program location for other CPAs by using a \compositeCPA.
 This allows for simpler CPAs since they do not have to care about location tracking individually.
@@ -259,7 +259,7 @@ The precision adjustment $\singletonPrec$ that does not change anything: $\singl
 \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{\PredicateCPA}
+\subsection{\PredicateCPA}
 A predicate is a boolean formula using linear-arithmetic expressions and equality with uninterpreted functions.
 The \predicateCPA\ \cite{BeyerBook} \cite{Beyer2008} uses predicate abstraction \cite{Ball2001} to compute abstract states from a formula $\phi$ and a set $\pi$ of predicates (the precision).
 Two different kinds of predicate abstraction exist:
@@ -304,7 +304,7 @@ The precision adjustment $\singletonPrec$ that does not change anything: $\singl
 \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{\ValueAnalysisCPA}\label{sec:valueAnalysis}
+\subsection{\ValueAnalysisCPA}\label{sec:valueAnalysis}
 The \valueAnalysisCPA\ \cite{Beyer2013} tracks integer values for all program variables explicitly.
 It does so by using \emph{abstract variable assignments} \cite{Beyer2013}. An abstract variable assignment $v: X \partialFunc \integerset \cup \{\bot\}$ is a partial function that maps program variables $x \in X$ to integer values - if their assignment is known - or to $\bot$, if no possible value assignment exists.
 An abstract variable assignment $v$ is \emph{contradicting} if $v(x) = \bot$ for any $x \in \defRange(v)$.
@@ -377,7 +377,7 @@ Since we only track the program location in the \locationCPA, a composite precis
 \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{\SymbolicValueAnalysisCPA}
+\subsection{\SymbolicValueAnalysisCPA}
 The \symbolicValueAnalysisCPA\ (introduced in \cite{Lemberger2015} without dynamic precision adjustment) is an extension to the \valueAnalysisCPA. It introduces \emph{symbolic values} to handle non-deterministic values and expressions of unknown value.
 
 The \symbolicValueAnalysisCPA\ $\symValCPA = (D_\symValCPA, \Pi_\symValCPA, \transfer_\symValCPA, \cpaMerge_\symValCPA, \cpaStop^{sep}, \singletonPrec)$ consists of:
@@ -452,7 +452,7 @@ The precision adjustment $\singletonPrec$ that does not change anything: $\singl
 \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{\ConstraintsCPA} \label{sec:constraintsCPA}
+\subsection{\ConstraintsCPA} \label{sec:constraintsCPA}
 The \constraintsCPA\ (introduced in \cite{Lemberger2015} without dynamic precision adjustment) tracks constraints (i.e. boolean formulas) on symbolic identifiers created by assume edges.
 For this, it relies on the values provided by the \symbolicValueAnalysisCPA\ to partially evaluate assume edges and create constraints out of them.
 The \constraintsCPA\ $\constrCPA = (D_\constrCPA, \Pi_\constrCPA, \transfer_\constrCPA, \cpaMerge_\constrCPA, \cpaMerge^{sep}, \singletonPrec)$ is defined by:
@@ -502,7 +502,7 @@ Since we only track the program location in the \locationCPA, a composite precis
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{\SymbolicExecutionCPA : Composition of Location CPA, Symbolic Value Analysis CPA and Constraints CPA}
+\subsection{\SymbolicExecutionCPA : Composition of Location CPA, Symbolic Value Analysis CPA and Constraints CPA}
 The \symbolicExecutionCPA\ \cite{Lemberger2015}\ is the composition of \locationCPA, \symbolicValueAnalysisCPA\ and \constraintsCPA.
 Besides connecting the \locationCPA\ to the other CPAs so abstract states can be mapped to a program location, its most important task is the definition of a strengthening operator that creates new constraints in the \constraintsCPA\ and checks their satisfiability.
 
