@@ -1,1 +1,71 @@
-\subsection{Specification of evaluation environment}
+\subsection{Evaluation setup}
+We performed each run of our benchmarks on a dedicated, unloaded server with a Intel Xeon E5-2650 vs2 with 2.60 GHz and four CPU cores, using the Linux operating system Ubuntu 14.04 for the x86\_64 architecture.
+The resource limits for each run were 15.00 GB (13.97 GiB) of memory (RAM), a Java heap limit of 10.49 GB (10000 MiB = 9.767 GiB),
+a maximum use of two CPU cores,
+a CPU time limit of 900 seconds (which equals 15 minutes), after which \cpaChecker\ is supposed to shut down,
+and a hard time limit after which the run is killed of 1200 seconds (which equals 20 minutes).
+We chose a relatively big difference between the time limit in \cpaChecker\ and the hard time limit to give the analysis enough time to shut down in case of a long taking SAT check during analysis.
+As SAT checks are delegated to an SMT solver, \cpaChecker\ is unable to shut down during a check.
+
+We took a subset of the benchmark repository\footnote{\url{https://svn.sosy-lab.org/software/sv-benchmarks/tags/svcomp15}}
+of the SV-COMP 2015 verification tasks for our benchmarks.
+A detailed explanation of all verification tasks present there can be found at \cite{SV15Benchmark}.
+We used:
+\begin{enumerate}
+\item BitVectors. Requires treatment of bit-operations, which allows us to check the need for and performance of a bitvector-based theory for SMT solving.
+
+\item Floats. Requires handling of floats, which allows us to check the need for and performance of a float-based theory for SMT solving. An alternative is to just use rationals as approximations, whose use increases performance of SMT solving in comparison to floats.
+
+\item ControlFlowInteger, ECA, Loops, ProductLines and Simple.
+All five of these sets are designed for testing the control flow and integer variable handling of analyses.
+Path explosion should occur here a lot.
+
+\item DeviceDrivers.
+This set of tasks consists of problems that require analysis of pointer aliases and function pointers.
+Since the \valueAnalysisCPA\ can't handle pointers, we expect the \symbolicExecutionCPA\ to perform poorly, also.
+This set uses a simple memory model and the 64-bit architecture, the only task category we use that does so.
+
+\item HeapManipulation. 
+This set of tasks also consists of problems that require analysis of pointer aliases and function pointers, as well as data structures on the heap.
+In contrast to the set DeviceDrivers, this set uses a precise memory model and a 32-bit architecture.
+
+\item Sequentialized.
+Different tasks derived from SystemC programs.
+SystemC provides means to simulate concurrent processes.
+Such programs were transformed to pure C programs so they can be analyzed by \cpaChecker.
+
+\end{enumerate}
+A simple memory model denotes that variables can only be modified using direct assignments or by using a pointer which was obtained by using $\&$ on the corresponding variable.
+A precise memory model denotes that all memory cells can be written to, even by dereferencing uninitialized pointers.\cite{CITATION-TO-http://sv-comp.sosy-lab.org/2015/rules.php-NEEDED, OR BETTER, "Software Verification and VErifiable Witnesses, Beyer 2015", if it mentions these two models}
+We told \cpaChecker\ whether to assume a 32-bit or 64-bit architecture with the command-line parameters \configOption{-32} (actually the default) and \configOption{-64}.
+
+The external method \objectName{\_\_VERIFIER\_nondet\_X()} is used to introduce non-deterministic values of type \objectName{X} in a program.
+Although \cpaChecker\ is able to handle recursive function calls using block-abstraction memoization (BAM) \cite{Friedberger2015},
+we do not use this feature, but skip such calls to keep our analysis focused on the performance of the \symbolicExecutionCPA\ and its comparisons.
+To skip recursive function calls, we use the command-line parameter \configOption{-skipRecursion}.
+
+All verification tasks are batch executed using a benchmark script that performs all runs with above specifications and which returns for each run one of the following results:
+\begin{itemize}
+\item \resultTrue, if the program is safe, i.e. the specification holds
+\item \resultFalse, if the program is potentially unsafe, i.e. the analysis found a specification violation and can't prove that the specification holds due to this
+\item \resultUnknown, if the result is unknown, due to an error, a crash, or exhausted resources (e.g. time or memory)
+\end{itemize}
+For each such result, the script assigns a number of points depending on the received and the expected result, and presents the sum of these points as a general indicator for the performance of the used program/analyses.
+The points assigned are:\\
+\ \\
+% empty line above necessary so tabular environment is on new line
+\begin{tabular}{r | l}
+\hline
+Points & Result \\ \hline
+0 & \resultUnknown \\
++1 & \resultFalse, correct\\
+-6 & \resultFalse, incorrect (false alarm)\\
++2 & \resultTrue, correct\\
+-12 & \resultTrue, incorrect (unsound analysis) \\\hline
+\end{tabular}\\
+\ \\
+This point scale rewards correct results, but punishes wrong ones stronger, especially unsoundness, the worst property a verifier can have.
+The script rewards correctly found bugs with less points then proving that a specification holds, since the latter is more complicated.
+In addition, the script does not check whether the error found by the analysis is an actual specification violation or just a lucky coincidence due to a too high level of abstraction, when a correct \resultFalse\ is returned.
+That means that simple analyses like the \valueAnalysisCPA, which don't track much information, can get points for finding a potential bug that not really is one in case another real bug exists.
+Keeping these points in mind, the resulting score for an analysis can give a fair general overview of its performance.
