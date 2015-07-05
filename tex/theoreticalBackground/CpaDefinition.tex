@@ -19,7 +19,7 @@
   \node[mynode] (9) [below right = 1cm of 7]{16};
 
   \path
-    (1) edge node [right] {\textbf{a $\assign$ \_\_nondet\_int()}} (2)
+    (1) edge node [right] {\textbf{a $\assign$ \_\_VERIFIER\_nondet\_int()}} (2)
     (2) edge node [left, pos=0.5] {$\mathbf{[!(a \geq 0)]}$} (3)
     (2) edge node [right, pos=0.5] {$\mathbf{[a \geq 0]}$} (4)
     (3) edge node [left] {\textbf{b $\assign$ a + 1}} (5)
@@ -37,7 +37,7 @@
 
 For the sake of simplicity, all theoretical concepts are based on a fictional programming language that only consists of variable assignments (e.g. $x \assign 5$ or $y \assign x$) and assumptions (e.g. $[x > 5]$ or $[y < x]$).
 All values are integers of arbitrary magnitude.
-The implementation of our presented concepts is performed in \cpachecker\, a verification tool for C programs, though.
+The implementation of our presented concepts is performed in \cpaChecker\, a verification tool for C programs, though.
 
 We represent a program by a \emph{control flow automaton} (CFA) \cite{BeyerBook}\cite{Beyer2012}.
 A CFA $A = (L, l_0, G)$ is a directed graph whose nodes $L$ represent the program locations of the program.
@@ -53,12 +53,13 @@ The \emph{conjunction} of two constraint sequences $\gamma = \langle op_1, ..., 
 that means $\gamma \logicAnd \gamma' = \langle op_1, ..., op_n, op'_1, ..., op'_n \rangle$.
 The set $X$ is the set of all program variables occurring in a program.
 
-%\subsubsection{Concrete state definition}
+\subsection{Concrete state definition}
 A concrete state $c$ is a total function $c: X \cup \{pc\} \rightarrow \integerset$ that assigns a specific value of $\integerset$ to every program variable $x \in X$ and to the program counter $pc$. The program counter $pc$ represents the current location in the program.
 The set of all concrete states of a program is $C$. A set $r \subseteq C$ is called a \emph{region}.
 For the reachability problem the region of concrete states that violate a given specification is called the \emph{target region} $\targetRegion$.
 
-%\subsubsection{Abstract state definition}
+\subsection{Abstract state definition}
+\label{sec:abstractState}
 An abstract domain \cite{Beyer2007} $D = (C, \semilattice, \concretization)$ consists of a set of possible concrete states $C$, a semi-lattice $\semilattice$ that describes the abstract states and their possible relation to each other and a concretization function $\concretization : \semilattice \rightarrow 2^C$ which maps each element of $\semilattice$ to a subset of $C$.
 
 A semi-lattice $\semilattice = (E, \top, \bot, \lesserEqual, \join)$ consists of a set $E$ of elements, a top element $\top \in E$, a partial order $\lesserEqual\ \subseteq (E \times E)$
@@ -170,6 +171,7 @@ The following condition has to hold: $\forall e, \hat{e} \in E, \pi, \hat{\pi} \
 \end{algorithmic}
 \end{algorithm}
 
+\subsection{CPA algorithm}
 The CPA algorithm described in Algorithm \ref{alg:CPA} uses an arbitrary CPA of this form to solve the reachability problem.
 Given a CPA $\cpa$, an initial abstract state $e_0$ to start its computation at and an initial precision $\pi_0$, the algorithm computes the set \reachedSet\ of reachable abstract states.
 As long as the set of abstract states that still have to be processed (\waitlistSet) is not empty, an abstract state $e \in \waitlistSet$ is removed from the waitlist
@@ -379,8 +381,8 @@ Since we only track the program location in the \locationCPA, a composite precis
 \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{\SymbolicValueAnalysisCPA}
-The \symbolicValueAnalysisCPA\ (introduced in \cite{Lemberger2015} without dynamic precision adjustment) is an extension to the \valueAnalysisCPA. It introduces \emph{symbolic values} to handle non-deterministic values and expressions of unknown value.
+\subsection{\SymbolicValueAnalysisCPA}\label{sec:symValCPA}
+The \symbolicValueAnalysisCPA\ (introduced in \cite{Lemberger2015} without dynamic precision adjustment and using a different less-or-equal operator) is an extension to the \valueAnalysisCPA. It introduces \emph{symbolic values} to handle non-deterministic values and expressions of unknown value.
 
 The \symbolicValueAnalysisCPA\ $\symValCPA = (D_\symValCPA, \Pi_\symValCPA, \transfer_\symValCPA, \cpaMerge_\symValCPA, \cpaStop^{sep}, \singletonPrec)$ consists of:
 \begin{enumerate}[leftmargin=*, label=\arabic*.]
@@ -398,16 +400,29 @@ The \symbolicValueAnalysisCPA\ $\symValCPA = (D_\symValCPA, \Pi_\symValCPA, \tra
 	a symbolic value (of $\symValues$) or as invalid ($\bot_\valueset$).
 	The top element $\top_\symValCPA = \varnothing$ represents no known assignment.
 
-	For two abstract states $v, v' \in \symvalAssignment$, $v \lesserEqual v'$, if all of the following conditions hold:
-	(a) $v'$ must only contain value assignments of $v$, that is $\defRange(v') \subseteq \defRange(v)$,
-	(b) for every concrete or invalid assignment of $v$, $v'$ must contain the same or a weaker one, that means the same value or a concrete value for $\bot_\valueset$, formally put
-	\[\forall x \in \defRange(v') : v(x) \in \integerset \cup \{\bot_\valueset\} \Rightarrow v'(x) = v(x) \logicOr v(x) = \bot_\valueset\]
-	(c) A bijective function $\aliasFunc : \symIds \rightarrow \symIds$ exists that maps each symbolic identifier of $\symIds$ to another symbolic identifier, so that
-	$\forall x \in \defRange(v') : v'(x) \in \symValues \Rightarrow v(x)$ results from $v'(x)$ by replacing all $i \in \symIds$ occurring in $v'(x)$ with $\aliasFunc(i)$.
-	It can be thought of simpler or more precise less-or-equal operators. Such operators will be examined later.
-	Here, we use this operator (with some fixes to its origin) simply because it was used in our previous work \cite{Lemberger2015}.
-
+  The less-or-equal operator is equal to the one of the \valueAnalysisCPA, but implicitly considers symbolic values:
+	For two abstract states $v, v' \in \symvalAssignment$, $v$ is less or equal to $v'$, i.e. $v \lesserEqual v'$, if $\defRange(v') \subseteq \defRange(v)$ and for all $x \in \defRange(v'): v(x) = v'(x)$ or $v(x) = \bot_\valueset$.
 	Note that with this operator $v' \lesserEqual v \Rightarrow \llbracket v' \rrbracket \subseteq \llbracket v \rrbracket$, but in general $\llbracket v' \rrbracket \subseteq \llbracket v \rrbracket \not\Rightarrow v' \lesserEqual v$.
+
+  In our previous work \cite{Lemberger2015}\ we used a more complex less-or-equal operator, using the semantics of the \valueAnalysisCPA\ for concrete values only, and defining a new behaviour for symbolic values. We defined it as follows:
+  $v \lesserEqual' v'$, if all of the following conditions hold:
+  (a) $v'$ must only contain value assignments also present in $v$, that is $\defRange(v') \subseteq \defRange(v)$,
+  (b) for every concrete or invalid assignment of $v$, $v'$ must contain the same or a weaker one,
+  that means \[\forall x \in \defRange(v') : v(x) \in \integerset \cup \{\bot_\valueset\} \Rightarrow v'(x) = v(x) \logicOr v(x) = \bot_\valueset\]
+  and 
+	(c) a bijective function $\aliasFunc : \symIds \rightarrow \symIds$ exists that maps each symbolic identifier of $\symIds$ to another symbolic identifier, so that
+	$\forall x \in \defRange(v') : v'(x) \in \symValues \Rightarrow v(x)$ results from $v'(x)$ by replacing all $i \in \symIds$ occurring in $v'(x)$ with $\aliasFunc(i)$.
+
+This operator can result in wrong behaviour when used in conjunction with the \constraintsCPA,
+so we will not use it in this work.
+An example for its wrong behaviour will be presented in Section~\ref{sec:leqOperators}.
+  %This operator performs correctly when used without CEGAR. But when using the \symbolicValueAnalysisCPA with this aliasing operator in composition with the \constraintsCPA and CEGAR, it is possible that wrong results are computed. In addition, if the \constraintsCPA uses a less-or-equal operator that uses an $\aliasFunc$ function like the above one, the analysis can behave incorrectly even without CEGAR.
+%These two points will be illustrated in Section~\ref{sec:leqOperators}.
+%Because of this error-proneness, we will not use the aliasing less-or-equal operator in this work.
+
+	%It can be thought of simpler or more precise less-or-equal operators. Such operators will be examined later.
+	%Here, we use this operator (with some fixes to its origin) simply because it was used in our previous work \cite{Lemberger2015}.
+
 
 	The join $\join : \symvalAssignment \times \symvalAssignment$ is defined as
 	\[(v \join v')(x) = \begin{dcases}
@@ -455,16 +470,22 @@ The precision adjustment $\singletonPrec$ that does not change anything: $\singl
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\ConstraintsCPA} \label{sec:constraintsCPA}
-The \constraintsCPA\ (introduced in \cite{Lemberger2015} without dynamic precision adjustment) tracks constraints (i.e. boolean formulas) on symbolic identifiers created by assume edges.
+The \constraintsCPA\
+(introduced in \cite{Lemberger2015} without dynamic precision adjustment and with a less-or-equal operator using an $\aliasFunc$ function)
+tracks constraints (i.e. boolean formulas) on symbolic identifiers created by assume edges.
 For this, it relies on the values provided by the \symbolicValueAnalysisCPA\ to partially evaluate assume edges and create constraints out of them.
 The \constraintsCPA\ $\constrCPA = (D_\constrCPA, \Pi_\constrCPA, \transfer_\constrCPA, \cpaMerge_\constrCPA, \cpaMerge^{sep}, \singletonPrec)$ is defined by:
 \begin{enumerate}[leftmargin=*,label=\arabic*.]
 \item The abstract domain $D_\constrCPA = (C, \constraintslattice, \concretization)$,
 	which consists of concrete states $C$, the semi-lattice $\constraintslattice$ and the concretization function $\concretization$.
 	
-	The abstract states described by $\constraintslattice = (2^\constraintsset, \top_\constrCPA, \bot, \lesserEqual, \join)$ are subsets of the set $\constraintsset$ of all possible boolean expressions over the possible values of the \symbolicValueAnalysisCPA, $\symvalset$, and program variables, $X$. This includes concrete and symbolic values. An abstract state $a \subseteq \constraintsset$ can be interpreted as the conjunction of all its constraints, where each symbolic identifier $i \in \symIds$ is handled as a variable.
+	The abstract states described by $\constraintslattice = (2^\constraintsset, \top_\constrCPA, \bot, \lesserEqualSub, \join)$ are subsets of the set $\constraintsset$ of all possible boolean expressions over the possible values of the \symbolicValueAnalysisCPA, $\symvalset$, and program variables, $X$. This includes concrete and symbolic values. An abstract state $a \subseteq \constraintsset$ can be interpreted as the conjunction of all its constraints, where each symbolic identifier $i \in \symIds$ is handled as a variable.
 	The top element $\top_\constrCPA = \varnothing$ contains no constraints (it represents $true$). The bottom element $\bot$ represents a program state that can never be reached. It represents $false$.
-	$\lesserEqual$ is defined in the following way: For two given states $a, a' \subseteq \constraintsset$, $a$ is less or equal $a'$, that is $a \lesserEqual a'$, if a bijective function $\aliasFunc : \symIds \rightarrow \symIds$ exists, so that $a'' \subseteq a$ with $a''$ resulting from $a'$ by replacing all symbolic identifiers $i \in \symIds$ occurring in the constraints of $a'$ with $\aliasFunc(i)$.
+$\lesserEqualSub$ is defined in the following way:
+For two given states $a, a' \subseteq \constraintsset$, $a$ is less or equal $a'$, that is $a \lesserEqualSub a'$, if $a$ contains all constraints of $a'$, that is $a \supset a'$.
+
+In \cite{Lemberger2015}\ we used a less-or-equal operator using an $\aliasFunc$ function like the \symbolicValueAnalysisCPA\ did, but we will not do so in this work because it does not always work with CEGAR for the same reasons as the \symbolicValueAnalysisCPA's aliasing less-or-equal operator.
+%a bijective function $\aliasFunc : \symIds \rightarrow \symIds$ exists, so that $a'' \subseteq a$ with $a''$ resulting from $a'$ by replacing all symbolic identifiers $i \in \symIds$ occurring in the constraints of $a'$ with $\aliasFunc(i)$.
 	The join $\join$ computes the least upper bound of two abstract states, but is never used.
 
 	The concretization function $\concretization$ maps an abstract state to all concrete states that satisfy its constraints:

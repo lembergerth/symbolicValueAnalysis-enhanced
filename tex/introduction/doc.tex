@@ -22,7 +22,7 @@ Three such CPAs are the \valueAnalysisCPA, which uses concrete variable assignme
 and the \symbolicExecutionCPA, which uses an extension of the \valueAnalysisCPA\ tracking non-deterministic values as symbolic ones in combination with the \constraintsCPA, which tracks constraints to symbolic values on program paths.
 While the \valueAnalysisCPA\ has high efficiency due to her simplicity, it can't handle complex program characteristics like pointers or non-deterministic values.
 The \predicateCPA, in constrast, is very expressive, but has low efficiency since SAT checks are necessary for computing the feasibility of a program path.
-The \symbolicExecutionCPA\ poses something in between those two, not being able to handle some complex program characteristics as it is partly based on the \valueAnalysisCPA, but being able to handle non-deterministic values.
+The \symbolicExecutionCPA\ based on the concepts of symbolic execution \cite{King1976} poses something in between these two, not being able to handle some complex program characteristics as it is partly based on the \valueAnalysisCPA, but being able to handle non-deterministic values.
 On the other hand, it uses SAT checks, too, though less often and over smaller formulas.
 
 \begin{figure}[t]
@@ -49,7 +49,7 @@ On the other hand, it uses SAT checks, too, though less often and over smaller f
   \coordinate[below = 0.5cm of 8] (e8);
 
   \path
-    (0) edge node [right] {\textbf{a = \_\_nondet\_int()}} (1)
+    (0) edge node [right] {\textbf{a = \_\_VERIFIER\_nondet\_int()}} (1)
     (1) edge node [left, pos=0.5] {$\mathbf{![a \geq 0]}$} (2)
     (1) edge node [right, pos=0.5] {$\mathbf{[a \geq 0]}$} (4)
     (2) edge node [left] {\textbf{b = a + 1}} (3)
@@ -89,7 +89,7 @@ On the other hand, it uses SAT checks, too, though less often and over smaller f
   \coordinate[below = 1cm of 7n] (e7n);
 
   \path
-    (0) edge node [right] {\textbf{a = \_\_nondet\_int()}} (1)
+    (0) edge node [right] {\textbf{a = \_\_VERIFIER\_nondet\_int()}} (1)
     (1) edge node [left, pos=0.5] {$\mathbf{![a \geq 0]}$} (2)
     (1) edge node [right, pos=0.5] {$\mathbf{[a \geq 0]}$} (4)
     (2) edge node [left] {\textbf{b = a + 1}} (3)
@@ -119,7 +119,7 @@ Figure \ref{fig:ex1SymExGraph} shows this analysis.
 Runtime wise, it performs poorly, though, when compared to the \valueAnalysisCPA.
 Since it considers all variable assignments, both deterministic and non-deterministic, and all occurring assumptions, its state space is exponential to the amount of occuring assumptions.
 If a infinite loop occurs, the state space is infinite, too.
-This problem is called \emph{path explosion}.\cite{Anand2008}
+This problem is called \emph{path explosion} and characteristic to symbolic execution.\cite{Anand2008}
 Obviously, an exponential amount of states does not scale to large programs.
 In addition, the cost for SAT checks, which are performed at every assumption, are exponential to the amount of non-deterministic values occuring in all encountered assumptions on the currently considered program path.
 Evaluation in \cite{Lemberger2015} showed that the \symbolicExecutionCPA\ spends up to 95\% of its runtime for SAT checks.
@@ -127,7 +127,7 @@ Evaluation in \cite{Lemberger2015} showed that the \symbolicExecutionCPA\ spends
 %\subsubsection{Goal: Try to speed up}
 In this work we design, implement and evaluate different approaches to increasing the performance of the \symbolicExecutionCPA.
 Our main contribution is, along with variations to the existing merge and less-or-equal operators of the CPA,
-the application of CEGAR \cite{Clarke2003} to the composition of the two strongly intertwined CPAs \valueAnalysisCPA\ and \constraintsCPA\ with precision refinement for both CPAs
+the application of CEGAR \cite{Clarke2003} to the composition of the two strongly intertwined CPAs \symbolicValueAnalysisCPA\ and \constraintsCPA\ with precision refinement for both CPAs
 with two different precision types.
 
 This work is divided into four parts: Theoretical background and contributions, their implementation, their evaluation, and future work and a conclusion.

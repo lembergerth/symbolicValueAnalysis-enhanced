@@ -62,15 +62,16 @@ Its representing boolean formula then does not contain any variables and it can 
 If the constraint is unsatisfiable, the path using this assumption is infeasible and no valid transfer to a new state exists.
 Otherwise, the old state is used without adding the trivial constraint.
 In our basic implementation, if a constraint that already is in the current abstract state becomes trivial because all symbolic identifiers occurring in it have definite assignments, the constraint was removed, too, while the definite assignments were preserved.
-This was done for the same reason as not adding trivial constraints in the first place, but resulted in more complex code, as the definite assignments had to be considered every time a constraints state was examined. For simplicity and less error-prone code, this is changed in our current implementation (see Section \ref{sec:newOptions}).
+This was done for the same reason as not adding trivial constraints in the first place, but resulted in more complex code, as the definite assignments had to be considered every time a constraints state was examined.
+For simplicity, this feature was removed from our current implementation. CEGAR automatically results in a constraints state that only contains constraints still necessary, so that such trivial constraints are removed automatically by not being tracked.
 
 %\paragraph{Removing outdated constraints - building dependency map and removing ones without dependency}
-As a third optimization, we periodically delete all constraints that do not hold any information, directly or indirectly, about a variable with symbolic value.
-This is the case for a constraint if none of the symbolic identifiers it contains are present in the current value analysis state and if either none of them occur in another constraint that holds information about a program variable with symbolic value, or if at least one of them only occurs in this one constraint and does not have a definite value.
-By doing this, we reduce the number of constraints to the minimum without losing any information and accelerate the SAT checks at every assumption edge due to fewer variables in boolean formulas.
+%As a third optimization, we periodically delete all constraints that do not hold any information, directly or indirectly, about a variable with symbolic value.
+%This is the case for a constraint if none of the symbolic identifiers it contains are present in the current value analysis state and if either none of them occur in another constraint that holds information about a program variable with symbolic value, or if at least one of them only occurs in this one constraint and does not have a definite value.
+%By doing this, we reduce the number of constraints to the minimum without losing any information and accelerate the SAT checks at every assumption edge due to fewer variables in boolean formulas.
 
 Last, we do not create boolean formulas for each constraint every time we want to perform a SAT check, but store them and only create formulas for constraints for which none exist yet.
-This way we have to synchronize the set of constraints with an additional set of formulas, but save lots of redundant object creations.
+This way we have to synchronize the set of constraints with an additional set of formulas, but save lots of redundant formula creations.
 
 %\paragraph{Strengthening in value analysis}
 We perform strenghtening of the \valueAnalysisCPA\ by using constraints states.
