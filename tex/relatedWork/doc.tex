@@ -64,7 +64,7 @@ Both approaches are orthogonal though, and can be used in combination.
 \subsection*{Handling of unbounded loops}
 In classic symbolic execution, unbounded loops result in infinite execution.
 % Lazy annotation
-\cite{McMillan2010} tackles this problem by computing inductive invariants for loops, unrolling loops up to the point interpolants which are also loop invariants can prove infeasiblity of an error path.
+Lazy Annotation \cite{McMillan2010} tackles this problem by computing inductive invariants for loops, unrolling loops up to the point interpolants which are also loop invariants can prove infeasiblity of an error path.
 A major downside to this approach is that it will only terminate if such invariants can be found.
 % Invariant computation for loops with CEGA for loop
 Inspired by this approach, \cite{Jaffar2012} abstracts symbolic states at loop headers to only consist of invariants that hold for one path.
@@ -75,8 +75,53 @@ This is a compromise between performing eager symbolic execution and lazy CEGAR 
 describing all possible program states that may leave the cycle after any number of iterations.
 In the following symbolic execution, these templates are then used when encountering loops to directly jump to the loop exits, resulting in symbolic states based on the path to the cycle, a parameter $k$ of iterations along the cycle, and the execution step leading to the exit.
 This mitigates the path explosion problem considerably, as no more loops exist in execution, but deepens the complexity of formulas to solve, due to the parameter $k$.
+Evaluation shows that despite this trade-off, analysis can still be speeded up considerably.
+
+Using CEGAR with symbolic execution mitigates the problem of unbounded loops, since no informationen altered by the loop is necessary, most of the time.
+But if it is, it results in infinite execution, also.
+One advantage of configurable software verification over classic symbolic execution is the possibility to combine multiple CPAs.
+For handling unbounded loops, a CPA specialised on doing so can be used in parallel to the \symbolicExecutionCPA\ instead of extending it.
+A strengthening operator could be used to derive information about symbolic identifiers.
+In this work, we focus on the \symbolicExecutionCPA's performance only.
 
 \subsection*{Interpolation}
+A technique closely related to CEGAR and the functionality of the termination check $\cpaStop$ of configurable program verification is based on interpolation.
+If a path is found to be infeasible, an interpolant is computed for each program location on the path and stored.
+If such a program location is visited again on a different path, it is checked whether the interpolant is implied by the current abstract state.
+If it is, execution on this path can halt, as it is known that it is infeasible based on the interpolant.
+\cite{Jaffar2009} introduced this concept for the first time in the context of the Constraint Logic Programming Scheme \cite{Jaffar1992}.
+\cite{Jaffar2012} stated the idea of using weakest preconditions instead of strongest postconditions for the computation of weaker interpolants in the context of verification.
+\cite{Jaffar2013} adapted it for concolic testing with arbitrary search heuristics and
+\cite{Chu2014} added the notion of \emph{lazy symbolic execution}.
+Instead of computing interpolants immediately after a path is proven to be infeasible, execution continues on this path ignoring the infeasibility to be able to learn better interpolants.
+This is similar to the usage of sliced path prefixes we use in CEGAR to choose the interpolants to take.
+
+Lazy Annotation \cite{McMillan2010} uses interpolants to store conditions for nodes and edges on the CFA under which no target region is reachable from this node or using this edge.
+Instead of annotating all edges on an infeasible path with interpolants in one procedure, interpolants are computed bottom-up if the current program path using this edge is infeasible up to the next possible branch.
+
+A main difference that persists between symbolic execution with CEGAR and symbolic execution using interpolants is the amount of information stored.
+CEGAR is lazy, starting with a coarse precision and refining it, while symbolic execution is eager,
+tracking all information and computing interpolants for subsuming new states only.
+Using CEGAR, expensive refinements and iterative analysis happens,
+but the probability of a successful termination check is higher from the beginning due to the abstraction.
+This pays off if only few program variables/constraints have to be tracked or only few possible error paths exist
+by generally eliminating the path explosion problem.
 
 
-\subsection*{CEGAR with predicate CPA/model checking and with valueAnalysis}
+\subsection*{CEGAR with predicate CPA/model checking and with explicit-value analysis}
+CEGAR was introduced for boosting the speed of symbolic model checking in \cite{Clarke2003}.
+First applied to the \predicateCPA\ \cite{Beyer2012} in the context of configurable software verification,
+it was adapted to work with explicit-value analysis (e.g. the \valueAnalysisCPA) in \cite{Beyer2013}.
+While the first takes interpolants computed by an off-the-shelf SMT solver, the trial-and-error technique
+for computing interpolants of the latter was extended in this work for symbolic execution.
+Conceptually, the \symbolicExecutionCPA\ is between the \valueAnalysisCPA\ and \predicateCPA.
+Just like the \valueAnalysisCPA, it uses abstract variable assignments to track the explicit values of variables, where possible.
+In addition, symbolic values are tracked for values of unknown explicit value.
+The \predicateCPA\ creates a boolean formula over a program path's statements and assumptions and checks its satisfiability.
+Similarily, the \symbolicExecutionCPA\ tracks constraints created by assumptions on a path to derive more information about symbolic values.
+A SMT solver is needed to check the satisfiability of both.
+In contrast to the \predicateCPA, formulas are not based on program variables, but on symbolic values/identifiers.
+Due to this, no transformation to a single static assignment form (SSA) is necessary for SAT checks.
+In addition, since only conditions of assumptions are tracked as constraints, boolean formulas are significantly smaller in the \symbolicExecutionCPA
+and as such faster to solve.
+Still, the \predicateCPA\ is a sophisticated and matured CPA that supports lots of features and optimizations.
