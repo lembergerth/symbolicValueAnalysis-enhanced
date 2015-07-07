@@ -190,9 +190,67 @@ For proving the safety of a program, analysis with CEGAR performs significantly 
 \label{fig:hgRefinementsForTimeouts}
 \end{figure}
 For most tasks symbolic execution with CEGAR is able to compute a result but symbolic execution without CEGAR is not, only few or zero~refinements are necessary (Fig.~\ref{fig:hgRefinementsForUniques}).
-Comparison with the random distribution of performed refinements in tasks that resulted in a timeout when using CEGAR (Fig.~\ref{fig:hgRefinementsForTimeouts}) and our example above,
-this illustrates nicely the problem CEGAR has with many possible error paths.
+Comparison with the random distribution of performed refinements in tasks that resulted in a timeout when using CEGAR (Fig.~\ref{fig:hgRefinementsForTimeouts}) confirms the problem CEGAR has with many possible error paths.
 
 Nevertheless, thanks to its significant better performance in proving the safety of programs, CEGAR was able to push the \symbolicExecutionCPA's score from 660~points to 3271~points by increasing the amount of successfully verified
 error-free tasks by more than~1500.
+
+\subsection{Different interpolation techniques}
+\label{sec:eval:itpTechniques}
+\begin{table}[t]
+\begin{tabular}{|r|c|c|c|c|}
+\hline
+                               & Values only & Values first & Constraints first & Overall \\ \hline
+correct results                & 2080        & 2079         & 2078              & 4092 \\ \hline
+\resultFalse, correct          & 378         & 376          & 376               & 2911 \\ \hline
+\resultTrue, correct           & 1702        & 1703         & 1702              & 1181 \\ \hline
+unique \resultFalse, correct   & 2           & 0            & 0                 & \\ \hline
+unique \resultTrue, correct    & 0           & 0            & 0                 & \\ \hline
+\resultFalse, incorrect        & 83          & 83           & 83                & \\ \hline
+unique \resultFalse, incorrect & 0           & 0            & 0                 & \\ \hline
+\resultTrue, incorrect         & 1           & 1            & 1                 & \\ \hline
+unique \resultTrue, incorrect  & 0           & 0            & 0                 & \\ \hline
+program errors                 & 3           & 3            & 2                 & \\ \hline % exception because of / 0, parsing error
+%timeouts & 3275 & 1927 & \\ \hline
+resource errors                & 1925        & 1926         & 1928              &\\ \hline % includes timeouts + StackOverflowException
+\end{tabular}
+\caption{Results of benchmark runs of the \symbolicExecutionCPA\ with CEGAR using three different techniques for interpolation computation}
+\label{tab:itpTechniqueComp}
+\end{table}
+We compare three different techniques for computing interpolants of the \symbolicExecutionCPA\ already mentioned in Section~\ref{sec:assignmentRefinement}:
+\begin{enumerate}[label=\alph*)]
+\item Only removing unnecessary values and using all constraints that resulted from the previous interpolant and the strongest-post operator at the current edge (\emph{values only}),
+\item removing unnecessary values first and then constraints (\emph{values first}), and
+\item removing unnecessary constraints first and then values (\emph{constraints first}).
+\end{enumerate}
+Table~\ref{tab:itpTechniqueComp} shows that almost no difference exists in the effectivenes of all three techniques.
+General time performance also differs in no significant way, as the scatter plots in Figure~\ref{fig:spTimeVOVF} show.
+\begin{figure}[t]
+\begin{subfigure}[b]{.48\textwidth}
+\includegraphics[trim=2cm 0 1cm 0, clip=true, scale=.9]{evaluation/sp_valuesOnly_valuesFirst_cputime}
+\end{subfigure}%
+\hfill
+\begin{subfigure}[b]{.48\textwidth}
+\includegraphics[trim=2cm 0 1cm 0, clip=true, scale=.9]{evaluation/sp_valuesFirst_constrFirst_cputime}
+\end{subfigure}
+\caption{Runtime performance of different interpolation techniques over all benchmark tasks}
+\label{fig:spTimeVOVF}
+\end{figure}
+Using the values only interpolation technique yields two more correctly found errors over all benchmark tasks.
+Both tasks are close to the time limit with 863.4 and 887.5 seconds.
+The successful analysis of these two tasks is a result of the faster ''values only'' interpolant computation.
+Since the strongest-post operator of symbolic execution refinement uses expensive SAT checks to check the satisfiability of current constraints, the two refinement procedures
+''values first'' and ''constraints first'' take longer for a single refinement, as they call the strongest-post operator more often - for every abstract variable assignment and every constraint once, respectively.
+The ''values only'' computation only calls the strongest-post operator once for every value, in contrast.
+Similiarly, analyses using ''values only'' and ''values first'' are able to prove one more task safe then ''constraints first''.
+This one is very close to the time limit (867.7 seconds using ''values only'', 836.6 seconds using ''values first''), too.
+
+Analysis with interpolation using ''values first'' or ''constraints first'' is also able to prove one task safe ''values only'' can't.
+Here, the computation times of 656.0 and 642.0 seconds are farther away from the time limit.
+Although refinement takes longer then with ''values only'', the coarser precision of the \constraintsCPA\ speeds up termination of the analysis after all information necessary for proving all error paths is tracked.
+
+For further evaluation we will use the ''constraints first'' technique, as it is the closest to our specification and does not pose any obvious disadvantages in comparison to the other two techniques.
+
+
+
 
