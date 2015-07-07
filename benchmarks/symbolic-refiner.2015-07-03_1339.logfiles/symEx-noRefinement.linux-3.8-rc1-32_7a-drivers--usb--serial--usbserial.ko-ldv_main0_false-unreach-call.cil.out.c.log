@@ -1,0 +1,125 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic -setprop cpa.constraints.lessOrEqualType=SUBSET -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-consumption/ALL.prp ../svcomp15/ldv-consumption/linux-3.8-rc1-32_7a-drivers--usb--serial--usbserial.ko-ldv_main0_false-unreach-call.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_-814401609_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 6112: Function pointer *(port->serial->type->set_termios) with type void (*)(struct tty_struct *, struct usb_serial_port *, struct ktermios *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+Shutdown requested (The CPU-time limit of 900s has elapsed.), waiting for termination. (ForceTerminationOnShutdown$1.shutdownRequested, WARNING)
+
+Warning: Analysis stopped (The CPU-time limit of 900s has elapsed.) (ShutdownNotifier.shutdownIfNecessary, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                               26659583 (count: 39462, min: 0, max: 746, avg: 675.58)
+Number of global variables:                        23329934 (count: 39462, min: 0, max: 594, avg: 591.20)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                   41785
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                6.096s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     5.328s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 26
+Most constraints before refinement in state: 26
+Constraints after refinement in state: 162579
+Constraints before refinement in state: 162579
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 277ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  0.327s
+Automaton transfers with branching:                0
+Automaton transfer successors:                        59031 (count: 59031, min: 1, max: 1, avg: 1.00) [1 x 59031]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            39288
+Max size of waitlist:            1035
+Average size of waitlist:        396
+Number of computed successors:   41785
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         2324
+Number of times breaked:         0
+
+Total time for CPA algorithm:       882.339s (Max:   882.339s)
+  Time for choose from waitlist:      0.097s
+  Time for precision adjustment:      6.747s
+  Time for transfer relation:        30.004s
+  Time for stop operator:           844.798s
+  Time for adding to reached set:     0.244s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.147
+  Visited lines:          4593
+  Total lines:            7537
+  Line coverage:          0.609
+  Visited conditions:     148
+  Total conditions:       1424
+  Condition coverage:     0.104
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     3839
+Number of CFA edges:             5673
+Number of relevant variables:    1029
+Number of functions:             224
+Number of loops:                 44
+Size of reached set:             39462
+  Number of reached locations:   450 (12%)
+    Avg states per location:     87
+    Max states per location:     1285 (at node N4468)
+  Number of reached functions:   33 (15%)
+  Number of partitions:          22206
+    Avg size of partitions:      1
+    Max size of partitions:      1024 (with key [N2528 (before line 8703), Function usb_serial_register called from node N2596, stack depth 5 [8def89a], stack [main, usb_serial_init, usb_serial_generic_register, usb_serial_register_drivers, usb_serial_register], Init])
+  Number of target states:       0
+  Size of final wait list        174
+
+Time for analysis setup:          4.650s
+  Time for loading CPAs:          0.578s
+  Time for loading parser:        0.623s
+  Time for CFA construction:      3.410s
+    Time for parsing file(s):     1.020s
+    Time for AST to CFA:          1.113s
+    Time for CFA sanity check:    0.130s
+    Time for post-processing:     0.930s
+      Time for var class.:        0.000s
+Time for Analysis:              882.339s
+CPU time for analysis:          891.880s
+Total time for CPAchecker:      886.994s
+Total CPU time for CPAchecker:  900.270s
+
+Time for Garbage Collector:       3.509s (in 178 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               1095MB (  1045 MiB) max;    293MB (   279 MiB) avg;   1197MB (  1142 MiB) peak
+Used non-heap memory:             22MB (    21 MiB) max;     22MB (    21 MiB) avg;     22MB (    21 MiB) peak
+Used in PS Old Gen pool:          99MB (    94 MiB) max;     51MB (    48 MiB) avg;     99MB (    94 MiB) peak
+Allocated heap memory:          2506MB (  2390 MiB) max;   1892MB (  1805 MiB) avg
+Allocated non-heap memory:        25MB (    24 MiB) max;     25MB (    24 MiB) avg
+Total process virtual memory:  13597MB ( 12967 MiB) max;  13597MB ( 12967 MiB) avg
+
+Verification result: UNKNOWN, incomplete analysis.
+More details about the verification run can be found in the directory "./output".

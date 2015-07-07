@@ -1,0 +1,154 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-linux-3.4-simple/ALL.prp ../svcomp15/ldv-linux-3.4-simple/32_1_cilled_true-unreach-call_ok_nondet_linux-3.4-32_1-drivers--net--ppp--ppp_mppe.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_1008834660_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 1307: Function pointer *__cil_tmp14 with type int (*)(struct blkcipher_desc *desc, struct scatterlist *dst, struct scatterlist *src, unsigned int nbytes) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 1259: Function pointer *__cil_tmp14 with type int (*)(struct blkcipher_desc *desc, struct scatterlist *dst, struct scatterlist *src, unsigned int nbytes) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 1211: Function pointer *__cil_tmp9 with type int (*)(struct crypto_tfm *tfm, u8 *key, unsigned int keylen) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 1477: Function pointer *__cil_tmp10 with type int (*)(struct hash_desc *desc, struct scatterlist *sg, unsigned int nsg, u8 *out) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 1477: Ignoring call via function pointer crypto_hash_digest::__cil_tmp10 for which no suitable target was found in line: tmp___0 = (*__cil_tmp10)(desc, sg, nbytes, out); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 1211: Ignoring call via function pointer crypto_blkcipher_setkey::__cil_tmp9 for which no suitable target was found in line: tmp___1 = (*__cil_tmp9)(tmp___0, key, keylen); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 1259: Ignoring call via function pointer crypto_blkcipher_encrypt::__cil_tmp14 for which no suitable target was found in line: tmp___1 = (*__cil_tmp14)(desc, dst, src, nbytes); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 1307: Ignoring call via function pointer crypto_blkcipher_decrypt::__cil_tmp14 for which no suitable target was found in line: tmp___1 = (*__cil_tmp14)(desc, dst, src, nbytes); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                   4281 (count: 4283, min: 0, max: 1, avg: 1.00)
+Number of global variables:                            4281 (count: 4283, min: 0, max: 1, avg: 1.00)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                    8820
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                0.129s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     0.000s
+Replaced symbolic expressions: 0
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  0.212s
+Automaton transfers with branching:                0
+Automaton transfer successors:                        28214 (count: 28214, min: 1, max: 1, avg: 1.00) [1 x 28214]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            8564
+Max size of waitlist:            21
+Average size of waitlist:        14
+Number of computed successors:   8820
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         256
+Number of times breaked:         1
+
+Total time for CPA algorithm:         1.795s (Max:     1.129s)
+  Time for choose from waitlist:      0.069s
+  Time for precision adjustment:      0.361s
+  Time for transfer relation:         0.957s
+  Time for stop operator:             0.079s
+  Time for adding to reached set:     0.135s
+
+ValueAnalysisRefiner statistics
+-------------------------------
+Total number of refinements:              1
+Total number of targets found:            1
+Time for completing refinement:           0.182s
+  Time for interpolation:                              0.000s
+  Number of interpolations:                               0
+  Number of interpolation queries:                        0 (count: 0, min: 0, max: 0, avg: 0.00)
+  Size of interpolant:                                    0 (count: 0, min: 0, max: 0, avg: 0.00)
+  Number of infeasible sliced prefixes:                   0 (count: 0, min: 0, max: 0, avg: 0.00)
+  Extracting infeasible sliced prefixes:               0.000s
+  Selecting infeasible sliced prefixes:                0.000s
+Total number of root relocations:         0
+Total number of similar, repeated refinements:         0
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                1
+Number of successful refinements:     1
+Number of failed refinements:         0
+Max. size of reached set before ref.: 4284
+Max. size of reached set after ref.:  2
+Avg. size of reached set before ref.: 4284.00
+Avg. size of reached set after ref.:  2.00
+
+Total time for CEGAR algorithm:       1.998s
+Time for refinements:                 0.203s
+Average time for refinement:          0.203s
+Max time for refinement:              0.203s
+
+Counterexample-Check Algorithm statistics
+-----------------------------------------
+Number of counterexample checks:    0
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.836
+  Visited lines:          3563
+  Total lines:            3610
+  Line coverage:          0.987
+  Visited conditions:     191
+  Total conditions:       212
+  Condition coverage:     0.901
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     825
+Number of CFA edges:             1055
+Number of relevant variables:    1001
+Number of functions:             55
+Number of loops:                 5
+Size of reached set:             4283
+  Number of reached locations:   751 (91%)
+    Avg states per location:     5
+    Max states per location:     128 (at node N2854)
+  Number of reached functions:   46 (84%)
+  Number of partitions:          4283
+    Avg size of partitions:      1
+    Max size of partitions:      1
+  Number of target states:       0
+
+Time for analysis setup:          3.169s
+  Time for loading CPAs:          0.495s
+  Time for loading parser:        0.556s
+  Time for CFA construction:      2.041s
+    Time for parsing file(s):     0.648s
+    Time for AST to CFA:          0.595s
+    Time for CFA sanity check:    0.091s
+    Time for post-processing:     0.486s
+      Time for var class.:        0.000s
+Time for Analysis:                2.023s
+CPU time for analysis:            3.490s
+Total time for CPAchecker:        5.198s
+Total CPU time for CPAchecker:    9.000s
+
+Time for Garbage Collector:       0.000s (in 0 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:                254MB (   243 MiB) max;    156MB (   148 MiB) avg;    265MB (   253 MiB) peak
+Used non-heap memory:             22MB (    21 MiB) max;     16MB (    15 MiB) avg;     22MB (    21 MiB) peak
+Used in PS Old Gen pool:           0MB (     0 MiB) max;      0MB (     0 MiB) avg;      0MB (     0 MiB) peak
+Allocated heap memory:          2024MB (  1930 MiB) max;   2024MB (  1930 MiB) avg
+Allocated non-heap memory:        24MB (    23 MiB) max;     24MB (    23 MiB) avg
+Total process virtual memory:  13579MB ( 12950 MiB) max;  13579MB ( 12950 MiB) avg
+
+Verification result: TRUE. No property violation found by chosen configuration.
+More details about the verification run can be found in the directory "./output".

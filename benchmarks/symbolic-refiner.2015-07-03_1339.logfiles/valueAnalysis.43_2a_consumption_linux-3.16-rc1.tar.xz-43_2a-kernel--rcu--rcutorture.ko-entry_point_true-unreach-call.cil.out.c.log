@@ -1,0 +1,158 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-linux-3.16-rc1/ALL.prp ../svcomp15/ldv-linux-3.16-rc1/43_2a_consumption_linux-3.16-rc1.tar.xz-43_2a-kernel--rcu--rcutorture.ko-entry_point_true-unreach-call.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_762300380_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 5553: Function pointer *(cur_ops->get_state) with type unsigned long int (*)() is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+Skipping recursive function call from rcu_torture_cleanup to rcu_torture_cleanup (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from rcu_torture_timer to rcu_torture_timer (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from rcu_torture_cb to rcu_torture_timer (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from rcu_torture_cb to rcu_torture_cb (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from rcu_busted_torture_deferred_free to rcu_torture_cb (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from rcu_torture_cb to rcu_busted_torture_deferred_free (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from rcu_torture_timer to rcu_torture_cb (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from rcu_torture_timer to rcu_busted_torture_deferred_free (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 4597: Ignoring call via function pointer call_rcu_busted::func for which no suitable target was found in line: (*func)(head); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                  80076 (count: 40040, min: 0, max: 2, avg: 2.00)
+Number of global variables:                           80076 (count: 40040, min: 0, max: 2, avg: 2.00)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                   46439
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                0.226s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     0.000s
+Replaced symbolic expressions: 0
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  0.453s
+Automaton transfers with branching:                0
+Automaton transfer successors:                        64638 (count: 64638, min: 1, max: 1, avg: 1.00) [1 x 64638]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            41246
+Max size of waitlist:            68
+Average size of waitlist:        29
+Number of computed successors:   46439
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         5144
+Number of times breaked:         2
+
+Total time for CPA algorithm:         3.612s (Max:     3.218s)
+  Time for choose from waitlist:      0.165s
+  Time for precision adjustment:      0.680s
+  Time for transfer relation:         1.760s
+  Time for stop operator:             0.231s
+  Time for adding to reached set:     0.249s
+
+ValueAnalysisRefiner statistics
+-------------------------------
+Total number of refinements:              2
+Total number of targets found:            2
+Time for completing refinement:           1.066s
+  Time for interpolation:                              0.000s
+  Number of interpolations:                               0
+  Number of interpolation queries:                        0 (count: 0, min: 0, max: 0, avg: 0.00)
+  Size of interpolant:                                    0 (count: 0, min: 0, max: 0, avg: 0.00)
+  Number of infeasible sliced prefixes:                   0 (count: 0, min: 0, max: 0, avg: 0.00)
+  Extracting infeasible sliced prefixes:               0.000s
+  Selecting infeasible sliced prefixes:                0.000s
+Total number of root relocations:         0
+Total number of similar, repeated refinements:         0
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                2
+Number of successful refinements:     2
+Number of failed refinements:         0
+Max. size of reached set before ref.: 630
+Max. size of reached set after ref.:  2
+Avg. size of reached set before ref.: 630.00
+Avg. size of reached set after ref.:  2.00
+
+Total time for CEGAR algorithm:       4.847s
+Time for refinements:                 1.235s
+Average time for refinement:          0.617s
+Max time for refinement:              0.744s
+
+Counterexample-Check Algorithm statistics
+-----------------------------------------
+Number of counterexample checks:    0
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.773
+  Visited lines:          6334
+  Total lines:            8001
+  Line coverage:          0.792
+  Visited conditions:     1081
+  Total conditions:       1754
+  Condition coverage:     0.616
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     3922
+Number of CFA edges:             5859
+Number of relevant variables:    713
+Number of functions:             141
+Number of loops:                 45
+Size of reached set:             40040
+  Number of reached locations:   2548 (65%)
+    Avg states per location:     15
+    Max states per location:     354 (at node N750)
+  Number of reached functions:   109 (77%)
+  Number of partitions:          39940
+    Avg size of partitions:      1
+    Max size of partitions:      2 (with key [N1753 (before line 5916), Function rcu_torture_timer called from node N6046, stack depth 6 [62862fe3], stack [main, rcu_torture_init, rcu_torture_cleanup, rcu_torture_stats_print, rcu_torture_printk, rcu_torture_timer], Init])
+  Number of target states:       0
+
+Time for analysis setup:          4.253s
+  Time for loading CPAs:          0.574s
+  Time for loading parser:        0.612s
+  Time for CFA construction:      2.993s
+    Time for parsing file(s):     0.695s
+    Time for AST to CFA:          0.989s
+    Time for CFA sanity check:    0.138s
+    Time for post-processing:     0.827s
+      Time for var class.:        0.000s
+Time for Analysis:                4.923s
+CPU time for analysis:            8.840s
+Total time for CPAchecker:        9.183s
+Total CPU time for CPAchecker:   16.220s
+
+Time for Garbage Collector:       0.141s (in 1 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:                529MB (   504 MiB) max;    244MB (   233 MiB) avg;    584MB (   557 MiB) peak
+Used non-heap memory:             23MB (    22 MiB) max;     18MB (    17 MiB) avg;     23MB (    22 MiB) peak
+Used in PS Old Gen pool:           0MB (     0 MiB) max;      0MB (     0 MiB) avg;      0MB (     0 MiB) peak
+Allocated heap memory:          2024MB (  1930 MiB) max;   2024MB (  1930 MiB) avg
+Allocated non-heap memory:        25MB (    24 MiB) max;     24MB (    23 MiB) avg
+Total process virtual memory:  13579MB ( 12950 MiB) max;  13579MB ( 12950 MiB) avg
+
+Verification result: TRUE. No property violation found by chosen configuration.
+More details about the verification run can be found in the directory "./output".

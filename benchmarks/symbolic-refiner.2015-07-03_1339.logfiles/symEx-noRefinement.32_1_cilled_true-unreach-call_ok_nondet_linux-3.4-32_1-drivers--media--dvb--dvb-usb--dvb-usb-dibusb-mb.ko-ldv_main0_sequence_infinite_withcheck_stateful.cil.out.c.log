@@ -1,0 +1,144 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic -setprop cpa.constraints.lessOrEqualType=SUBSET -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-linux-3.4-simple/ALL.prp ../svcomp15/ldv-linux-3.4-simple/32_1_cilled_true-unreach-call_ok_nondet_linux-3.4-32_1-drivers--media--dvb--dvb-usb--dvb-usb-dibusb-mb.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_-790139529_tempdir
+line 7336: Function pointer *__cil_tmp18 with type int (*)(struct dvb_frontend *fe, int onoff, u8 pll_ctrl) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 7445: Function pointer *__a with type struct dvb_frontend * (*)(const struct dib3000_config *config, struct i2c_adapter *i2c, struct dib_fe_xfer_ops *xfer_ops) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 7748: Function pointer *__a with type struct dvb_frontend * (*)(struct dvb_frontend *fe, int pll_addr, struct i2c_adapter *i2c, unsigned int pll_desc_id) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 7623: Function pointer *__a with type struct dvb_frontend * (*)(struct dvb_frontend *fe, int pll_addr, struct i2c_adapter *i2c, unsigned int pll_desc_id) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+line 8049: Ignoring call via function pointer dibusb_tuner_probe_and_attach::__cil_tmp66 for which no suitable target was found in line: (*__cil_tmp66)(__cil_tmp71, 1); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 7336: Ignoring call via function pointer dib3000mb_i2c_gate_ctrl::__cil_tmp18 for which no suitable target was found in line: tmp___7 = (*__cil_tmp18)(fe, enable, __cil_tmp21); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 8133: Ignoring call via function pointer dibusb_tuner_probe_and_attach::__cil_tmp95 for which no suitable target was found in line: (*__cil_tmp95)(__cil_tmp100, 0); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 7748: Ignoring call via function pointer dibusb_panasonic_tuner_attach::__a for which no suitable target was found in line: tmp___11 = (*__a)(__cil_tmp20, 96, __cil_tmp24, 8U); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 7623: Ignoring call via function pointer dibusb_thomson_tuner_attach::__a for which no suitable target was found in line: tmp___11 = (*__a)(__cil_tmp20, 97, __cil_tmp24, 5U); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 7445: Ignoring call via function pointer dibusb_dib3000mb_frontend_attach::__a for which no suitable target was found in line: tmp___11 = (*__a)(__cil_tmp16, __cil_tmp20, __cil_tmp21); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Warning: Analysis stopped (The CPU-time limit of 900s has elapsed.) (ShutdownNotifier.shutdownIfNecessary, WARNING)
+
+Shutdown requested (The CPU-time limit of 900s has elapsed.), waiting for termination. (ForceTerminationOnShutdown$1.shutdownRequested, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                               13144978 (count: 37794, min: 0, max: 380, avg: 347.81)
+Number of global variables:                        10279424 (count: 37794, min: 0, max: 272, avg: 271.99)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                   38346
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                3.080s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:    20.879s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 10
+Most constraints before refinement in state: 10
+Constraints after refinement in state: 174428
+Constraints before refinement in state: 174428
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 338ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  1.227s
+  Time for transition matches:                         0.461s
+  Time for transition assertions:                      0.000s
+  Time for transition actions:                         0.000s
+Automaton transfers with branching:                0
+Automaton transfer successors:                        86229 (count: 86229, min: 1, max: 1, avg: 1.00) [1 x 86229]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            35224
+Max size of waitlist:            2570
+Average size of waitlist:        1287
+Number of computed successors:   38346
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         553
+Number of times breaked:         0
+
+Total time for CPA algorithm:       884.149s (Max:   884.149s)
+  Time for choose from waitlist:      0.150s
+  Time for precision adjustment:      3.927s
+  Time for transfer relation:        40.135s
+  Time for stop operator:           838.862s
+  Time for adding to reached set:     0.356s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.400
+  Visited lines:          7959
+  Total lines:            8012
+  Line coverage:          0.993
+  Visited conditions:     65
+  Total conditions:       88
+  Condition coverage:     0.739
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     296
+Number of CFA edges:             366
+Number of relevant variables:    246
+Number of functions:             20
+Number of loops:                 1
+Size of reached set:             37794
+  Number of reached locations:   208 (70%)
+    Avg states per location:     181
+    Max states per location:     2498 (at node N733)
+  Number of reached functions:   8 (40%)
+  Number of partitions:          12983
+    Avg size of partitions:      2
+    Max size of partitions:      2498 (with key [N733 (before line 10041), Function main called from node N619, stack depth 1 [52fe330e], stack [main], Init])
+  Number of target states:       0
+  Size of final wait list        2570
+
+Time for analysis setup:          3.708s
+  Time for loading CPAs:          0.544s
+  Time for loading parser:        0.556s
+  Time for CFA construction:      2.558s
+    Time for parsing file(s):     1.203s
+    Time for AST to CFA:          0.807s
+    Time for CFA sanity check:    0.042s
+    Time for post-processing:     0.298s
+      Time for var class.:        0.000s
+Time for Analysis:              884.149s
+CPU time for analysis:          893.710s
+Total time for CPAchecker:      887.863s
+Total CPU time for CPAchecker:  899.960s
+
+Time for Garbage Collector:       2.557s (in 34 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               3355MB (  3199 MiB) max;   1167MB (  1113 MiB) avg;   3439MB (  3280 MiB) peak
+Used non-heap memory:             22MB (    21 MiB) max;     22MB (    21 MiB) avg;     22MB (    21 MiB) peak
+Used in PS Old Gen pool:          91MB (    87 MiB) max;     57MB (    54 MiB) avg;     91MB (    87 MiB) peak
+Allocated heap memory:          4759MB (  4539 MiB) max;   3585MB (  3419 MiB) avg
+Allocated non-heap memory:        25MB (    24 MiB) max;     25MB (    24 MiB) avg
+Total process virtual memory:  13597MB ( 12967 MiB) max;  13597MB ( 12967 MiB) avg
+
+Verification result: UNKNOWN, incomplete analysis.
+More details about the verification run can be found in the directory "./output".

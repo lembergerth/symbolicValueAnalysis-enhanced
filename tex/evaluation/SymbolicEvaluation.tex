@@ -1,4 +1,6 @@
 \section{Evaluation of CEGAR}
+
+\subsection{Comparison to \SymbolicExecutionCPA\ without CEGAR}
 Evaluation shows the great boost CEGAR provides to the \symbolicExecutionCPA. 
 Table~\ref{tab:cegarBenefits} shows the results of the \symbolicExecutionCPA\ without CEGAR using the subset less-or-equal operator and $\cpaMerge^{sep}$ (SymEx w/o CEGAR), in comparison to the \symbolicExecutionCPA\ using CEGAR with refinement based on CEGAR for explicit-state model checking (SymEx w/ CEGAR, Sec.~\ref{sec:assignmentRefinement}).
 \emph{Program errors} are errors in the execution of \cpaChecker, in this case a parsing error of a file for both analysis and an exception due to a failure of the SMT solver in the analysis without CEGAR and one due to a division by zero in the analysis with CEGAR.
@@ -7,7 +9,7 @@ and the decrease in timeouts by more then 40\% are the most notable improvements
 On the contrary, the number of found safety violations decreases by 222 tasks,
 since the lazy approach of CEGAR has a problem with programs consisting of a lot of assumptions leading to an error in dependence of many variables.
 
-\begin{table}[h]
+\begin{table}[t]
 \begin{tabular}{|r|c|c|c|}
 \hline
     & SymEx w/o CEGAR & SymEx w/ CEGAR & Overall \\ \hline
@@ -107,8 +109,8 @@ resource errors & 3285 & 1928 & \\ \hline % includes timeouts + StackOverflowExc
   (l2) edge node [right, pos=0.3] {$\mathbf{[b == 1]}$} (lr3)
   (ll3) edge node [right, pos=0.3] {$\mathbf{[c == 1]}$} (llr4)
   (ll3) edge [dashed] (lll6)
-  (lll6) edge node [right, pos=0.5] {$\mathbf{[z == 1]}$} (lllr6)
-  (lll6) edge node [left, pos=0.5] {$\mathbf{[!(z == 1)]}$} (llll6)
+  (lll6) edge node [right, pos=0.5] {$\mathbf{[z == 2]}$} (lllr6)
+  (lll6) edge node [left, pos=0.5] {$\mathbf{[!(z == 2)]}$} (llll6)
 ;
 \end{tikzpicture}
 \caption{CFA}
@@ -124,14 +126,14 @@ resource errors & 3285 & 1928 & \\ \hline % includes timeouts + StackOverflowExc
 \node[mynode] (2) [below = 0.6cm of 1] {$\{ a \rightarrow 2, b \rightarrow 2, ..., z \rightarrow 2 \}$};
 \node[mynode] (3) [below = 0.6cm of 2 ] {$\{ a \rightarrow 2, b \rightarrow 2, ..., z \rightarrow 2 \}$};
 \node[mynode] (4) [below = 2cm of 3] {$\{ a \rightarrow 2, b \rightarrow 2, ..., z \rightarrow 2 \}$};
-\node[mynode] (5) [below = 0.6cm of 4] {$\{ a \rightarrow 2, b \rightarrow 2, ..., z \rightarrow 2 \}$};
+\node[mynode] (5) [below = 0.6cm of 4, draw=red, very thick] {$\{ a \rightarrow 2, b \rightarrow 2, ..., z \rightarrow 2 \}$};
 
 \path
   (0) edge node [left] {\textbf{a $\assign$ 2, ..., z $\assign$ 2}} (1)
   (1) edge node [left] {$\mathbf{[!(a == 1)]}$} (2)
   (2) edge node [left] {$\mathbf{[!(b == 1)]}$} (3)
   (3) edge [dashed] (4)
-  (4) edge node [left] {$\mathbf{[!(z == 1)]}$} (5)
+  (4) edge node [left] {$\mathbf{z == 2}$} (5)
 ;
 \end{tikzpicture}
 \caption{Last iteration tracking all program variables. Also equals the run of eager analysis}
@@ -145,14 +147,52 @@ and last one iteration of analysis using CEGAR. The last iteration also equals t
 \end{figure}
 
 Figure~\ref{fig:cegarFailsEx:cfa} shows a CFA representing one such program. The highlighted nodes are error locations.
-Although none of them are really reachable as all program variables are initialised with the concrete value $2$ at the beginning of the program,
+Although only the last one of them is really reachable as all program variables are initialised with the concrete value $2$ at the beginning of the program,
 the CEGAR algorithm visits one after the other, always refining the precision to track only one additional variable and then restarting
 from the beginning of the program, since all variable assignments happen there.
 The first three iterations of this procedure are shown in Figures~\ref{fig:cegarFailsEx:first} -- \ref{fig:cegarFailsEx:third}.
 This lazy approach performs many computations obviously unnecessary and as such has a significant worse performance than an eager approach using full precision.
-Using full precision, it is possible to prove all error paths infeasible in one run, since the value analysis state already contains $\{ a \rightarrow 2, b \rightarrow 2, ..., z \rightarrow 2 \}$ after processing the first CFA edge (Fig.~\ref{fig:cegarFailsEx:eager}).
+Using full precision, it is possible to prove all error paths but the last infeasible in one run, since the value analysis state already equals $\{ a \rightarrow 2, b \rightarrow 2, ..., z \rightarrow 2 \}$ after processing the first CFA edge (Fig.~\ref{fig:cegarFailsEx:eager}).
+Analogous, programs like this requiring the tracking of all constraints exist and programs with such characteristics, but without a reachable target location.
+Tasks of the latter category constitute almost all of the 84~unique correct \resultTrue\ results of symbolic execution without CEGAR.
 
-Most of the programs with this characteristic are of the task sets of ProductLines and ECA.
-This shows that for a significant amount of tasks, eager symbolic execution is more successful in finding errors then symbolic execution using CEGAR.
-But after all, CEGAR was able to push the \symbolicExecutionCPA's score from 660~points to 3271~points by increasing the amount of successfully verified
+\begin{figure}[t]
+\begin{subfigure}[b]{.48\textwidth}
+\includegraphics[trim=2cm 0 1cm 0, clip=true, scale=.9]{evaluation/sp_timeToFindError_cegar_noCegar}
+\caption{Time in seconds to find an error}
+\label{fig:spTimeToFindError}
+\end{subfigure}%
+\hfill
+\begin{subfigure}[b]{.48\textwidth}
+\includegraphics[trim=2cm 0 1cm 0, clip=true, scale=.9]{evaluation/sp_timeToProveTrue_cegar_noCegar}
+\caption{Time in seconds to prove a program safe}
+\label{fig:spTimeToProveSafe}
+\end{subfigure}
+\caption{Runtime performance of symbolic execution with and without CEGAR in comparison}
+\end{figure}
+
+Most of the programs with these characteristics are of the task sets of ProductLines and ECA.
+To recap, of the 598~tasks symbolic execution without CEGAR can correctly find errors in, more than half (323~tasks) can't be analysed correctly by symbolic execution with CEGAR
+due to many infeasible error paths and the resulting amount of refinements.
+On the other hand, symbolic execution with CEGAR is able to prove for 101~new tasks that an error exists in them.
+This shows that the efficiency of symbolic execution with and without CEGAR strongly depends on the task on hand, especially when the program is not error-free.
+Fig.~\ref{fig:spTimeToFindError} illustrates that for many programs, either symbolic execution with or without CEGAR is able to find a (possibly non-existent) error within 900~seconds, but not both.
+For proving the safety of a program, analysis with CEGAR performs significantly better, being able to correctly analyse 1623~tasks more than analysis without CEGAR, but its laziness results in bad performance for some programs, too (Fig.~\ref{fig:spTimeToProveSafe}).
+
+\begin{figure}[h!]
+\includegraphics{evaluation/hg_refinementsForUniqueCorrects}
+\caption{Amount of tasks analysis with CEGAR can compute a result for while analysis without CEGAR can't, and the number of refinements necessary for them}
+\label{fig:hgRefinementsForUniques}
+\end{figure}
+\begin{figure}[h!]
+\includegraphics{evaluation/hg_refinementsForUniqueTimeouts}
+\caption{Amount of refinements (up to 100) that were performed for a specific amount of tasks that resulted in a timeout}
+\label{fig:hgRefinementsForTimeouts}
+\end{figure}
+For most tasks symbolic execution with CEGAR is able to compute a result but symbolic execution without CEGAR is not, only few or zero~refinements are necessary (Fig.~\ref{fig:hgRefinementsForUniques}).
+Comparison with the random distribution of performed refinements in tasks that resulted in a timeout when using CEGAR (Fig.~\ref{fig:hgRefinementsForTimeouts}) and our example above,
+this illustrates nicely the problem CEGAR has with many possible error paths.
+
+Nevertheless, thanks to its significant better performance in proving the safety of programs, CEGAR was able to push the \symbolicExecutionCPA's score from 660~points to 3271~points by increasing the amount of successfully verified
 error-free tasks by more than~1500.
+

@@ -1,0 +1,157 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-commit-tester/ALL.prp ../svcomp15/ldv-commit-tester/m0_true-unreach-call_drivers-media-video-cx88-cx88-blackbird-ko--32_7a--d47b389-1.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_1296269377_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 7900: Function pointer *(core->gate_ctrl) with type void (*)(struct cx88_core *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 7862: Function pointer *(core->gate_ctrl) with type void (*)(struct cx88_core *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 7731: Function pointer *(core->gate_ctrl) with type void (*)(struct cx88_core *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 7694: Function pointer *(core->gate_ctrl) with type void (*)(struct cx88_core *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+Skipping recursive function call from mpeg_open to mpeg_open (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 7887: Return type of function __builtin_prefetch is void, but result is used as type int: __builtin_prefetch((const void *)(__sd->list.next)); (CounterexampleCheck:PredicateCPA:CtoFormulaConverter.getReturnType, WARNING)
+
+Cannot get declaration of function __builtin_prefetch, ignoring calls to it. (CounterexampleCheck:PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 7718: Return type of function __builtin_prefetch is void, but result is used as type int: __builtin_prefetch((const void *)(__sd->list.next)); (CounterexampleCheck:PredicateCPA:CtoFormulaConverter.getReturnType, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                   9034 (count: 9039, min: 0, max: 1, avg: 1.00)
+Number of global variables:                            9034 (count: 9039, min: 0, max: 1, avg: 1.00)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                   17473
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                0.126s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     0.000s
+Replaced symbolic expressions: 0
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  0.241s
+Automaton transfers with branching:                0
+Automaton transfer successors:                        27513 (count: 27513, min: 1, max: 1, avg: 1.00) [1 x 27513]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            16564
+Max size of waitlist:            62
+Average size of waitlist:        48
+Number of computed successors:   17473
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         817
+Number of times breaked:         2
+
+Total time for CPA algorithm:         2.579s (Max:     1.385s)
+  Time for choose from waitlist:      0.083s
+  Time for precision adjustment:      0.609s
+  Time for transfer relation:         1.158s
+  Time for stop operator:             0.105s
+  Time for adding to reached set:     0.184s
+
+ValueAnalysisRefiner statistics
+-------------------------------
+Total number of refinements:              2
+Total number of targets found:            2
+Time for completing refinement:           1.980s
+  Time for interpolation:                              0.000s
+  Number of interpolations:                               0
+  Number of interpolation queries:                        0 (count: 0, min: 0, max: 0, avg: 0.00)
+  Size of interpolant:                                    0 (count: 0, min: 0, max: 0, avg: 0.00)
+  Number of infeasible sliced prefixes:                   0 (count: 0, min: 0, max: 0, avg: 0.00)
+  Extracting infeasible sliced prefixes:               0.000s
+  Selecting infeasible sliced prefixes:                0.000s
+Total number of root relocations:         0
+Total number of similar, repeated refinements:         0
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                2
+Number of successful refinements:     1
+Number of failed refinements:         0
+Max. size of reached set before ref.: 9039
+Max. size of reached set after ref.:  5
+Avg. size of reached set before ref.: 8331.00
+Avg. size of reached set after ref.:  5.00
+
+Total time for CEGAR algorithm:       5.106s
+Time for refinements:                 2.527s
+Average time for refinement:          1.263s
+Max time for refinement:              2.008s
+
+Counterexample-Check Algorithm statistics
+-----------------------------------------
+Number of counterexample checks:    1
+Number of infeasible paths:         0 (0%)
+Time for counterexample checks:         3.093s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.426
+  Visited lines:          6317
+  Total lines:            6891
+  Line coverage:          0.917
+  Visited conditions:     263
+  Total conditions:       462
+  Condition coverage:     0.569
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     1688
+Number of CFA edges:             2354
+Number of relevant variables:    513
+Number of functions:             129
+Number of loops:                 14
+Size of reached set:             9039
+  Number of reached locations:   901 (53%)
+    Avg states per location:     10
+    Max states per location:     671 (at node N84)
+  Number of reached functions:   55 (43%)
+  Number of partitions:          9039
+    Avg size of partitions:      1
+    Max size of partitions:      1
+  Number of target states:       1
+  Size of final wait list        51
+
+Time for analysis setup:          3.793s
+  Time for loading CPAs:          0.530s
+  Time for loading parser:        0.590s
+  Time for CFA construction:      2.601s
+    Time for parsing file(s):     0.970s
+    Time for AST to CFA:          0.887s
+    Time for CFA sanity check:    0.086s
+    Time for post-processing:     0.485s
+      Time for var class.:        0.000s
+Time for Analysis:                8.237s
+CPU time for analysis:           13.710s
+Total time for CPAchecker:       12.036s
+Total CPU time for CPAchecker:   20.300s
+
+Time for Garbage Collector:       0.141s (in 1 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:                529MB (   504 MiB) max;    203MB (   194 MiB) avg;    561MB (   535 MiB) peak
+Used non-heap memory:             25MB (    24 MiB) max;     20MB (    19 MiB) avg;     25MB (    24 MiB) peak
+Used in PS Old Gen pool:           0MB (     0 MiB) max;      0MB (     0 MiB) avg;      0MB (     0 MiB) peak
+Allocated heap memory:          2024MB (  1930 MiB) max;   2024MB (  1930 MiB) avg
+Allocated non-heap memory:        26MB (    24 MiB) max;     25MB (    23 MiB) avg
+Total process virtual memory:  13757MB ( 13119 MiB) max;  13605MB ( 12974 MiB) avg
+
+Verification result: FALSE. Property violation (__VERIFIER_error(); called in line 9415) found by chosen configuration.
+More details about the verification run can be found in the directory "./output".

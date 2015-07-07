@@ -1,0 +1,152 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-linux-3.4-simple/ALL.prp ../svcomp15/ldv-linux-3.4-simple/43_1a_cilled_true-unreach-call_ok_nondet_linux-43_1a-drivers--media--dvb--ttpci--budget-patch.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_636531557_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 10724: Function pointer *__a___1 with type struct dvb_frontend * (*)(const struct tda8083_config *, struct i2c_adapter *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 10536: Function pointer *__a___0 with type struct dvb_frontend * (*)(const struct stv0299_config *, struct i2c_adapter *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 10366: Function pointer *__a with type struct dvb_frontend * (*)(const struct ves1x93_config *, struct i2c_adapter *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 7980: Function pointer *__cil_tmp20 with type int (*)(struct dvb_frontend *, u8 *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 10366: Ignoring call via function pointer frontend_init::__a for which no suitable target was found in line: tmp___4 = (*__a)(__cil_tmp44, __cil_tmp47); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 10536: Ignoring call via function pointer frontend_init::__a___0 for which no suitable target was found in line: tmp___10 = (*__a___0)(__cil_tmp92, __cil_tmp95); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 10724: Ignoring call via function pointer frontend_init::__a___1 for which no suitable target was found in line: tmp___16 = (*__a___1)(__cil_tmp148, __cil_tmp151); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                    796 (count: 428, min: 0, max: 2, avg: 1.86)
+Number of global variables:                             426 (count: 428, min: 0, max: 1, avg: 1.00)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                     691
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                0.045s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     0.000s
+Replaced symbolic expressions: 0
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  0.120s
+Automaton transfers with branching:                0
+Automaton transfer successors:                         5540 (count: 5540, min: 1, max: 1, avg: 1.00) [1 x 5540]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            630
+Max size of waitlist:            16
+Average size of waitlist:        8
+Number of computed successors:   691
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         50
+Number of times breaked:         2
+
+Total time for CPA algorithm:         0.437s (Max:     0.274s)
+  Time for choose from waitlist:      0.028s
+  Time for precision adjustment:      0.074s
+  Time for transfer relation:         0.288s
+  Time for stop operator:             0.009s
+  Time for adding to reached set:     0.019s
+
+ValueAnalysisRefiner statistics
+-------------------------------
+Total number of refinements:              2
+Total number of targets found:            2
+Time for completing refinement:           0.160s
+  Time for interpolation:                              0.000s
+  Number of interpolations:                               0
+  Number of interpolation queries:                        0 (count: 0, min: 0, max: 0, avg: 0.00)
+  Size of interpolant:                                    0 (count: 0, min: 0, max: 0, avg: 0.00)
+  Number of infeasible sliced prefixes:                   0 (count: 0, min: 0, max: 0, avg: 0.00)
+  Extracting infeasible sliced prefixes:               0.000s
+  Selecting infeasible sliced prefixes:                0.000s
+Total number of root relocations:         0
+Total number of similar, repeated refinements:         0
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                2
+Number of successful refinements:     2
+Number of failed refinements:         0
+Max. size of reached set before ref.: 142
+Max. size of reached set after ref.:  54
+Avg. size of reached set before ref.: 135.00
+Avg. size of reached set after ref.:  28.00
+
+Total time for CEGAR algorithm:       0.859s
+Time for refinements:                 0.422s
+Average time for refinement:          0.211s
+Max time for refinement:              0.238s
+
+Counterexample-Check Algorithm statistics
+-----------------------------------------
+Number of counterexample checks:    0
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.268
+  Visited lines:          8040
+  Total lines:            9205
+  Line coverage:          0.873
+  Visited conditions:     57
+  Total conditions:       188
+  Condition coverage:     0.303
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     690
+Number of CFA edges:             857
+Number of relevant variables:    919
+Number of functions:             41
+Number of loops:                 10
+Size of reached set:             428
+  Number of reached locations:   248 (36%)
+    Avg states per location:     1
+    Max states per location:     12 (at node N8)
+  Number of reached functions:   11 (27%)
+  Number of partitions:          396
+    Avg size of partitions:      1
+    Max size of partitions:      2 (with key [N2146 (before line 11415), Function budget_patch_attach called from node N2405, stack depth 2 [3a5b596], stack [main, budget_patch_attach], Init])
+  Number of target states:       0
+
+Time for analysis setup:          3.996s
+  Time for loading CPAs:          0.603s
+  Time for loading parser:        0.495s
+  Time for CFA construction:      2.822s
+    Time for parsing file(s):     1.315s
+    Time for AST to CFA:          0.838s
+    Time for CFA sanity check:    0.076s
+    Time for post-processing:     0.402s
+      Time for var class.:        0.000s
+Time for Analysis:                0.865s
+CPU time for analysis:            1.520s
+Total time for CPAchecker:        4.866s
+Total CPU time for CPAchecker:    8.490s
+
+Time for Garbage Collector:       0.000s (in 0 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:                297MB (   284 MiB) max;    157MB (   149 MiB) avg;    297MB (   284 MiB) peak
+Used non-heap memory:             21MB (    20 MiB) max;     15MB (    14 MiB) avg;     22MB (    21 MiB) peak
+Used in PS Old Gen pool:           0MB (     0 MiB) max;      0MB (     0 MiB) avg;      0MB (     0 MiB) peak
+Allocated heap memory:          2024MB (  1930 MiB) max;   2024MB (  1930 MiB) avg
+Allocated non-heap memory:        24MB (    23 MiB) max;     24MB (    23 MiB) avg
+Total process virtual memory:  13579MB ( 12950 MiB) max;  13579MB ( 12950 MiB) avg
+
+Verification result: TRUE. No property violation found by chosen configuration.
+More details about the verification run can be found in the directory "./output".

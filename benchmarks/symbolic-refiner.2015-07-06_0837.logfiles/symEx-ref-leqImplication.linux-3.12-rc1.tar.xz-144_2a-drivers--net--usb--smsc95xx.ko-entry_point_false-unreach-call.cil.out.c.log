@@ -1,0 +1,157 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic-refiner -setprop cpa.value.symbolic.refinement.strategy=CONSTRAINTS_FIRST -setprop cpa.constraints.lessOrEqualType=IMPLICATION -setprop cpa.value.refinement.pathSlicing=false -setprop cpa.value.refinement.prefixPreference=NONE -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-linux-3.12-rc1/ALL.prp ../svcomp15/ldv-linux-3.12-rc1/linux-3.12-rc1.tar.xz-144_2a-drivers--net--usb--smsc95xx.ko-entry_point_false-unreach-call.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_1817258282_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 6902: Function pointer *fn with type int (*)(struct usbnet *, u8 , u8 , u16 , u16 , void *, u16 ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 6954: Function pointer *fn with type int (*)(struct usbnet *, u8 , u8 , u16 , u16 , const void *, u16 ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+line 6902: Function pointer __smsc95xx_read_reg::fn points to usbnet_read_cmd_nopm, but no corresponding call edge was created during preprocessing. Ignoring function pointer call: ret = (*fn)(dev, 161, 192, 0, (int)((u16 )index), (void *)(&buf), 4); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 6902: Function pointer __smsc95xx_read_reg::fn points to usbnet_read_cmd, but no corresponding call edge was created during preprocessing. Ignoring function pointer call: ret = (*fn)(dev, 161, 192, 0, (int)((u16 )index), (void *)(&buf), 4); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 6954: Function pointer __smsc95xx_write_reg::fn points to usbnet_write_cmd_nopm, but no corresponding call edge was created during preprocessing. Ignoring function pointer call: ret = (*fn)(dev, 160, 64, 0, (int)((u16 )index), (const void *)(&buf), 4); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 6954: Function pointer __smsc95xx_write_reg::fn points to usbnet_write_cmd, but no corresponding call edge was created during preprocessing. Ignoring function pointer call: ret = (*fn)(dev, 160, 64, 0, (int)((u16 )index), (const void *)(&buf), 4); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                  74364 (count: 12396, min: 0, max: 6, avg: 6.00)
+Number of global variables:                           74364 (count: 12396, min: 0, max: 6, avg: 6.00)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                   25721
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                0.250s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:    12.283s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 0
+Most constraints before refinement in state: 0
+Constraints after refinement in state: 0
+Constraints before refinement in state: 0
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 59ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  0.275s
+Automaton transfers with branching:                0
+Automaton transfer successors:                        41360 (count: 41360, min: 1, max: 1, avg: 1.00) [1 x 41360]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            23199
+Max size of waitlist:            53
+Average size of waitlist:        20
+Number of computed successors:   25721
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         2468
+Number of times breaked:         7
+
+Total time for CPA algorithm:         3.029s (Max:     1.380s)
+  Time for choose from waitlist:      0.085s
+  Time for precision adjustment:      0.608s
+  Time for transfer relation:         1.743s
+  Time for stop operator:             0.164s
+  Time for adding to reached set:     0.127s
+
+SymbolicValueAnalysisRefiner statistics
+---------------------------------------
+Total number of refinements:              7
+Total number of targets found:            7
+Time for completing refinement:         129.366s
+  Time for interpolation:                            128.286s
+  Number of interpolations:                               6
+  Number of interpolation queries:                     3250 (count: 1051, min: 0, max: 345, avg: 3.09)
+  Size of interpolant:                                  873 (count: 1051, min: 0, max: 1, avg: 0.83)
+  Number of sliced prefixes:                              0 (count: 0, min: 0, max: 0, avg: 0.00)
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                7
+Number of successful refinements:     6
+Number of failed refinements:         0
+Max. size of reached set before ref.: 12396
+Max. size of reached set after ref.:  145
+Avg. size of reached set before ref.: 3344.14
+Avg. size of reached set after ref.:  25.83
+
+Total time for CEGAR algorithm:     132.966s
+Time for refinements:               129.937s
+Average time for refinement:         18.562s
+Max time for refinement:             31.030s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.737
+  Visited lines:          8147
+  Total lines:            8510
+  Line coverage:          0.957
+  Visited conditions:     761
+  Total conditions:       912
+  Condition coverage:     0.834
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     2480
+Number of CFA edges:             3462
+Number of relevant variables:    725
+Number of functions:             114
+Number of loops:                 16
+Size of reached set:             12396
+  Number of reached locations:   2025 (82%)
+    Avg states per location:     6
+    Max states per location:     608 (at node N83)
+  Number of reached functions:   84 (74%)
+  Number of partitions:          10629
+    Avg size of partitions:      1
+    Max size of partitions:      2 (with key [N2936 (before line 11555), Function main called from node N2859, stack depth 1 [2e57327], stack [main], Init])
+  Number of target states:       1
+  Size of final wait list        12
+
+Time for analysis setup:          4.607s
+  Time for loading CPAs:          0.573s
+  Time for loading parser:        0.602s
+  Time for CFA construction:      3.362s
+    Time for parsing file(s):     1.137s
+    Time for AST to CFA:          1.081s
+    Time for CFA sanity check:    0.103s
+    Time for post-processing:     0.783s
+      Time for var class.:        0.000s
+Time for Analysis:              132.966s
+CPU time for analysis:          142.080s
+Total time for CPAchecker:      137.578s
+Total CPU time for CPAchecker:  150.450s
+
+Time for Garbage Collector:       0.835s (in 11 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:                561MB (   535 MiB) max;    275MB (   262 MiB) avg;    588MB (   561 MiB) peak
+Used non-heap memory:             24MB (    23 MiB) max;     23MB (    22 MiB) avg;     24MB (    23 MiB) peak
+Used in PS Old Gen pool:          26MB (    25 MiB) max;      9MB (     8 MiB) avg;     26MB (    25 MiB) peak
+Allocated heap memory:          2024MB (  1930 MiB) max;   1954MB (  1863 MiB) avg
+Allocated non-heap memory:        26MB (    25 MiB) max;     26MB (    25 MiB) avg
+Total process virtual memory:  13602MB ( 12972 MiB) max;  13597MB ( 12967 MiB) avg
+
+Verification result: FALSE. Property violation (__VERIFIER_error(); called in line 6442) found by chosen configuration.
+More details about the verification run can be found in the directory "./output".

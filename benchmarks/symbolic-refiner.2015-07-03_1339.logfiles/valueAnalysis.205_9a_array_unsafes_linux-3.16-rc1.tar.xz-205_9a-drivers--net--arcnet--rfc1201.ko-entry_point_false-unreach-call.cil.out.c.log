@@ -1,0 +1,154 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-linux-3.16-rc1/ALL.prp ../svcomp15/ldv-linux-3.16-rc1/205_9a_array_unsafes_linux-3.16-rc1.tar.xz-205_9a-drivers--net--arcnet--rfc1201.ko-entry_point_false-unreach-call.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_1034064365_tempdir
+line 6917: Function pointer *(lp->hw.copy_to_card) with type void (*)(struct net_device *, int, int, void *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 6919: Function pointer *(lp->hw.copy_to_card) with type void (*)(struct net_device *, int, int, void *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 6909: Function pointer *(lp->hw.copy_to_card) with type void (*)(struct net_device *, int, int, void *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 6741-6742: Function pointer *(lp->hw.copy_from_card) with type void (*)(struct net_device *, int, int, void *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 6480-6481: Function pointer *(lp->hw.copy_from_card) with type void (*)(struct net_device *, int, int, void *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 6409: Function pointer *(lp->hw.copy_from_card) with type void (*)(struct net_device *, int, int, void *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+Infeasible counterexample found, but could not remove it from the ARG. Therefore, we cannot prove safety. (CounterexampleCheckAlgorithm.checkCounterexample, WARNING)
+
+Analysis incomplete: no errors found, but not everything could be checked. (CPAchecker.analyzeResult, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                 130469 (count: 25732, min: 0, max: 6, avg: 5.07)
+Number of global variables:                          102746 (count: 25732, min: 0, max: 4, avg: 3.99)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                   45918
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                0.212s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     0.000s
+Replaced symbolic expressions: 0
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  0.427s
+Automaton transfers with branching:                0
+Automaton transfer successors:                        77326 (count: 77326, min: 1, max: 1, avg: 1.00) [1 x 77326]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            40940
+Max size of waitlist:            27
+Average size of waitlist:        14
+Number of computed successors:   45918
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         4947
+Number of times breaked:         27
+
+Total time for CPA algorithm:         3.372s (Max:     0.727s)
+  Time for choose from waitlist:      0.100s
+  Time for precision adjustment:      0.499s
+  Time for transfer relation:         1.641s
+  Time for stop operator:             0.465s
+  Time for adding to reached set:     0.246s
+
+ValueAnalysisRefiner statistics
+-------------------------------
+Total number of refinements:             27
+Total number of targets found:           27
+Time for completing refinement:           2.227s
+  Time for interpolation:                              0.000s
+  Number of interpolations:                               0
+  Number of interpolation queries:                        0 (count: 0, min: 0, max: 0, avg: 0.00)
+  Size of interpolant:                                    0 (count: 0, min: 0, max: 0, avg: 0.00)
+  Number of infeasible sliced prefixes:                   0 (count: 0, min: 0, max: 0, avg: 0.00)
+  Extracting infeasible sliced prefixes:               0.000s
+  Selecting infeasible sliced prefixes:                0.000s
+Total number of root relocations:         0
+Total number of similar, repeated refinements:         0
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                27
+Number of successful refinements:     8
+Number of failed refinements:         0
+Max. size of reached set before ref.: 24056
+Max. size of reached set after ref.:  4112
+Avg. size of reached set before ref.: 7026.89
+Avg. size of reached set after ref.:  1055.00
+
+Total time for CEGAR algorithm:       6.952s
+Time for refinements:                 3.577s
+Average time for refinement:          0.132s
+Max time for refinement:              0.410s
+
+Counterexample-Check Algorithm statistics
+-----------------------------------------
+Number of counterexample checks:    19
+Number of infeasible paths:         19 (100%)
+Time for counterexample checks:        56.466s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.583
+  Visited lines:          6035
+  Total lines:            6118
+  Line coverage:          0.986
+  Visited conditions:     177
+  Total conditions:       198
+  Condition coverage:     0.894
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     604
+Number of CFA edges:             758
+Number of relevant variables:    200
+Number of functions:             48
+Number of loops:                 5
+Size of reached set:             25732
+  Number of reached locations:   487 (81%)
+    Avg states per location:     52
+    Max states per location:     2720 (at node N855)
+  Number of reached functions:   28 (58%)
+  Number of partitions:          10126
+    Avg size of partitions:      2
+    Max size of partitions:      120 (with key [N855 (before lines 7463-7475), Function ldv_set_remove called from node N941, stack depth 5 [7258ee35], stack [main, rx, ldv_netif_rx_15, ldv_skb_free_int, ldv_set_remove], Init])
+  Number of target states:       0
+
+Time for analysis setup:          3.102s
+  Time for loading CPAs:          0.547s
+  Time for loading parser:        0.526s
+  Time for CFA construction:      1.948s
+    Time for parsing file(s):     0.851s
+    Time for AST to CFA:          0.602s
+    Time for CFA sanity check:    0.066s
+    Time for post-processing:     0.268s
+      Time for var class.:        0.000s
+Time for Analysis:               63.510s
+CPU time for analysis:           74.020s
+Total time for CPAchecker:       66.619s
+Total CPU time for CPAchecker:   79.450s
+
+Time for Garbage Collector:       0.478s (in 4 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               1819MB (  1734 MiB) max;    679MB (   648 MiB) avg;   1819MB (  1734 MiB) peak
+Used non-heap memory:             27MB (    26 MiB) max;     25MB (    24 MiB) avg;     27MB (    26 MiB) peak
+Used in PS Old Gen pool:           0MB (     0 MiB) max;      0MB (     0 MiB) avg;      0MB (     0 MiB) peak
+Allocated heap memory:          3611MB (  3444 MiB) max;   2854MB (  2722 MiB) avg
+Allocated non-heap memory:        27MB (    26 MiB) max;     26MB (    25 MiB) avg
+Total process virtual memory:  14320MB ( 13657 MiB) max;  13781MB ( 13143 MiB) avg
+
+Verification result: UNKNOWN, incomplete analysis.
+More details about the verification run can be found in the directory "./output".

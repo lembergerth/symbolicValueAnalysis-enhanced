@@ -1,0 +1,137 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic -setprop cpa.constraints.lessOrEqualType=SUBSET -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-consumption/ALL.prp ../svcomp15/ldv-consumption/linux-3.8-rc1-32_7a-drivers--media--usb--ttusb-dec--ttusb_dec.ko-ldv_main0_true-unreach-call.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_1838396093_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 7469: Function pointer *(ops->alloc) with type void * (*)(struct device *, size_t , dma_addr_t *, gfp_t , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 7517: Function pointer *(ops->free) with type void (*)(struct device *, size_t , void *, dma_addr_t , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 8188-8189: Function pointer *(dec->audio_filter->feed->cb.ts) with type int (*)(u8 *, size_t , u8 *, size_t , struct dmx_ts_feed *, enum dmx_success ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 8535-8536: Function pointer *(filter->feed->cb.sec) with type int (*)(u8 *, size_t , u8 *, size_t , struct dmx_section_filter *, enum dmx_success ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 8458-8460: Function pointer *(dec->audio_filter->feed->cb.ts) with type int (*)(u8 *, size_t , u8 *, size_t , struct dmx_ts_feed *, enum dmx_success ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 8361-8363: Function pointer *(dec->video_filter->feed->cb.ts) with type int (*)(u8 *, size_t , u8 *, size_t , struct dmx_ts_feed *, enum dmx_success ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 8203-8204: Function pointer *(dec->video_filter->feed->cb.ts) with type int (*)(u8 *, size_t , u8 *, size_t , struct dmx_ts_feed *, enum dmx_success ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+Shutdown requested (The CPU-time limit of 900s has elapsed.), waiting for termination. (ForceTerminationOnShutdown$1.shutdownRequested, WARNING)
+
+Warning: Analysis stopped (The CPU-time limit of 900s has elapsed.) (ShutdownNotifier.shutdownIfNecessary, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                7885780 (count: 23799, min: 0, max: 356, avg: 331.35)
+Number of global variables:                         7210491 (count: 23799, min: 0, max: 303, avg: 302.97)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                   24270
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                1.587s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     5.538s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 594
+Most constraints before refinement in state: 594
+Constraints after refinement in state: 1306329
+Constraints before refinement in state: 1306329
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 19258ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  0.245s
+Automaton transfers with branching:                0
+Automaton transfer successors:                        42072 (count: 42072, min: 1, max: 1, avg: 1.00) [1 x 42072]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            23215
+Max size of waitlist:            583
+Average size of waitlist:        272
+Number of computed successors:   24270
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         472
+Number of times breaked:         0
+
+Total time for CPA algorithm:       881.320s (Max:   881.320s)
+  Time for choose from waitlist:      0.077s
+  Time for precision adjustment:     21.248s
+  Time for transfer relation:       617.614s
+  Time for stop operator:           241.820s
+  Time for adding to reached set:     0.207s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.308
+  Visited lines:          6701
+  Total lines:            8425
+  Line coverage:          0.795
+  Visited conditions:     124
+  Total conditions:       658
+  Condition coverage:     0.188
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     1914
+Number of CFA edges:             2510
+Number of relevant variables:    446
+Number of functions:             120
+Number of loops:                 22
+Size of reached set:             23799
+  Number of reached locations:   444 (23%)
+    Avg states per location:     53
+    Max states per location:     588 (at node N357)
+  Number of reached functions:   37 (31%)
+  Number of partitions:          9695
+    Avg size of partitions:      2
+    Max size of partitions:      588 (with key [N357 (before line 7886), Function crc16 called from node N1827, stack depth 5 [560a9228], stack [main, ttusb_dec_probe, ttusb_dec_init_stb, ttusb_dec_boot_dsp, crc16], Init])
+  Number of target states:       0
+  Size of final wait list        584
+
+Time for analysis setup:          4.041s
+  Time for loading CPAs:          0.491s
+  Time for loading parser:        0.521s
+  Time for CFA construction:      2.992s
+    Time for parsing file(s):     1.108s
+    Time for AST to CFA:          1.050s
+    Time for CFA sanity check:    0.096s
+    Time for post-processing:     0.527s
+      Time for var class.:        0.000s
+Time for Analysis:              881.320s
+CPU time for analysis:          893.700s
+Total time for CPAchecker:      885.366s
+Total CPU time for CPAchecker:  900.810s
+
+Time for Garbage Collector:       5.443s (in 329 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               2149MB (  2049 MiB) max;    485MB (   462 MiB) avg;   2276MB (  2171 MiB) peak
+Used non-heap memory:             22MB (    21 MiB) max;     22MB (    21 MiB) avg;     23MB (    21 MiB) peak
+Used in PS Old Gen pool:         127MB (   121 MiB) max;     83MB (    79 MiB) avg;    127MB (   121 MiB) peak
+Allocated heap memory:          3557MB (  3392 MiB) max;   2203MB (  2101 MiB) avg
+Allocated non-heap memory:        25MB (    24 MiB) max;     25MB (    24 MiB) avg
+Total process virtual memory:  13603MB ( 12973 MiB) max;  13598MB ( 12968 MiB) avg
+
+Verification result: UNKNOWN, incomplete analysis.
+More details about the verification run can be found in the directory "./output".

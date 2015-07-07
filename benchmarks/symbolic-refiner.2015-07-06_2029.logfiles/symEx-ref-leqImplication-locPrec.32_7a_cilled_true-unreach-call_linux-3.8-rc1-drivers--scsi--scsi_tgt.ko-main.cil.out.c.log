@@ -1,0 +1,154 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic-refiner -setprop cpa.value.symbolic.refinement.strategy=CONSTRAINTS_FIRST -setprop cpa.constraints.lessOrEqualType=IMPLICATION -setprop cpa.value.refinement.pathSlicing=false -setprop cpa.value.refinement.prefixPreference=NONE -setprop cpa.constraints.refinement.precisionType=LOCATION -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-consumption/ALL.prp ../svcomp15/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--scsi--scsi_tgt.ko-main.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_-426971826_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 8855: Function pointer *(p->_qproc) with type void (*)(struct file *, wait_queue_head_t *, struct poll_table_struct *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 8203: Function pointer *(shost->hostt->eh_abort_handler) with type int (*)(struct scsi_cmnd *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 8015: Function pointer *(shost->hostt->eh_abort_handler) with type int (*)(struct scsi_cmnd *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 8520: Function pointer *(shost->transportt->it_nexus_response) with type int (*)(struct Scsi_Host *, u64 , int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 8445: Function pointer *(shost->transportt->tsk_mgmt_response) with type int (*)(struct Scsi_Host *, u64 , u64 , int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                  14507 (count: 2855, min: 0, max: 7, avg: 5.08)
+Number of global variables:                           12644 (count: 2855, min: 0, max: 5, avg: 4.43)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                    5976
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                0.106s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     0.414s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 0
+Most constraints before refinement in state: 1
+Constraints after refinement in state: 0
+Constraints before refinement in state: 74
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 20ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  0.135s
+Automaton transfers with branching:                0
+Automaton transfer successors:                         9765 (count: 9765, min: 1, max: 1, avg: 1.00) [1 x 9765]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            5521
+Max size of waitlist:            24
+Average size of waitlist:        10
+Number of computed successors:   5976
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         444
+Number of times breaked:         9
+
+Total time for CPA algorithm:         1.696s (Max:     0.460s)
+  Time for choose from waitlist:      0.048s
+  Time for precision adjustment:      0.283s
+  Time for transfer relation:         0.995s
+  Time for stop operator:             0.109s
+  Time for adding to reached set:     0.096s
+
+SymbolicValueAnalysisRefiner statistics
+---------------------------------------
+Total number of refinements:              9
+Total number of targets found:            9
+Time for completing refinement:          19.475s
+  Time for interpolation:                             18.991s
+  Number of interpolations:                               9
+  Number of interpolation queries:                      660 (count: 1381, min: 0, max: 6, avg: 0.48)
+  Size of interpolant:                                  532 (count: 1381, min: 0, max: 1, avg: 0.39)
+  Number of sliced prefixes:                              0 (count: 0, min: 0, max: 0, avg: 0.00)
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                9
+Number of successful refinements:     9
+Number of failed refinements:         0
+Max. size of reached set before ref.: 733
+Max. size of reached set after ref.:  273
+Avg. size of reached set before ref.: 403.22
+Avg. size of reached set after ref.:  105.67
+
+Total time for CEGAR algorithm:      21.873s
+Time for refinements:                20.172s
+Average time for refinement:          2.241s
+Max time for refinement:             17.278s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.408
+  Visited lines:          6996
+  Total lines:            7530
+  Line coverage:          0.929
+  Visited conditions:     156
+  Total conditions:       282
+  Condition coverage:     0.553
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     1087
+Number of CFA edges:             1400
+Number of relevant variables:    341
+Number of functions:             98
+Number of loops:                 10
+Size of reached set:             2855
+  Number of reached locations:   524 (48%)
+    Avg states per location:     5
+    Max states per location:     85 (at node N1129)
+  Number of reached functions:   40 (41%)
+  Number of partitions:          2173
+    Avg size of partitions:      1
+    Max size of partitions:      17 (with key [N1156 (before line 9435), Function tgt_ring_init called from node N1175, stack depth 4 [210bcae0], stack [main, scsi_tgt_init, scsi_tgt_if_init, tgt_ring_init], Init])
+  Number of target states:       0
+
+Time for analysis setup:          4.427s
+  Time for loading CPAs:          0.535s
+  Time for loading parser:        0.594s
+  Time for CFA construction:      3.198s
+    Time for parsing file(s):     0.867s
+    Time for AST to CFA:          1.246s
+    Time for CFA sanity check:    0.141s
+    Time for post-processing:     0.745s
+      Time for var class.:        0.000s
+Time for Analysis:               21.874s
+CPU time for analysis:           27.390s
+Total time for CPAchecker:       26.310s
+Total CPU time for CPAchecker:   35.670s
+
+Time for Garbage Collector:       0.318s (in 2 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:                557MB (   531 MiB) max;    288MB (   275 MiB) avg;    561MB (   535 MiB) peak
+Used non-heap memory:             23MB (    22 MiB) max;     21MB (    20 MiB) avg;     23MB (    22 MiB) peak
+Used in PS Old Gen pool:           0MB (     0 MiB) max;      0MB (     0 MiB) avg;      0MB (     0 MiB) peak
+Allocated heap memory:          2553MB (  2435 MiB) max;   2229MB (  2126 MiB) avg
+Allocated non-heap memory:        26MB (    25 MiB) max;     25MB (    24 MiB) avg
+Total process virtual memory:  13597MB ( 12967 MiB) max;  13594MB ( 12964 MiB) avg
+
+Verification result: TRUE. No property violation found by chosen configuration.
+More details about the verification run can be found in the directory "./output".

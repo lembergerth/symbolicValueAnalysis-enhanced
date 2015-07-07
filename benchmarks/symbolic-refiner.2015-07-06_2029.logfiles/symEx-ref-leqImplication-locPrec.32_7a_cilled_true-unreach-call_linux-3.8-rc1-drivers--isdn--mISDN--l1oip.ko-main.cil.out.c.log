@@ -1,0 +1,154 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic-refiner -setprop cpa.value.symbolic.refinement.strategy=CONSTRAINTS_FIRST -setprop cpa.constraints.lessOrEqualType=IMPLICATION -setprop cpa.value.refinement.pathSlicing=false -setprop cpa.value.refinement.prefixPreference=NONE -setprop cpa.constraints.refinement.precisionType=LOCATION -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-consumption/ALL.prp ../svcomp15/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--isdn--mISDN--l1oip.ko-main.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_-2058078846_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+lines 7498-7499: Function pointer *(socket->ops->bind) with type int (*)(struct socket *, struct sockaddr *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+Warning: Analysis stopped (The CPU-time limit of 900s has elapsed.) (ShutdownNotifier.shutdownIfNecessary, WARNING)
+
+Shutdown requested (The CPU-time limit of 900s has elapsed.), waiting for termination. (ForceTerminationOnShutdown$1.shutdownRequested, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                  64105 (count: 22296, min: 0, max: 3, avg: 2.88)
+Number of global variables:                           22289 (count: 22296, min: 0, max: 1, avg: 1.00)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                  687394
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                1.767s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     9.240s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 0
+Most constraints before refinement in state: 1
+Constraints after refinement in state: 0
+Constraints before refinement in state: 208
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 895ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  6.687s
+  Time for transition matches:                         2.854s
+  Time for transition assertions:                      0.000s
+  Time for transition actions:                         0.000s
+Automaton transfers with branching:                0
+Automaton transfer successors:                      1612180 (count: 1612180, min: 1, max: 1, avg: 1.00) [1 x 1612180]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            657823
+Max size of waitlist:            278
+Average size of waitlist:        6
+Number of computed successors:   687394
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         29471
+Number of times breaked:         53
+
+Total time for CPA algorithm:       739.125s (Max:    61.207s)
+  Time for choose from waitlist:      0.778s
+  Time for precision adjustment:      5.903s
+  Time for transfer relation:        34.115s
+  Time for stop operator:           692.033s
+  Time for adding to reached set:     2.216s
+
+SymbolicValueAnalysisRefiner statistics
+---------------------------------------
+Total number of refinements:             53
+Total number of targets found:           53
+Time for completing refinement:         127.288s
+  Time for interpolation:                            122.848s
+  Number of interpolations:                              53
+  Number of interpolation queries:                    50278 (count: 589819, min: 0, max: 4, avg: 0.09)
+  Size of interpolant:                                   61 (count: 589819, min: 0, max: 1, avg: 0.00)
+  Number of sliced prefixes:                              0 (count: 0, min: 0, max: 0, avg: 0.00)
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                53
+Number of successful refinements:     53
+Number of failed refinements:         0
+Max. size of reached set before ref.: 32434
+Max. size of reached set after ref.:  3326
+Avg. size of reached set before ref.: 14922.72
+Avg. size of reached set after ref.:  2929.74
+
+Total time for CEGAR algorithm:     874.926s
+Time for refinements:               135.733s
+Average time for refinement:          2.561s
+Max time for refinement:              7.772s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.071
+  Visited lines:          5692
+  Total lines:            7543
+  Line coverage:          0.755
+  Visited conditions:     24
+  Total conditions:       574
+  Condition coverage:     0.042
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     1603
+Number of CFA edges:             2078
+Number of relevant variables:    430
+Number of functions:             98
+Number of loops:                 18
+Size of reached set:             22296
+  Number of reached locations:   76 (5%)
+    Avg states per location:     293
+    Max states per location:     6684 (at node N2100)
+  Number of reached functions:   7 (7%)
+  Number of partitions:          76
+    Avg size of partitions:      293
+    Max size of partitions:      6684 (with key [N2100 (before line 9999), Function l1oip_4bit_alloc called from node N1720, stack depth 3 [67cf1438], stack [main, l1oip_init, l1oip_4bit_alloc], Init])
+  Number of target states:       0
+  Size of final wait list        3
+
+Time for analysis setup:          4.082s
+  Time for loading CPAs:          0.492s
+  Time for loading parser:        0.715s
+  Time for CFA construction:      2.788s
+    Time for parsing file(s):     0.993s
+    Time for AST to CFA:          1.068s
+    Time for CFA sanity check:    0.090s
+    Time for post-processing:     0.477s
+      Time for var class.:        0.000s
+Time for Analysis:              874.926s
+CPU time for analysis:          892.850s
+Total time for CPAchecker:      879.013s
+Total CPU time for CPAchecker:  900.140s
+
+Time for Garbage Collector:       7.913s (in 96 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               3440MB (  3281 MiB) max;   1488MB (  1420 MiB) avg;   3840MB (  3662 MiB) peak
+Used non-heap memory:             24MB (    23 MiB) max;     24MB (    23 MiB) avg;     25MB (    24 MiB) peak
+Used in PS Old Gen pool:         395MB (   377 MiB) max;    189MB (   180 MiB) avg;    395MB (   377 MiB) peak
+Allocated heap memory:          4858MB (  4633 MiB) max;   3908MB (  3727 MiB) avg
+Allocated non-heap memory:        27MB (    26 MiB) max;     27MB (    26 MiB) avg
+Total process virtual memory:  13667MB ( 13034 MiB) max;  13597MB ( 12967 MiB) avg
+
+Verification result: UNKNOWN, incomplete analysis.
+More details about the verification run can be found in the directory "./output".

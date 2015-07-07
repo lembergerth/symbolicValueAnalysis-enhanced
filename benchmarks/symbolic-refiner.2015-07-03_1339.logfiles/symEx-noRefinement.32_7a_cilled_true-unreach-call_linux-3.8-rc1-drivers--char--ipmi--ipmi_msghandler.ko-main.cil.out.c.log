@@ -1,0 +1,160 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic -setprop cpa.constraints.lessOrEqualType=SUBSET -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-consumption/ALL.prp ../svcomp15/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--char--ipmi--ipmi_msghandler.ko-main.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_43925025_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 5409: Function pointer *(w->new_smi) with type void (*)(int, struct device *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 11138: Function pointer *(intf->handlers->sender) with type void (*)(void *, struct ipmi_smi_msg *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 9894: Function pointer *(handlers->sender) with type void (*)(void *, struct ipmi_smi_msg *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 7617: Function pointer *(handlers->sender) with type void (*)(void *, struct ipmi_smi_msg *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 6039: Function pointer *(intf->handlers->inc_usecount) with type int (*)(void *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 5307: Function pointer *(watcher->new_smi) with type void (*)(int, struct device *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 9712: Function pointer *(w->smi_gone) with type void (*)(int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 6478: Function pointer *(intf->handlers->set_maintenance_mode) with type void (*)(void *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 12027: Function pointer *(intf->handlers->set_run_to_completion) with type void (*)(void *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 11752: Function pointer *(intf->handlers->set_run_to_completion) with type void (*)(void *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+Skipping recursive function call from ipmi_free_smi_msg to intf_free (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from ipmi_request_event to intf_free (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from ipmi_request_event to ipmi_timeout (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from send_channel_info_cmd to i_ipmi_request (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from deliver_response to ipmi_free_recv_msg (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from handle_bmc_rsp to ipmi_free_recv_msg (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from handle_read_event_rsp to ipmi_free_recv_msg (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Shutdown requested (The CPU-time limit of 900s has elapsed.), waiting for termination. (ForceTerminationOnShutdown$1.shutdownRequested, WARNING)
+
+Warning: Analysis stopped (The CPU-time limit of 900s has elapsed.) (ShutdownNotifier.shutdownIfNecessary, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                               63814354 (count: 162606, min: 0, max: 405, avg: 392.45)
+Number of global variables:                        43903515 (count: 162606, min: 0, max: 271, avg: 270.00)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                  180640
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:               19.022s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:    25.346s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 8
+Most constraints before refinement in state: 8
+Constraints after refinement in state: 890386
+Constraints before refinement in state: 890386
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 1281ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  3.876s
+  Time for transition matches:                         1.579s
+  Time for transition assertions:                      0.000s
+  Time for transition actions:                         0.000s
+Automaton transfers with branching:                0
+Automaton transfer successors:                       259572 (count: 259572, min: 1, max: 1, avg: 1.00) [1 x 259572]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            159700
+Max size of waitlist:            2916
+Average size of waitlist:        1854
+Number of computed successors:   180640
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         18035
+Number of times breaked:         0
+
+Total time for CPA algorithm:       877.471s (Max:   877.471s)
+  Time for choose from waitlist:      0.586s
+  Time for precision adjustment:     22.386s
+  Time for transfer relation:       122.597s
+  Time for stop operator:           727.806s
+  Time for adding to reached set:     1.068s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.225
+  Visited lines:          4504
+  Total lines:            8099
+  Line coverage:          0.556
+  Visited conditions:     338
+  Total conditions:       1380
+  Condition coverage:     0.245
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     4158
+Number of CFA edges:             5899
+Number of relevant variables:    1177
+Number of functions:             271
+Number of loops:                 49
+Size of reached set:             162606
+  Number of reached locations:   874 (21%)
+    Avg states per location:     186
+    Max states per location:     3096 (at node N3069)
+  Number of reached functions:   61 (23%)
+  Number of partitions:          110450
+    Avg size of partitions:      1
+    Max size of partitions:      2505 (with key [N3818 (before line 10440), Function handle_read_event_rsp called from node N4017, stack depth 16 [155f28dc], stack [main, panic_event, send_panic_events, ipmi_panic_request_and_wait, i_ipmi_request, ipmi_free_recv_msg, intf_free, clean_up_interface_data, free_smi_msg_list, ipmi_free_smi_msg, ipmi_timeout, ipmi_request_event, smi_recv_tasklet, handle_new_recv_msgs, handle_one_recv_msg, handle_read_event_rsp], Init])
+  Number of target states:       0
+  Size of final wait list        2906
+
+Time for analysis setup:          5.117s
+  Time for loading CPAs:          0.584s
+  Time for loading parser:        0.539s
+  Time for CFA construction:      3.949s
+    Time for parsing file(s):     1.194s
+    Time for AST to CFA:          1.358s
+    Time for CFA sanity check:    0.169s
+    Time for post-processing:     0.969s
+      Time for var class.:        0.000s
+Time for Analysis:              877.471s
+CPU time for analysis:          890.970s
+Total time for CPAchecker:      882.594s
+Total CPU time for CPAchecker:  900.220s
+
+Time for Garbage Collector:       4.838s (in 47 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               2168MB (  2067 MiB) max;    846MB (   806 MiB) avg;   2583MB (  2463 MiB) peak
+Used non-heap memory:             23MB (    22 MiB) max;     23MB (    22 MiB) avg;     23MB (    22 MiB) peak
+Used in PS Old Gen pool:         396MB (   377 MiB) max;    214MB (   204 MiB) avg;    396MB (   377 MiB) peak
+Allocated heap memory:          3611MB (  3444 MiB) max;   2639MB (  2517 MiB) avg
+Allocated non-heap memory:        26MB (    25 MiB) max;     26MB (    25 MiB) avg
+Total process virtual memory:  13597MB ( 12967 MiB) max;  13596MB ( 12967 MiB) avg
+
+Verification result: UNKNOWN, incomplete analysis.
+More details about the verification run can be found in the directory "./output".

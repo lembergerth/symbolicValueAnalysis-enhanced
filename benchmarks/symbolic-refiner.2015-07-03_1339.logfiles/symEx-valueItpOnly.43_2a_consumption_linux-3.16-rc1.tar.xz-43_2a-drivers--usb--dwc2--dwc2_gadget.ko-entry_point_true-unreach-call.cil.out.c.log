@@ -1,0 +1,180 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic-refiner -setprop cpa.value.symbolic.refinement.strategy=VALUES_ONLY -setprop cpa.constraints.lessOrEqualType=SUBSET -setprop cpa.value.refinement.pathSlicing=false -setprop cpa.value.refinement.prefixPreference=NONE -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-linux-3.16-rc1/ALL.prp ../svcomp15/ldv-linux-3.16-rc1/43_2a_consumption_linux-3.16-rc1.tar.xz-43_2a-drivers--usb--dwc2--dwc2_gadget.ko-entry_point_true-unreach-call.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_580668618_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 9351: Function pointer *(hsotg->driver->disconnect) with type void (*)(struct usb_gadget *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 10164: Function pointer *(hsotg->driver->resume) with type void (*)(struct usb_gadget *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 10144: Function pointer *(hsotg->driver->suspend) with type void (*)(struct usb_gadget *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 5390: Function pointer *(x->shutdown) with type void (*)(struct usb_phy *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+Skipping recursive function call from s3c_hsotg_process_req_feature to s3c_hsotg_complete_setup (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from s3c_hsotg_process_control to s3c_hsotg_udc_stop (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from s3c_hsotg_ep_dequeue to s3c_hsotg_complete_request (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from s3c_hsotg_process_control to s3c_hsotg_disconnect (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from s3c_hsotg_suspend to s3c_hsotg_phy_disable (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from s3c_hsotg_disconnect to kill_all_requests (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from s3c_hsotg_pullup to s3c_hsotg_phy_disable (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from s3c_hsotg_phy_enable to s3c_hsotg_pullup (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from s3c_hsotg_remove to s3c_hsotg_phy_disable (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from s3c_hsotg_probe to s3c_hsotg_phy_enable (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Shutdown requested (The CPU-time limit of 900s has elapsed.), waiting for termination. (ForceTerminationOnShutdown$1.shutdownRequested, WARNING)
+
+Warning: Analysis stopped (The CPU-time limit of 900s has elapsed.) (ShutdownNotifier.shutdownIfNecessary, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                 634346 (count: 401696, min: 0, max: 3, avg: 1.58)
+Number of global variables:                               0 (count: 401696, min: 0, max: 0, avg: 0.00)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                  445342
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                1.925s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     2.602s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 0
+Most constraints before refinement in state: 0
+Constraints after refinement in state: 0
+Constraints before refinement in state: 0
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 1413ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  9.745s
+  Time for transition matches:                         3.810s
+  Time for transition assertions:                      0.001s
+  Time for transition actions:                         0.000s
+Automaton transfers with branching:                0
+Automaton transfer successors:                       725532 (count: 725532, min: 1, max: 1, avg: 1.00) [1 x 725532]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            394090
+Max size of waitlist:            20036
+Average size of waitlist:        5471
+Number of computed successors:   445342
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         42633
+Number of times breaked:         23
+
+Total time for CPA algorithm:       802.477s (Max:   796.718s)
+  Time for choose from waitlist:      1.251s
+  Time for precision adjustment:      7.690s
+  Time for transfer relation:        28.484s
+  Time for stop operator:           756.665s
+  Time for adding to reached set:     2.030s
+
+SymbolicValueAnalysisRefiner statistics
+---------------------------------------
+Total number of refinements:             23
+Total number of targets found:           23
+Time for completing refinement:          69.905s
+  Time for interpolation:                             68.497s
+  Number of interpolations:                              23
+  Number of interpolation queries:                     3641 (count: 9556, min: 0, max: 5, avg: 0.38)
+  Size of interpolant:                                  166 (count: 9556, min: 0, max: 1, avg: 0.02)
+  Number of sliced prefixes:                              0 (count: 0, min: 0, max: 0, avg: 0.00)
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                23
+Number of successful refinements:     23
+Number of failed refinements:         0
+Max. size of reached set before ref.: 46655
+Max. size of reached set after ref.:  46496
+Avg. size of reached set before ref.: 27538.57
+Avg. size of reached set after ref.:  27494.48
+
+Total time for CEGAR algorithm:     873.662s
+Time for refinements:                70.909s
+Average time for refinement:          3.083s
+Max time for refinement:              5.647s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.662
+  Visited lines:          6792
+  Total lines:            8470
+  Line coverage:          0.802
+  Visited conditions:     601
+  Total conditions:       1138
+  Condition coverage:     0.528
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     3528
+Number of CFA edges:             5177
+Number of relevant variables:    1399
+Number of functions:             145
+Number of loops:                 26
+Size of reached set:             401696
+  Number of reached locations:   1889 (54%)
+    Avg states per location:     212
+    Max states per location:     19511 (at node N133)
+  Number of reached functions:   96 (66%)
+  Number of partitions:          127709
+    Avg size of partitions:      3
+    Max size of partitions:      10002 (with key [N2971 (before line 9477), Function s3c_hsotg_corereset called from node N4661, stack depth 8 [5cf58930], stack [main, s3c_hsotg_udc_stop, s3c_hsotg_phy_disable, s3c_hsotg_pullup, s3c_hsotg_phy_enable, usb_phy_init, s3c_hsotg_probe, s3c_hsotg_corereset], Init])
+  Number of target states:       0
+  Size of final wait list        8592
+
+Time for analysis setup:          4.931s
+  Time for loading CPAs:          0.638s
+  Time for loading parser:        0.558s
+  Time for CFA construction:      3.634s
+    Time for parsing file(s):     1.157s
+    Time for AST to CFA:          1.154s
+    Time for CFA sanity check:    0.147s
+    Time for post-processing:     0.943s
+      Time for var class.:        0.000s
+Time for Analysis:              873.662s
+CPU time for analysis:          891.210s
+Total time for CPAchecker:      878.598s
+Total CPU time for CPAchecker:  900.040s
+
+Time for Garbage Collector:       8.056s (in 75 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               3632MB (  3464 MiB) max;   1465MB (  1397 MiB) avg;   3992MB (  3807 MiB) peak
+Used non-heap memory:             24MB (    23 MiB) max;     24MB (    23 MiB) avg;     24MB (    23 MiB) peak
+Used in PS Old Gen pool:         493MB (   470 MiB) max;    266MB (   253 MiB) avg;    493MB (   470 MiB) peak
+Allocated heap memory:          4850MB (  4626 MiB) max;   3740MB (  3567 MiB) avg
+Allocated non-heap memory:        27MB (    25 MiB) max;     26MB (    25 MiB) avg
+Total process virtual memory:  13601MB ( 12971 MiB) max;  13599MB ( 12969 MiB) avg
+
+Verification result: UNKNOWN, incomplete analysis.
+More details about the verification run can be found in the directory "./output".

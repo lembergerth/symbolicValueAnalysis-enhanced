@@ -1,0 +1,172 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic-refiner -setprop cpa.value.symbolic.refinement.strategy=VALUES_ONLY -setprop cpa.constraints.lessOrEqualType=SUBSET -setprop cpa.value.refinement.pathSlicing=false -setprop cpa.value.refinement.prefixPreference=NONE -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-linux-3.4-simple/ALL.prp ../svcomp15/ldv-linux-3.4-simple/32_1_cilled_true-unreach-call_ok_nondet_linux-3.4-32_1-drivers--hid--hid-wacom.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_-1568053133_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 2862: Function pointer *__cil_tmp8 with type int (*)(struct hid_device *hdev) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 2809: Function pointer *__cil_tmp11 with type int (*)(struct hid_device *hdev) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 3315: Function pointer *__cil_tmp16 with type int (*)(struct hid_device *, __u8 *, size_t , unsigned char) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 3389: Function pointer *__cil_tmp31 with type int (*)(struct hid_device *, __u8 *, size_t , unsigned char) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 3219: Function pointer *__cil_tmp10 with type int (*)(struct hid_device *, __u8 *, size_t , unsigned char) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+line 2935: Ignoring call via function pointer hid_hw_stop::__cil_tmp7 for which no suitable target was found in line: (*__cil_tmp7)(hdev); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from hid_hw_stop to wacom_remove (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 2809: Ignoring call via function pointer hid_parse::__cil_tmp11 for which no suitable target was found in line: ret = (*__cil_tmp11)(hdev); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 2862: Ignoring call via function pointer hid_hw_start::__cil_tmp8 for which no suitable target was found in line: tmp = (*__cil_tmp8)(hdev); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 2898: Ignoring call via function pointer hid_hw_start::__cil_tmp14 for which no suitable target was found in line: (*__cil_tmp14)(hdev); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 3219: Ignoring call via function pointer wacom_set_features::__cil_tmp10 for which no suitable target was found in line: ret = (*__cil_tmp10)(hdev, __cil_tmp13, __cil_tmp14, 2U); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 3315: Ignoring call via function pointer wacom_poke::__cil_tmp16 for which no suitable target was found in line: ret = (*__cil_tmp16)(hdev, __cil_tmp20, __cil_tmp21, 2U); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 3389: Ignoring call via function pointer wacom_poke::__cil_tmp31 for which no suitable target was found in line: ret = (*__cil_tmp31)(hdev, __cil_tmp35, __cil_tmp36, 2U); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from wacom_remove to hid_hw_stop (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                   1653 (count: 1655, min: 0, max: 1, avg: 1.00)
+Number of global variables:                            1653 (count: 1655, min: 0, max: 1, avg: 1.00)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                    3505
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                0.131s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     0.229s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 0
+Most constraints before refinement in state: 0
+Constraints after refinement in state: 0
+Constraints before refinement in state: 0
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 18ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  0.150s
+Automaton transfers with branching:                0
+Automaton transfer successors:                        10511 (count: 10511, min: 1, max: 1, avg: 1.00) [1 x 10511]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            3305
+Max size of waitlist:            18
+Average size of waitlist:        12
+Number of computed successors:   3505
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         197
+Number of times breaked:         1
+
+Total time for CPA algorithm:         1.555s (Max:     1.062s)
+  Time for choose from waitlist:      0.029s
+  Time for precision adjustment:      0.269s
+  Time for transfer relation:         0.966s
+  Time for stop operator:             0.039s
+  Time for adding to reached set:     0.105s
+
+SymbolicValueAnalysisRefiner statistics
+---------------------------------------
+Total number of refinements:              1
+Total number of targets found:            1
+Time for completing refinement:           1.134s
+  Time for interpolation:                              1.039s
+  Number of interpolations:                               1
+  Number of interpolation queries:                      168 (count: 22, min: 0, max: 139, avg: 7.64)
+  Size of interpolant:                                   16 (count: 22, min: 0, max: 1, avg: 0.73)
+  Number of sliced prefixes:                              0 (count: 0, min: 0, max: 0, avg: 0.00)
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                1
+Number of successful refinements:     1
+Number of failed refinements:         0
+Max. size of reached set before ref.: 1656
+Max. size of reached set after ref.:  2
+Avg. size of reached set before ref.: 1656.00
+Avg. size of reached set after ref.:  2.00
+
+Total time for CEGAR algorithm:       2.748s
+Time for refinements:                 1.192s
+Average time for refinement:          1.192s
+Max time for refinement:              1.192s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.659
+  Visited lines:          4431
+  Total lines:            4682
+  Line coverage:          0.946
+  Visited conditions:     149
+  Total conditions:       192
+  Condition coverage:     0.776
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     785
+Number of CFA edges:             1092
+Number of relevant variables:    870
+Number of functions:             41
+Number of loops:                 3
+Size of reached set:             1655
+  Number of reached locations:   643 (82%)
+    Avg states per location:     2
+    Max states per location:     86 (at node N21)
+  Number of reached functions:   27 (66%)
+  Number of partitions:          1655
+    Avg size of partitions:      1
+    Max size of partitions:      1
+  Number of target states:       0
+
+Time for analysis setup:          3.149s
+  Time for loading CPAs:          0.513s
+  Time for loading parser:        0.489s
+  Time for CFA construction:      2.069s
+    Time for parsing file(s):     0.677s
+    Time for AST to CFA:          0.643s
+    Time for CFA sanity check:    0.086s
+    Time for post-processing:     0.402s
+      Time for var class.:        0.000s
+Time for Analysis:                2.748s
+CPU time for analysis:            4.520s
+Total time for CPAchecker:        5.902s
+Total CPU time for CPAchecker:    9.960s
+
+Time for Garbage Collector:       0.000s (in 0 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:                275MB (   262 MiB) max;    168MB (   160 MiB) avg;    275MB (   262 MiB) peak
+Used non-heap memory:             21MB (    20 MiB) max;     16MB (    16 MiB) avg;     21MB (    20 MiB) peak
+Used in PS Old Gen pool:           0MB (     0 MiB) max;      0MB (     0 MiB) avg;      0MB (     0 MiB) peak
+Allocated heap memory:          2024MB (  1930 MiB) max;   2024MB (  1930 MiB) avg
+Allocated non-heap memory:        24MB (    23 MiB) max;     24MB (    23 MiB) avg
+Total process virtual memory:  13597MB ( 12967 MiB) max;  13588MB ( 12958 MiB) avg
+
+Verification result: TRUE. No property violation found by chosen configuration.
+More details about the verification run can be found in the directory "./output".

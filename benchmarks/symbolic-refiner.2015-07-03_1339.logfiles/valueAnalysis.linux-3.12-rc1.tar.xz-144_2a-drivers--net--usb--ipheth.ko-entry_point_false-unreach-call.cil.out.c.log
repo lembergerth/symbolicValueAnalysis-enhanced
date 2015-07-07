@@ -1,0 +1,154 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-linux-3.12-rc1/ALL.prp ../svcomp15/ldv-linux-3.12-rc1/linux-3.12-rc1.tar.xz-144_2a-drivers--net--usb--ipheth.ko-entry_point_false-unreach-call.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_1738122479_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 8430: Ignoring call via function pointer completeFnInt for which no suitable target was found in line: (*completeFnInt)(usb_urb); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from ldv_usb_submit_urb_9 to ldv_submit_urb (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 8439: Ignoring call via function pointer completeFnBulk for which no suitable target was found in line: (*completeFnBulk)(usb_urb); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from ipheth_rcvbulk_callback to ipheth_rx_submit (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Cannot get declaration of function __builtin_memcpy, ignoring calls to it. (CounterexampleCheck:PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+Infeasible counterexample found, but could not remove it from the ARG. Therefore, we cannot prove safety. (CounterexampleCheckAlgorithm.checkCounterexample, WARNING)
+
+Analysis incomplete: no errors found, but not everything could be checked. (CPAchecker.analyzeResult, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                  75813 (count: 10127, min: 0, max: 8, avg: 7.49)
+Number of global variables:                           75811 (count: 10127, min: 0, max: 8, avg: 7.49)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                   33222
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                0.293s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     0.000s
+Replaced symbolic expressions: 0
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  0.345s
+Automaton transfers with branching:                0
+Automaton transfer successors:                        47255 (count: 47255, min: 1, max: 1, avg: 1.00) [1 x 47255]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            30170
+Max size of waitlist:            25
+Average size of waitlist:        14
+Number of computed successors:   33222
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         3024
+Number of times breaked:         10
+
+Total time for CPA algorithm:         3.551s (Max:     0.511s)
+  Time for choose from waitlist:      0.101s
+  Time for precision adjustment:      0.872s
+  Time for transfer relation:         1.657s
+  Time for stop operator:             0.241s
+  Time for adding to reached set:     0.242s
+
+ValueAnalysisRefiner statistics
+-------------------------------
+Total number of refinements:             10
+Total number of targets found:           10
+Time for completing refinement:           1.127s
+  Time for interpolation:                              0.000s
+  Number of interpolations:                               0
+  Number of interpolation queries:                        0 (count: 0, min: 0, max: 0, avg: 0.00)
+  Size of interpolant:                                    0 (count: 0, min: 0, max: 0, avg: 0.00)
+  Number of infeasible sliced prefixes:                   0 (count: 0, min: 0, max: 0, avg: 0.00)
+  Extracting infeasible sliced prefixes:               0.000s
+  Selecting infeasible sliced prefixes:                0.000s
+Total number of root relocations:         0
+Total number of similar, repeated refinements:         0
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                10
+Number of successful refinements:     9
+Number of failed refinements:         0
+Max. size of reached set before ref.: 6633
+Max. size of reached set after ref.:  3580
+Avg. size of reached set before ref.: 3346.80
+Avg. size of reached set after ref.:  751.67
+
+Total time for CEGAR algorithm:       5.388s
+Time for refinements:                 1.830s
+Average time for refinement:          0.183s
+Max time for refinement:              0.316s
+
+Counterexample-Check Algorithm statistics
+-----------------------------------------
+Number of counterexample checks:    1
+Number of infeasible paths:         1 (100%)
+Time for counterexample checks:         1.763s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.878
+  Visited lines:          6195
+  Total lines:            6263
+  Line coverage:          0.989
+  Visited conditions:     226
+  Total conditions:       260
+  Condition coverage:     0.869
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     964
+Number of CFA edges:             1267
+Number of relevant variables:    272
+Number of functions:             90
+Number of loops:                 2
+Size of reached set:             10127
+  Number of reached locations:   852 (88%)
+    Avg states per location:     11
+    Max states per location:     68 (at node N183)
+  Number of reached functions:   79 (88%)
+  Number of partitions:          9494
+    Avg size of partitions:      1
+    Max size of partitions:      6 (with key [N797 (before line 7728), Function main called from node N772, stack depth 1 [10aa9f6a], stack [main], Init])
+  Number of target states:       0
+
+Time for analysis setup:          3.450s
+  Time for loading CPAs:          0.547s
+  Time for loading parser:        0.555s
+  Time for CFA construction:      2.273s
+    Time for parsing file(s):     0.995s
+    Time for AST to CFA:          0.702s
+    Time for CFA sanity check:    0.073s
+    Time for post-processing:     0.321s
+      Time for var class.:        0.000s
+Time for Analysis:                7.197s
+CPU time for analysis:           13.010s
+Total time for CPAchecker:       10.654s
+Total CPU time for CPAchecker:   18.960s
+
+Time for Garbage Collector:       0.164s (in 1 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:                522MB (   497 MiB) max;    237MB (   226 MiB) avg;    559MB (   533 MiB) peak
+Used non-heap memory:             25MB (    23 MiB) max;     19MB (    18 MiB) avg;     25MB (    24 MiB) peak
+Used in PS Old Gen pool:           0MB (     0 MiB) max;      0MB (     0 MiB) avg;      0MB (     0 MiB) peak
+Allocated heap memory:          2024MB (  1930 MiB) max;   2024MB (  1930 MiB) avg
+Allocated non-heap memory:        25MB (    24 MiB) max;     24MB (    23 MiB) avg
+Total process virtual memory:  13665MB ( 13032 MiB) max;  13597MB ( 12967 MiB) avg
+
+Verification result: UNKNOWN, incomplete analysis.
+More details about the verification run can be found in the directory "./output".

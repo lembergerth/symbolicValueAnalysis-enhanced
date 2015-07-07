@@ -1,0 +1,139 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic -setprop cpa.constraints.lessOrEqualType=SUBSET -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-linux-3.16-rc1/ALL.prp ../svcomp15/ldv-linux-3.16-rc1/205_9a_array_safes_linux-3.16-rc1.tar.xz-205_9a-drivers--net--caif--caif_virtio.ko-entry_point_true-unreach-call.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_1186441350_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 8259: Function pointer *(vdev->vringh_config->find_vrhs) with type int (*)(struct virtio_device *, unsigned int, struct vringh **, vrh_callback_t **) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 8268: Function pointer *(vdev->config->find_vqs) with type int (*)(struct virtio_device *, unsigned int, struct virtqueue **, vq_callback_t **, const char **) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 6435: Function pointer *(ops->alloc) with type void * (*)(struct device *, size_t , dma_addr_t *, gfp_t , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 6482: Function pointer *(ops->free) with type void (*)(struct device *, size_t , void *, dma_addr_t , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 7199: Function pointer *(vdev->config->get) with type void (*)(struct virtio_device *, unsigned int, void *, unsigned int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 7211: Function pointer *(vdev->config->get) with type void (*)(struct virtio_device *, unsigned int, void *, unsigned int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 7223: Function pointer *(vdev->config->get) with type void (*)(struct virtio_device *, unsigned int, void *, unsigned int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 7187: Function pointer *(vdev->config->get) with type void (*)(struct virtio_device *, unsigned int, void *, unsigned int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+Shutdown requested (The CPU-time limit of 900s has elapsed.), waiting for termination. (ForceTerminationOnShutdown$1.shutdownRequested, WARNING)
+
+Warning: Analysis stopped (The CPU-time limit of 900s has elapsed.) (ShutdownNotifier.shutdownIfNecessary, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                6627300 (count: 13755, min: 0, max: 485, avg: 481.81)
+Number of global variables:                         6093838 (count: 13755, min: 0, max: 445, avg: 443.03)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                   14243
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                1.467s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     2.283s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 5
+Most constraints before refinement in state: 5
+Constraints after refinement in state: 60071
+Constraints before refinement in state: 60071
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 106ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  0.182s
+Automaton transfers with branching:                0
+Automaton transfer successors:                        19954 (count: 19954, min: 1, max: 1, avg: 1.00) [1 x 19954]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            13180
+Max size of waitlist:            576
+Average size of waitlist:        308
+Number of computed successors:   14243
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         489
+Number of times breaked:         0
+
+Total time for CPA algorithm:       887.836s (Max:   887.836s)
+  Time for choose from waitlist:      0.063s
+  Time for precision adjustment:      1.869s
+  Time for transfer relation:        10.362s
+  Time for stop operator:           874.994s
+  Time for adding to reached set:     0.209s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.310
+  Visited lines:          5940
+  Total lines:            6786
+  Line coverage:          0.875
+  Visited conditions:     83
+  Total conditions:       316
+  Condition coverage:     0.263
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     1191
+Number of CFA edges:             1578
+Number of relevant variables:    394
+Number of functions:             100
+Number of loops:                 12
+Size of reached set:             13755
+  Number of reached locations:   332 (28%)
+    Avg states per location:     41
+    Max states per location:     970 (at node N375)
+  Number of reached functions:   31 (31%)
+  Number of partitions:          7953
+    Avg size of partitions:      1
+    Max size of partitions:      970 (with key [N397 (before line 6932), Function netif_tx_wake_all_queues called from node N584, stack depth 5 [62c97092], stack [main, cfv_probe, cfv_tx_release_tasklet, cfv_release_used_buf, netif_tx_wake_all_queues], Init])
+  Number of target states:       0
+  Size of final wait list        575
+
+Time for analysis setup:          3.561s
+  Time for loading CPAs:          0.521s
+  Time for loading parser:        0.599s
+  Time for CFA construction:      2.403s
+    Time for parsing file(s):     1.000s
+    Time for AST to CFA:          0.771s
+    Time for CFA sanity check:    0.090s
+    Time for post-processing:     0.405s
+      Time for var class.:        0.000s
+Time for Analysis:              887.836s
+CPU time for analysis:          894.370s
+Total time for CPAchecker:      891.404s
+Total CPU time for CPAchecker:  900.580s
+
+Time for Garbage Collector:       1.471s (in 67 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               2141MB (  2042 MiB) max;    618MB (   590 MiB) avg;   2193MB (  2092 MiB) peak
+Used non-heap memory:             21MB (    20 MiB) max;     21MB (    20 MiB) avg;     22MB (    21 MiB) peak
+Used in PS Old Gen pool:          47MB (    45 MiB) max;     34MB (    32 MiB) avg;     47MB (    45 MiB) peak
+Allocated heap memory:          3553MB (  3388 MiB) max;   2567MB (  2448 MiB) avg
+Allocated non-heap memory:        25MB (    23 MiB) max;     24MB (    23 MiB) avg
+Total process virtual memory:  13598MB ( 12968 MiB) max;  13597MB ( 12967 MiB) avg
+
+Verification result: UNKNOWN, incomplete analysis.
+More details about the verification run can be found in the directory "./output".

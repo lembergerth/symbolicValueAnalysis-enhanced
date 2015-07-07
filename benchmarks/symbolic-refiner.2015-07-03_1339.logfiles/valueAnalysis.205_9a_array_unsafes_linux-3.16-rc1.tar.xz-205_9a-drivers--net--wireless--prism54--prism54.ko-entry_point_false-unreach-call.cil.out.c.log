@@ -1,0 +1,152 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-linux-3.16-rc1/ALL.prp ../svcomp15/ldv-linux-3.16-rc1/205_9a_array_unsafes_linux-3.16-rc1.tar.xz-205_9a-drivers--net--wireless--prism54--prism54.ko-entry_point_false-unreach-call.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_-1794102488_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 15412: Function pointer *(ops->alloc) with type void * (*)(struct device *, size_t , dma_addr_t *, gfp_t , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 15459: Function pointer *(ops->free) with type void (*)(struct device *, size_t , void *, dma_addr_t , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 6987-6988: Function pointer *(ops->map_page) with type dma_addr_t  (*)(struct device *, struct page *, unsigned long, size_t , enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 8362: Function pointer *(ops->sync_single_for_cpu) with type void (*)(struct device *, dma_addr_t , size_t , enum dma_data_direction ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 7034: Function pointer *(ops->unmap_page) with type void (*)(struct device *, dma_addr_t , size_t , enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+Skipping recursive function call from mgt_cpu_to_le to mgt_cpu_to_le (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from mgt_le_to_cpu to mgt_le_to_cpu (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Shutdown requested (The CPU-time limit of 900s has elapsed.), waiting for termination. (ForceTerminationOnShutdown$1.shutdownRequested, WARNING)
+
+Warning: Analysis stopped (The CPU-time limit of 900s has elapsed.) (ShutdownNotifier.shutdownIfNecessary, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                1547148 (count: 1547168, min: 0, max: 1, avg: 1.00)
+Number of global variables:                         1547148 (count: 1547168, min: 0, max: 1, avg: 1.00)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                 1759037
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                2.637s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     0.000s
+Replaced symbolic expressions: 0
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  9.174s
+  Time for transition matches:                         3.919s
+  Time for transition assertions:                      0.000s
+  Time for transition actions:                         0.000s
+Automaton transfers with branching:                0
+Automaton transfer successors:                      2589392 (count: 2589392, min: 1, max: 1, avg: 1.00) [1 x 2589392]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            1546529
+Max size of waitlist:            11128
+Average size of waitlist:        5523
+Number of computed successors:   1759037
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         201379
+Number of times breaked:         1
+
+Total time for CPA algorithm:       865.926s (Max:   864.102s)
+  Time for choose from waitlist:      1.387s
+  Time for precision adjustment:      8.019s
+  Time for transfer relation:        27.126s
+  Time for stop operator:           816.913s
+  Time for adding to reached set:     4.548s
+
+ValueAnalysisRefiner statistics
+-------------------------------
+Total number of refinements:              1
+Total number of targets found:            1
+Time for completing refinement:           0.385s
+  Time for interpolation:                              0.000s
+  Number of interpolations:                               0
+  Number of interpolation queries:                        0 (count: 0, min: 0, max: 0, avg: 0.00)
+  Size of interpolant:                                    0 (count: 0, min: 0, max: 0, avg: 0.00)
+  Number of infeasible sliced prefixes:                   0 (count: 0, min: 0, max: 0, avg: 0.00)
+  Extracting infeasible sliced prefixes:               0.000s
+  Selecting infeasible sliced prefixes:                0.000s
+Total number of root relocations:         0
+Total number of similar, repeated refinements:         0
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                1
+Number of successful refinements:     1
+Number of failed refinements:         0
+Max. size of reached set before ref.: 10511
+Max. size of reached set after ref.:  20
+Avg. size of reached set before ref.: 10511.00
+Avg. size of reached set after ref.:  20.00
+
+Total time for CEGAR algorithm:     866.476s
+Time for refinements:                 0.550s
+Average time for refinement:          0.550s
+Max time for refinement:              0.550s
+
+Counterexample-Check Algorithm statistics
+-----------------------------------------
+Number of counterexample checks:    0
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.227
+  Visited lines:          7564
+  Total lines:            12985
+  Line coverage:          0.583
+  Visited conditions:     250
+  Total conditions:       1478
+  Condition coverage:     0.169
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     4768
+Number of CFA edges:             6574
+Number of relevant variables:    1671
+Number of functions:             299
+Number of loops:                 55
+Size of reached set:             1547168
+  Size of final wait list        11126
+
+Time for analysis setup:          6.547s
+  Time for loading CPAs:          0.635s
+  Time for loading parser:        0.571s
+  Time for CFA construction:      5.260s
+    Time for parsing file(s):     1.656s
+    Time for AST to CFA:          1.803s
+    Time for CFA sanity check:    0.211s
+    Time for post-processing:     1.325s
+      Time for var class.:        0.000s
+Time for Analysis:              866.476s
+CPU time for analysis:          888.010s
+Total time for CPAchecker:      873.029s
+Total CPU time for CPAchecker:  900.220s
+
+Time for Garbage Collector:      15.950s (in 68 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               4622MB (  4408 MiB) max;   2435MB (  2323 MiB) avg;   4751MB (  4531 MiB) peak
+Used non-heap memory:             24MB (    23 MiB) max;     24MB (    23 MiB) avg;     24MB (    23 MiB) peak
+Used in PS Old Gen pool:        1168MB (  1113 MiB) max;    770MB (   734 MiB) avg;   1168MB (  1113 MiB) peak
+Allocated heap memory:          4882MB (  4656 MiB) max;   4714MB (  4495 MiB) avg
+Allocated non-heap memory:        26MB (    24 MiB) max;     26MB (    24 MiB) avg
+Total process virtual memory:  13579MB ( 12950 MiB) max;  13579MB ( 12950 MiB) avg
+
+Verification result: UNKNOWN, incomplete analysis.
+More details about the verification run can be found in the directory "./output".

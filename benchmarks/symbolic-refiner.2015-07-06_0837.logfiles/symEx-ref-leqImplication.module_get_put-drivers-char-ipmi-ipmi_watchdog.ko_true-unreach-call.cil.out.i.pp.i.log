@@ -1,0 +1,109 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic-refiner -setprop cpa.value.symbolic.refinement.strategy=CONSTRAINTS_FIRST -setprop cpa.constraints.lessOrEqualType=IMPLICATION -setprop cpa.value.refinement.pathSlicing=false -setprop cpa.value.refinement.prefixPreference=NONE -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-linux-3.0/ALL.prp ../svcomp15/ldv-linux-3.0/module_get_put-drivers-char-ipmi-ipmi_watchdog.ko_true-unreach-call.cil.out.i.pp.i
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_321245555_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 4091: Function pointer *(p->qproc) with type void (*)(struct file *, wait_queue_head_t *, struct poll_table_struct *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+Skipping recursive function call from ipmi_heartbeat to ipmi_set_timeout (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from ipmi_set_timeout to ipmi_heartbeat (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 4296: Ignoring call via function pointer get_param_str::fn for which no suitable target was found in line: rv = (*fn)((const char *)0, buffer); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 4258: Ignoring call via function pointer set_param_str::fn for which no suitable target was found in line: rv = (*fn)((const char *)s, (char *)0); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Warning: Analysis stopped (The CPU-time limit of 900s has elapsed.) (ShutdownNotifier.shutdownIfNecessary, WARNING)
+
+Shutdown requested (The CPU-time limit of 900s has elapsed.), waiting for termination. (ForceTerminationOnShutdown$1.shutdownRequested, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                               10228471 (count: 5069258, min: 0, max: 7, avg: 2.02)
+Number of global variables:                        10138512 (count: 5069258, min: 0, max: 2, avg: 2.00)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                 6049394
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:               18.691s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:    76.758s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 0
+Most constraints before refinement in state: 1
+Constraints after refinement in state: 0
+Constraints before refinement in state: 5304
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 10659ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                 42.426s
+  Time for transition matches:                        16.934s
+  Time for transition assertions:                      0.000s
+  Time for transition actions:                         0.000s
+Automaton transfers with branching:                0
+Automaton transfer successors:                      8985234 (count: 8985234, min: 1, max: 1, avg: 1.00) [1 x 8985234]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            5134386
+Max size of waitlist:            1820
+Average size of waitlist:        901
+Number of computed successors:   6049394
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         913196
+Number of times breaked:         7
+
+Total time for CPA algorithm:       573.531s (Max:   565.604s)
+  Time for choose from waitlist:      5.506s
+  Time for precision adjustment:     62.215s
+  Time for transfer relation:       361.303s
+  Time for stop operator:            92.094s
+  Time for adding to reached set:    15.368s
+
+SymbolicValueAnalysisRefiner statistics
+---------------------------------------
+Total number of refinements:              7
+Total number of targets found:            7
+Time for completing refinement:          70.951s
+  Time for interpolation:                             70.116s
+  Number of interpolations:                               7
+  Number of interpolation queries:                      952 (count: 927, min: 0, max: 427, avg: 1.03)
+  Size of interpolant:                                  150 (count: 927, min: 0, max: 1, avg: 0.16)
+  Number of sliced prefixes:                              0 (count: 0, min: 0, max: 0, avg: 0.00)
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                7
+Number of successful refinements:     7
+Number of failed refinements:         0
+Max. size of reached set before ref.: 22362
+Max. size of reached set after ref.:  238
+Avg. size of reached set before ref.: 9688.57
+Avg. size of reached set after ref.:  125.57
+
+Total time for CEGAR algorithm:     644.854s
+Time for refinements:                71.320s
+Average time for refinement:         10.188s
+Max time for refinement:             67.615s
+

@@ -1,0 +1,163 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-consumption/ALL.prp ../svcomp15/ldv-consumption/32_7a_newdeg_true-unreach-call_linux-3.8-rc1-drivers--media--usb--dvb-usb-v2--dvb-usb-mxl111sf.ko-main.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_328928447_tempdir
+line 9960: Function pointer *__a with type struct dvb_frontend * (*)(struct mxl111sf_state *, struct mxl111sf_demod_config *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 10169: Function pointer *__a with type struct dvb_frontend * (*)(struct dvb_frontend *, struct mxl111sf_state *, struct mxl111sf_tuner_config *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 8984-8985: Function pointer *__a with type struct dvb_frontend * (*)(const struct lg2160_config *, struct i2c_adapter *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 9719: Function pointer *__a with type struct dvb_frontend * (*)(const struct lg2160_config *, struct i2c_adapter *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 9352: Function pointer *__a with type struct dvb_frontend * (*)(const struct lg2160_config *, struct i2c_adapter *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 8627-8628: Function pointer *__a with type struct dvb_frontend * (*)(const struct lgdt3305_config *, struct i2c_adapter *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 8984-8985: Ignoring call via function pointer mxl111sf_lg2160_frontend_attach::__a for which no suitable target was found in line: tmp___6 = (*__a)((const struct lg2160_config *)(&hauppauge_lg2160_config), &(d->i2c_adap)); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 10169: Ignoring call via function pointer mxl111sf_attach_tuner::__a for which no suitable target was found in line: tmp___5 = (*__a)((adap->fe)[i], state, &mxl_tuner_config); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+lines 8627-8628: Ignoring call via function pointer mxl111sf_lgdt3305_frontend_attach::__a for which no suitable target was found in line: tmp___6 = (*__a)((const struct lgdt3305_config *)(&hauppauge_lgdt3305_config), &(d->i2c_adap)); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 9960: Ignoring call via function pointer mxl111sf_attach_demod::__a for which no suitable target was found in line: tmp___6 = (*__a)(state, &mxl_demod_config); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 9719: Ignoring call via function pointer mxl111sf_lg2161_ep6_frontend_attach::__a for which no suitable target was found in line: tmp___7 = (*__a)((const struct lg2160_config *)tmp___6, &(d->i2c_adap)); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 9352: Ignoring call via function pointer mxl111sf_lg2161_frontend_attach::__a for which no suitable target was found in line: tmp___7 = (*__a)((const struct lg2160_config *)tmp___6, &(d->i2c_adap)); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                5470709 (count: 840298, min: 0, max: 8, avg: 6.51)
+Number of global variables:                         5464845 (count: 840298, min: 0, max: 7, avg: 6.50)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                 2087394
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                5.422s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     0.000s
+Replaced symbolic expressions: 0
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                 12.271s
+  Time for transition matches:                         5.165s
+  Time for transition assertions:                      0.000s
+  Time for transition actions:                         0.000s
+Automaton transfers with branching:                0
+Automaton transfer successors:                      3174380 (count: 3174380, min: 1, max: 1, avg: 1.00) [1 x 3174380]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            1732799
+Max size of waitlist:            44
+Average size of waitlist:        27
+Number of computed successors:   2087394
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         354525
+Number of times breaked:         8
+
+Total time for CPA algorithm:        60.845s (Max:    19.326s)
+  Time for choose from waitlist:      1.656s
+  Time for precision adjustment:     11.330s
+  Time for transfer relation:        29.969s
+  Time for stop operator:             3.640s
+  Time for adding to reached set:     4.988s
+
+ValueAnalysisRefiner statistics
+-------------------------------
+Total number of refinements:              8
+Total number of targets found:            8
+Time for completing refinement:           5.058s
+  Time for interpolation:                              0.000s
+  Number of interpolations:                               0
+  Number of interpolation queries:                        0 (count: 0, min: 0, max: 0, avg: 0.00)
+  Size of interpolant:                                    0 (count: 0, min: 0, max: 0, avg: 0.00)
+  Number of infeasible sliced prefixes:                   0 (count: 0, min: 0, max: 0, avg: 0.00)
+  Extracting infeasible sliced prefixes:               0.000s
+  Selecting infeasible sliced prefixes:                0.000s
+Total number of root relocations:         0
+Total number of similar, repeated refinements:         0
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                8
+Number of successful refinements:     8
+Number of failed refinements:         0
+Max. size of reached set before ref.: 890395
+Max. size of reached set after ref.:  574500
+Avg. size of reached set before ref.: 235539.13
+Avg. size of reached set after ref.:  123967.63
+
+Total time for CEGAR algorithm:      66.724s
+Time for refinements:                 5.621s
+Average time for refinement:          0.702s
+Max time for refinement:              3.114s
+
+Counterexample-Check Algorithm statistics
+-----------------------------------------
+Number of counterexample checks:    0
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.561
+  Visited lines:          12407
+  Total lines:            12905
+  Line coverage:          0.961
+  Visited conditions:     1919
+  Total conditions:       2148
+  Condition coverage:     0.893
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     4595
+Number of CFA edges:             6498
+Number of relevant variables:    990
+Number of functions:             155
+Number of loops:                 25
+Size of reached set:             840298
+  Number of reached locations:   3896 (85%)
+    Avg states per location:     215
+    Max states per location:     20610 (at node N6341)
+  Number of reached functions:   87 (56%)
+  Number of partitions:          839560
+    Avg size of partitions:      1
+    Max size of partitions:      2 (with key [N2362 (before line 11709), Function main called from node N2335, stack depth 1 [324e48f0], stack [main], Init])
+  Number of target states:       0
+
+Time for analysis setup:          5.885s
+  Time for loading CPAs:          0.627s
+  Time for loading parser:        0.616s
+  Time for CFA construction:      4.534s
+    Time for parsing file(s):     1.445s
+    Time for AST to CFA:          1.581s
+    Time for CFA sanity check:    0.169s
+    Time for post-processing:     1.113s
+      Time for var class.:        0.000s
+Time for Analysis:               67.257s
+CPU time for analysis:           79.760s
+Total time for CPAchecker:       73.152s
+Total CPU time for CPAchecker:   90.550s
+
+Time for Garbage Collector:       5.210s (in 8 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               3681MB (  3510 MiB) max;   1286MB (  1227 MiB) avg;   3956MB (  3773 MiB) peak
+Used non-heap memory:             24MB (    23 MiB) max;     23MB (    22 MiB) avg;     25MB (    24 MiB) peak
+Used in PS Old Gen pool:         817MB (   780 MiB) max;    218MB (   208 MiB) avg;    817MB (   780 MiB) peak
+Allocated heap memory:          4546MB (  4336 MiB) max;   3454MB (  3294 MiB) avg
+Allocated non-heap memory:        26MB (    25 MiB) max;     26MB (    25 MiB) avg
+Total process virtual memory:  13579MB ( 12950 MiB) max;  13579MB ( 12950 MiB) avg
+
+Verification result: TRUE. No property violation found by chosen configuration.
+More details about the verification run can be found in the directory "./output".
