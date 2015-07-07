@@ -1,0 +1,158 @@
+\section{Evaluation of CEGAR}
+Evaluation shows the great boost CEGAR provides to the \symbolicExecutionCPA. 
+Table~\ref{tab:cegarBenefits} shows the results of the \symbolicExecutionCPA\ without CEGAR using the subset less-or-equal operator and $\cpaMerge^{sep}$ (SymEx w/o CEGAR), in comparison to the \symbolicExecutionCPA\ using CEGAR with refinement based on CEGAR for explicit-state model checking (SymEx w/ CEGAR, Sec.~\ref{sec:assignmentRefinement}).
+\emph{Program errors} are errors in the execution of \cpaChecker, in this case a parsing error of a file for both analysis and an exception due to a failure of the SMT solver in the analysis without CEGAR and one due to a division by zero in the analysis with CEGAR.
+The increase in correctly handled tasks \emph{without} a safety violation (in the table row ''correct negatives'') by a factor of more then 10
+and the decrease in timeouts by more then 40\% are the most notable improvements by using CEGAR.
+On the contrary, the number of found safety violations decreases by 222 tasks,
+since the lazy approach of CEGAR has a problem with programs consisting of a lot of assumptions leading to an error in dependence of many variables.
+
+\begin{table}[h]
+\begin{tabular}{|r|c|c|c|}
+\hline
+    & SymEx w/o CEGAR & SymEx w/ CEGAR & Overall \\ \hline
+correct results & 761 (18.60\%) & 2078 (50.78\%) & 4092 \\ \hline
+\resultFalse, correct & 598 (50.63\%) & 376 (31.83\%) & 1181 \\ \hline
+\resultTrue, correct & 163 (5.599\%) & 1702 (58.47\%) & 2911 \\ \hline
+unique \resultFalse, correct & 323 & 101 & \\ \hline
+unique \resultTrue, correct & 84 & 1623 & \\ \hline
+\resultFalse, incorrect & 44 & 83 & \\ \hline
+unique \resultFalse, incorrect & 4 & 43 & \\ \hline
+\resultTrue, incorrect & 0 & 1 & \\ \hline
+program errors & 2 & 2 & \\ \hline % exception because of / 0, parsing error at both
+%timeouts & 3275 & 1927 & \\ \hline
+resource errors & 3285 & 1928 & \\ \hline % includes timeouts + StackOverflowException
+\end{tabular}
+\caption{Results of benchmark runs of the \symbolicExecutionCPA\ without CEGAR and with CEGAR}
+\label{tab:cegarBenefits}
+\end{table}
+
+\begin{figure}
+\begin{subfigure}[b]{.3\textwidth}
+\centering
+\begin{tikzpicture}[->,>=stealth, mynode/.style={rectangle, draw, minimum height=0.5cm, minimum width=0.8cm}, every node/.style={font=\small}]
+
+\node[mynode] (0) {$\varnothing$};
+\node[mynode] (1) [below = 0.6cm of 0] {$\varnothing$};
+\node[mynode] (2) [below = 0.6cm of 1, draw=red, very thick] {$\varnothing$};
+
+\path
+  (0) edge node [left] {\textbf{a $\assign$ 2, b $\assign$ 2, ..., z $\assign$ 2}} (1)
+  (1) edge node [left] {$\mathbf{[a == 1]}$} (2)
+;
+\end{tikzpicture}
+\caption{First iteration, tracking no variables}
+\label{fig:cegarFailsEx:first}
+\end{subfigure}%
+\hfill
+\begin{subfigure}[b]{.3\textwidth}
+\centering
+\begin{tikzpicture}[->,>=stealth, mynode/.style={rectangle, draw, minimum height=0.5cm, minimum width=0.8cm}, every node/.style={font=\small}]
+
+\node[mynode] (0) {$\varnothing$};
+\node[mynode] (1) [below = 0.6cm of 0] {$\{ a \rightarrow 2 \}$};
+\node[mynode] (2) [below = 0.6cm of 1] {$\{ a \rightarrow 2 \}$};
+\node[mynode] (3) [below = 0.6cm of 2, draw=red, very thick] {$\{ a \rightarrow 2 \}$};
+
+\path
+  (0) edge node [left] {\textbf{a $\assign$ 2, ..., z $\assign$ 2}} (1)
+  (1) edge node [left] {$\mathbf{[!(a == 1)]}$} (2)
+  (2) edge node [left] {$\mathbf{[b == 1]}$} (3)
+;
+\end{tikzpicture}
+\caption{Second iteration, tracking variable $a$}
+\label{fig:cegarFailsEx:second}
+\end{subfigure}%
+\hfill
+\begin{subfigure}[b]{.3\textwidth}
+\centering
+\begin{tikzpicture}[->,>=stealth, mynode/.style={rectangle, draw, minimum height=0.5cm, minimum width=0.8cm}, every node/.style={font=\small}]
+
+\node[mynode] (0) {$\varnothing$};
+\node[mynode] (1) [below = 0.6cm of 0] {$\{ a \rightarrow 2, b \rightarrow 2 \}$};
+\node[mynode] (2) [below = 0.6cm of 1] {$\{ a \rightarrow 2, b \rightarrow 2 \}$};
+\node[mynode] (3) [below = 0.6cm of 2] {$\{ a \rightarrow 2, b \rightarrow 2 \}$};
+\node[mynode] (4) [below = 0.6cm of 3, draw=red, very thick] {$\{ a \rightarrow 2, b \rightarrow 2 \}$};
+
+\path
+  (0) edge node [left] {\textbf{a $\assign$ 2, ..., z $\assign$ 2}} (1)
+  (1) edge node [left] {$\mathbf{[!(a == 1)]}$} (2)
+  (2) edge node [left] {$\mathbf{[!(b == 1)]}$} (3)
+  (3) edge node [left] {$\mathbf{[c == 1]}$} (4)
+;
+\end{tikzpicture}
+\caption{Third iteration, tracking variables $a$ and $b$}
+\label{fig:cegarFailsEx:third}
+\end{subfigure}%
+\vspace{1cm}
+\begin{subfigure}[b]{.48\textwidth}
+\begin{tikzpicture}[->,>=stealth, mynode/.style={circle, draw, minimum size=0.5cm}, every node/.style={font=\small}]
+
+\node[mynode] (0) {0};
+\node[mynode] (1) [below = 0.6cm of 0] {1};
+\node[mynode] (l2) [below left = 0.7cm and 0.8cm of 1] {2};
+\node[mynode] (r2) [below right = 0.7cm and 0.8cm of 1, draw=red, very thick] {3};
+\node[mynode] (ll3) [below left = 0.7cm and 0.6cm of l2] {4};
+\node[mynode] (lr3) [below right = 0.7cm and 0.6cm of l2, draw=red, very thick] {5};
+\node[mynode] (llr4) [below right = 0.7cm and 0.4cm of ll3, draw=red, very thick] {6};
+\node[mynode] (lll6) [below left = 2cm and 0.4cm of ll3] {7};
+\node[mynode] (lllr6) [below right = 0.7cm and 0.3cm of lll6, draw=red, very thick] {9};
+\node[mynode] (llll6) [below left = 0.7cm and 0.3cm of lll6] {8};
+
+\path
+  (0) edge node [left] {\textbf{a $\assign$ 2, b $\assign$ 2, ... z $\assign$ 2}} (1)
+  (1) edge node [left, pos=0.3] {$\mathbf{[!(a == 1)]}$} (l2)
+  (1) edge node [right, pos=0.3] {$\mathbf{[a == 1]}$} (r2)
+  (l2) edge node [left, pos=0.3] {$\mathbf{[!(b == 1)]}$} (ll3)
+  (l2) edge node [right, pos=0.3] {$\mathbf{[b == 1]}$} (lr3)
+  (ll3) edge node [right, pos=0.3] {$\mathbf{[c == 1]}$} (llr4)
+  (ll3) edge [dashed] (lll6)
+  (lll6) edge node [right, pos=0.5] {$\mathbf{[z == 1]}$} (lllr6)
+  (lll6) edge node [left, pos=0.5] {$\mathbf{[!(z == 1)]}$} (llll6)
+;
+\end{tikzpicture}
+\caption{CFA}
+\label{fig:cegarFailsEx:cfa}
+\end{subfigure}%
+\hfill
+\begin{subfigure}[b]{.48\textwidth}
+\centering
+\begin{tikzpicture}[->,>=stealth, mynode/.style={rectangle, draw, minimum height=0.5cm, minimum width=0.8cm}, every node/.style={font=\small}]
+
+\node[mynode] (0) {$\varnothing$};
+\node[mynode] (1) [below = 0.6cm of 0] {$\{ a \rightarrow 2, b \rightarrow 2, ..., z \rightarrow 2 \}$};
+\node[mynode] (2) [below = 0.6cm of 1] {$\{ a \rightarrow 2, b \rightarrow 2, ..., z \rightarrow 2 \}$};
+\node[mynode] (3) [below = 0.6cm of 2 ] {$\{ a \rightarrow 2, b \rightarrow 2, ..., z \rightarrow 2 \}$};
+\node[mynode] (4) [below = 2cm of 3] {$\{ a \rightarrow 2, b \rightarrow 2, ..., z \rightarrow 2 \}$};
+\node[mynode] (5) [below = 0.6cm of 4] {$\{ a \rightarrow 2, b \rightarrow 2, ..., z \rightarrow 2 \}$};
+
+\path
+  (0) edge node [left] {\textbf{a $\assign$ 2, ..., z $\assign$ 2}} (1)
+  (1) edge node [left] {$\mathbf{[!(a == 1)]}$} (2)
+  (2) edge node [left] {$\mathbf{[!(b == 1)]}$} (3)
+  (3) edge [dashed] (4)
+  (4) edge node [left] {$\mathbf{[!(z == 1)]}$} (5)
+;
+\end{tikzpicture}
+\caption{Last iteration tracking all program variables. Also equals the run of eager analysis}
+\label{fig:cegarFailsEx:eager}
+\end{subfigure}
+%\caption{CFA representing an example program CEGAR performs worse for then eager analysis.}
+%\label{fig:cegarFails}\\
+\caption{A CFA representing a program CEGAR performs worse for then eager analysis and the first three
+and last one iteration of analysis using CEGAR. The last iteration also equals the eager analysis.}
+\label{fig:cegarFailsEx}
+\end{figure}
+
+Figure~\ref{fig:cegarFailsEx:cfa} shows a CFA representing one such program. The highlighted nodes are error locations.
+Although none of them are really reachable as all program variables are initialised with the concrete value $2$ at the beginning of the program,
+the CEGAR algorithm visits one after the other, always refining the precision to track only one additional variable and then restarting
+from the beginning of the program, since all variable assignments happen there.
+The first three iterations of this procedure are shown in Figures~\ref{fig:cegarFailsEx:first} -- \ref{fig:cegarFailsEx:third}.
+This lazy approach performs many computations obviously unnecessary and as such has a significant worse performance than an eager approach using full precision.
+Using full precision, it is possible to prove all error paths infeasible in one run, since the value analysis state already contains $\{ a \rightarrow 2, b \rightarrow 2, ..., z \rightarrow 2 \}$ after processing the first CFA edge (Fig.~\ref{fig:cegarFailsEx:eager}).
+
+Most of the programs with this characteristic are of the task sets of ProductLines and ECA.
+This shows that for a significant amount of tasks, eager symbolic execution is more successful in finding errors then symbolic execution using CEGAR.
+But after all, CEGAR was able to push the \symbolicExecutionCPA's score from 660~points to 3271~points by increasing the amount of successfully verified
+error-free tasks by more than~1500.
