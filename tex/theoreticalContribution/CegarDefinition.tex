@@ -60,24 +60,19 @@ Because of this, the amount of calls of the strongest-post operator can make a n
 
 Using this strongest-post operator for interpolation (Alg. \ref{alg:interpolateSym}) allows the computation of an interpolant for a prefix $\prefix$ and a suffix $\suffix$ at a specific program location based on the semantics of the \symbolicExecutionCPA.
 Since we want to create an interpolant $\Gamma$ that contains all information necessary for proving that $\strongestPostOpSym_{\Gamma \logicAnd \suffix}$ is contradicting, not only abstract variable assignments but also constraints have to be considered.
-First, we compute the strongest-post condition $(v, a)$ for the prefix $\prefix$.
+First, we compute the strongest-post condition $(v, a)$ for the prefix $\prefix$ based on the initial state $\varnothing$ to get the complete prefix's strongest-post condition.
 Similar to interpolation for abstract variable assignments, we then eliminate all constraints from $a$ that are not necessary for proving that $\suffix$ is contradicting.
 Next, we remove all assignments from $v$ that are not required. This way we try to get the weakest interpolant possible.
 We then build the interpolant from all left constraints in $a$ and all left assignments of $v$.
 Contrary to Algorithm \ref{alg:interpolateSym}, we build the interpolant $\Gamma$ not by using $\assume$ operations for each $x \in \defRange(v)$, but assignment operations.
 By using $\assume$ operations only for the constraints of $a$ we can easily distinguish between both domains.
-It is not wrong to only use $\assume$ operations, but it would unnecessarily increase the precision for the \constraintsCPA and the constraints sets used in the inductive interpolations, as all assumptions are added here.
+It is not wrong to only use $\assume$ operations, but it would unnecessarily increase the precision for the \constraintsCPA\ and the constraints sets used in the inductive interpolations, as all assumptions are added here.
 This could significantly decrease performance during interpolation due to the for-loop over all constraints in Line \ref{alg:interpolateSym:itpAStart} and the strongest-post operators bad performance.
 It might even be more effective to just use all constraints and not perform these additional strongest-post computations
 by omitting Lines \ref{alg:interpolateSym:aInterpolationBegin} - \ref{alg:interpolateSym:aInterpolationEnd} of the algorithm.
 Since constraints made of assume edges whose occurring program variables have an unknown value are discarded in strengthening of the \constraintsCPA, the precision of the \valueAnalysisCPA\ indirectly influences the constraints the \constraintsCPA\ tracks.
 Additionaly, it is also possible to eliminate variable assignments first, and constraints second.
-We will examine all three possibilities later in detail (Section~\ref{sec:eval:itpTechniques}).
-
-%, but expect the best result from the proposed variant.
-%If more than one possibility exists to prove $\suffix$ infeasible, all possibilities but one are discarded.
-%A possibility is discarded, as long as it is not the last one, when an element (either a variable assignment or a constraint) that is only used by this one possibility is probed by the interpolation algorithm.
-%Since other possibilities exist for proving $\suffix$ as contradicting, that do not require the current element, it is removed and as such the possibility, also.
+We will examine all three possibilities later in detail (Section~\ref{sec:eval:itpTechniques}). 
 
 \begin{algorithm}[t]
 \caption{$\refineSymbolic{\sigma}$, a modified version of Alg. \ref{alg:refinementExplicit}.}
@@ -113,6 +108,9 @@ The \symbolicValueAnalysisCPA\ is based on the \valueAnalysisCPA, so it also wor
 We simply use the existing $\extractPrecisionFunc$ for this CPA.
 The precision of the \constraintsCPA\ is the set of all tracked constraints, so the constraints that result from applying the strongest-post operator to the interpolant provide the precision needed at the current location for proving the current error path as infeasible in future analysis.
 The adjusted refinement procedure is shown in Algorithm \ref{alg:refineSym1}.
+
+Since sliced prefix selection (Sec.~\ref{sec:assignmentRefinement}) only relies on a strongest-post operator and an existing refinement procedure, we can easily use it with our refinement procedure and $\strongestPostOpSym$.
+Evaluation will show that prefix selection can boost the performance of symbolic execution with CEGAR significantly.
 
 \subsection{Refinement based on refinement for \predicateCPA}
 \label{sec:predicateRefinement}

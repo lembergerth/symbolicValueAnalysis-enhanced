@@ -133,17 +133,19 @@ The following condition has to hold: $\forall e, \hat{e} \in E, \pi, \hat{\pi} \
 \end{enumerate} 
 
 \begin{algorithm}[t]
-\caption{$CPA(\cpa, e_0, \pi_0)$, adapted from \cite{Beyer2008}}
+\caption{$CPA(\cpaPlus, R_0, W_0)$, adapted from \cite{Beyer2013}}
 \label{alg:CPA}
 \begin{algorithmic}[1]
 
 \Input a CPA $\cpa = (D, \Pi, \transfer, \cpaMerge, \cpaStop, \cpaPrec)$,
-	    an initial abstract state $e_0 \in E$ with $E$ being the set of elements of $D$,
-	    and an initial precision $\pi_0 \in \Pi$.
-\Output a set of abstract states reachable from $e_0$
+	    a set $R_0 \subseteq (E \times \Pi)$ of abstract states with their precision and 
+      a subset $W_0 \subseteq R_0$ of frontier abstract states with their precision,
+      with $E$ being the set of elements of $D$.
+\Output a set of reachable abstract states with precision and
+        a subset of it of the frontier abstract states with precision
 \Variables \reachedSet\ and \waitlistSet , both subsets of $E \times \Pi$
-\State $\reachedSet \assign \{ (e_0, \pi_0) \}$
-\State $\waitlistSet \assign \{ (e_0, \pi_0) \}$
+\State $\reachedSet \assign R_0$
+\State $\waitlistSet \assign W_0$
 \While{$\waitlistSet \neq \varnothing$}
 	\State choose $(e, \pi)$ from \waitlistSet
 	\State remove $(e, \pi)$ from \waitlistSet
@@ -151,7 +153,7 @@ The following condition has to hold: $\forall e, \hat{e} \in E, \pi, \hat{\pi} \
 		\State $(\hat{e}, \hat{\pi}) \assign \cpaPrec(e', \pi, \reachedSet)$ \Comment Precision adjustment \label{alg:cpaPlus:precAdj}
 		\If{$\isTargetState{\hat{e}}$} \label{alg:cpa:isTarget}
 			\State %empty state so that the return statement below is in a new line
-			\Return $(\reachedSet \cup \{ (\hat{e}, \hat{\pi}) \},\ \waitlistSet)$
+			\Return $(\reachedSet \cup \{ (\hat{e}, \hat{\pi}) \},\ \waitlistSet \cup \{ (\hat{e}, \hat{\pi}) \})$
 		\EndIf
 		\ForAll{$(e'', \pi '') \in \reachedSet$}
 			\State $e_{new} \assign \cpaMerge(\hat{e}, e'', \hat{\pi})$ \Comment Combine with existing state \label{alg:cpa:mergeStart}
@@ -167,33 +169,34 @@ The following condition has to hold: $\forall e, \hat{e} \in E, \pi, \hat{\pi} \
 	\EndFor
 \EndWhile
 \State %empty state so that the return statement below is in a new line
-\Return \reachedSet
+\Return $(\reachedSet, \varnothing)$
 \end{algorithmic}
 \end{algorithm}
 
 \subsection{CPA algorithm}
 The CPA algorithm described in Algorithm \ref{alg:CPA} uses an arbitrary CPA of this form to solve the reachability problem.
-Given a CPA $\cpa$, an initial abstract state $e_0$ to start its computation at and an initial precision $\pi_0$, the algorithm computes the set \reachedSet\ of reachable abstract states.
-As long as the set of abstract states that still have to be processed (\waitlistSet) is not empty, an abstract state $e \in \waitlistSet$ is removed from the waitlist
-and each possible abstract successor $e'$ and its precision $\pi$ is examined:
+Given a CPA $\cpa$, an initial set $R_0$ of reached abstract states with their precisions and a subset $W_0 \subseteq R_0$ of abstract states that have to be examined,
+the algorithm computes the set \reachedSet\ of abstract states reachable without encountering a target state and the currently unprocessed abstract states of that set.
+Starting with the given sets $R_0$ and $W_0$ as set \reachedSet\ of reached abstract states and set \waitlistSet of abstract states not visited yet, the following steps are repeated until \waitlistSet\ is empty:
+An abstract state $e \in \waitlistSet$ is removed from the waitlist and each possible abstract successor $e'$ and its precision $\pi$ is examined:
 
 First, precision adjustment is performed on $e'$ based on $\pi$ and $\reachedSet$. This produces a new abstract state $\hat{e}$ and a new precision $\hat{\pi}$.
 
-Next, it is checked whether the adjusted state $\hat{e}$ represents any concrete state that violates a property. This is done by $\isTargetStateFunc : E \rightarrow \booleanset$ in Line \ref{alg:cpa:isTarget}, whose behaviour can be defined arbitrarily.
-In classic reachability computation, the complete reachable set would be computed first.
+Next, it is checked whether the adjusted abstract state $\hat{e}$ is a target state, i.e. represents any concrete state that violates a property. This is done by $\isTargetStateFunc : E \rightarrow \booleanset$ in Line~\ref{alg:cpa:isTarget}, whose behaviour can be defined arbitrarily.
+If $\hat{e}$ is a target state, \reachedSet\ and \waitlistSet\ are returned, both containing $\hat{e}$.
 
-Next, each already reached abstract state $e'' \in \reachedSet$ is individually merged with the new state $\hat{e}$ with precision $\hat{\pi}$. If the merge weakened $e''$, it and its precision are replaced with the weakened state and the new precision $\hat{\pi}$ in \reachedSet\ and \waitlistSet\ (Lines \ref{alg:cpa:mergeStart} - \ref{alg:cpa:mergeStop}).
+Otherwise, each already reached abstract state $e'' \in \reachedSet$ is individually merged with the new state $\hat{e}$ with precision $\hat{\pi}$. If the merge weakened $e''$, it and its precision are replaced with the weakened state and the new precision $\hat{\pi}$ in \reachedSet\ and \waitlistSet\ (Lines \ref{alg:cpa:mergeStart} - \ref{alg:cpa:mergeStop}).
 Next, the termination check checks whether the new abstract successor $\hat{e}$ is already covered by the current reached set.
 If it is not, it is added to \waitlistSet\ and \reachedSet.
 After this it is continued with the next element in the waitlist.
-If the waitlist is empty, there are no more reachable states and the reached set is returned.
+If the waitlist is empty, there are no more reachable states and the reached set is returned, accompanied by the empty waitlist.
 
 \section{Basic definition of CPAs used in this paper}
 A definition of all CPAs important to this paper follows.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\CompositeCPA}
-It is often useful to combine multiple CPAs to use their individual strengths and mitigate their weaknesses.
+It is often useful to use multiple CPAs in parallel to combine their individual strengths, mitigate their weaknesses, and simplify CPAs by separating concerns.
 A composition of two CPAs \cite{Beyer2008} can be expressed as $(\cpa_1, \cpa_2, \Pi_\times, \transfer_\times, \cpaMerge_\times, \cpaStop_\times, \cpaPrec_\times)$.
 We will extend this definition to allow the composition of an arbitrary number of CPAs.
 It consists of:
@@ -496,8 +499,9 @@ In \cite{Lemberger2015}\ we used a less-or-equal operator using an $\aliasFunc$ 
 The set $\Pi_\constrCPA = L \rightarrow 2^{\goodconstraintsset}$ of precisions. Each precision $\pi \in \Pi_\constrCPA$ contains for each program location $l \in L$ all tracked constraints, with $\goodconstraintsset \subseteq \constraintsset$ being the set of all possible boolean expressions over $\symvalset$.
 The constraints of $\goodconstraintsset$ do not contain any program variables, but the only variables occuring in them are symbolic identifiers of $\symIds$.
 
-A second option is to use the precision $\Pi_\symValCPA = L \rightarrow 2^X$ of the \symbolicValueAnalysisCPA.
-A constraint $p$ is tracked by $\pi \in \Pi_\symValCPA$ at a location $l$, if $\pi(l)$ contains all program variables $p$ originated from.
+A second option is to use the location-based precision $\Pi_L \subseteq L$, which is a subset of program locations.
+A precision $\pi \in \Pi_L$ tracks all constraints for every location $l \in \pi$.
+This type of precision is less fine-grained then $\Pi_\constrCPA$ and leads to more constraints being tracked faster.
 
 Example: If $p = s1 > s2 + 5$ with $s1, s2 \in \symIds$ was created from an edge $\assume(a > b)$ by using an abstract variable assignment $v = \{ (a, s1), (b, s2 + 5) \}$
 and $\pi(l) = \{ a, b \}$, then $\pi$ contains all program variables $p$ originated from and it is tracked by $\pi$. 
