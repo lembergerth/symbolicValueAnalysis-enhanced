@@ -1,0 +1,162 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic-refiner -setprop cpa.value.symbolic.refinement.strategy=CONSTRAINTS_FIRST -setprop cpa.constraints.lessOrEqualType=SUBSET -setprop cegar.refiner=cpa.value.symbolic.refiner.delegation.SymbolicDelegatingRefiner -setprop cpa.value.refinement.pathSlicing=false -setprop cpa.value.refinement.prefixPreference=NONE -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-linux-3.12-rc1/ALL.prp ../svcomp15/ldv-linux-3.12-rc1/linux-3.12-rc1.tar.xz-144_2a-drivers--net--wireless--libertas--usb8xxx.ko-entry_point_false-unreach-call.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_1064331925_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+line 10738: Ignoring call via function pointer completeFnInt for which no suitable target was found in line: (*completeFnInt)(usb_urb); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from if_usb_receive to if_usb_submit_rx_urb (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from ldv_usb_submit_urb_13 to ldv_submit_urb (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from if_usb_submit_rx_urb_fwload to __if_usb_submit_rx_urb (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 10747: Ignoring call via function pointer completeFnBulk for which no suitable target was found in line: (*completeFnBulk)(usb_urb); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from ldv_usb_submit_urb_15 to ldv_submit_urb (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from if_usb_send_fw_pkt to usb_tx_block (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                 241448 (count: 14277, min: 0, max: 23, avg: 16.91)
+Number of global variables:                          192554 (count: 14277, min: 0, max: 15, avg: 13.49)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                 1180511
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                4.612s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     3.351s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 1
+Most constraints before refinement in state: 2
+Constraints after refinement in state: 104
+Constraints before refinement in state: 8654
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 2468ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                 10.939s
+  Time for transition matches:                         4.450s
+  Time for transition assertions:                      0.000s
+  Time for transition actions:                         0.000s
+Automaton transfers with branching:                0
+Automaton transfer successors:                      1724065 (count: 1724065, min: 1, max: 1, avg: 1.00) [1 x 1724065]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            1059037
+Max size of waitlist:            391
+Average size of waitlist:        125
+Number of computed successors:   1180511
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         119965
+Number of times breaked:         18
+
+Total time for CPA algorithm:        79.057s (Max:    17.393s)
+  Time for choose from waitlist:      1.628s
+  Time for precision adjustment:     13.272s
+  Time for transfer relation:        48.983s
+  Time for stop operator:             3.660s
+  Time for adding to reached set:     3.034s
+
+SymbolicDelegatingRefiner statistics
+------------------------------------
+Explicit refinements: 18
+Successful explicit refinements: 15
+Symbolic refinements: 3
+Successful symbolic refinements: 2
+Overall explicit refinement time: 7940ms
+Average explicit refinement time: 441ms
+Overall symbolic refinement time: 3897ms
+Average symbolic refinement time: 1299ms
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                18
+Number of successful refinements:     17
+Number of failed refinements:         0
+Max. size of reached set before ref.: 250352
+Max. size of reached set after ref.:  35210
+Avg. size of reached set before ref.: 62467.06
+Avg. size of reached set after ref.:  3756.47
+
+Total time for CEGAR algorithm:      90.940s
+Time for refinements:                11.837s
+Average time for refinement:          0.657s
+Max time for refinement:              2.740s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.745
+  Visited lines:          7376
+  Total lines:            7900
+  Line coverage:          0.934
+  Visited conditions:     399
+  Total conditions:       586
+  Condition coverage:     0.681
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     1670
+Number of CFA edges:             2293
+Number of relevant variables:    553
+Number of functions:             98
+Number of loops:                 7
+Size of reached set:             14277
+  Number of reached locations:   1169 (70%)
+    Avg states per location:     12
+    Max states per location:     308 (at node N89)
+  Number of reached functions:   73 (74%)
+  Number of partitions:          11832
+    Avg size of partitions:      1
+    Max size of partitions:      81 (with key [N1968 (before line 10309), Function main called from node N1898, stack depth 1 [b02c00f], stack [main], Init])
+  Number of target states:       1
+  Size of final wait list        81
+
+Time for analysis setup:          3.888s
+  Time for loading CPAs:          0.510s
+  Time for loading parser:        0.556s
+  Time for CFA construction:      2.743s
+    Time for parsing file(s):     1.068s
+    Time for AST to CFA:          0.927s
+    Time for CFA sanity check:    0.094s
+    Time for post-processing:     0.477s
+      Time for var class.:        0.000s
+Time for Analysis:               90.941s
+CPU time for analysis:          102.530s
+Total time for CPAchecker:       94.834s
+Total CPU time for CPAchecker:  109.460s
+
+Time for Garbage Collector:       2.081s (in 7 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               3448MB (  3288 MiB) max;   1322MB (  1260 MiB) avg;   3501MB (  3338 MiB) peak
+Used non-heap memory:             24MB (    23 MiB) max;     23MB (    22 MiB) avg;     25MB (    24 MiB) peak
+Used in PS Old Gen pool:         227MB (   216 MiB) max;     89MB (    85 MiB) avg;    227MB (   216 MiB) peak
+Allocated heap memory:          4681MB (  4464 MiB) max;   3719MB (  3546 MiB) avg
+Allocated non-heap memory:        27MB (    26 MiB) max;     26MB (    25 MiB) avg
+Total process virtual memory:  13597MB ( 12967 MiB) max;  13596MB ( 12966 MiB) avg
+
+Verification result: FALSE. Property violation (__VERIFIER_error(); called in line 7537) found by chosen configuration.
+More details about the verification run can be found in the directory "./output".

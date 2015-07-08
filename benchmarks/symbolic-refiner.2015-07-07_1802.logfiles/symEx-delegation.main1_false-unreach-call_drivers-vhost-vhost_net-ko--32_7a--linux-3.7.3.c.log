@@ -1,0 +1,151 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic-refiner -setprop cpa.value.symbolic.refinement.strategy=CONSTRAINTS_FIRST -setprop cpa.constraints.lessOrEqualType=SUBSET -setprop cegar.refiner=cpa.value.symbolic.refiner.delegation.SymbolicDelegatingRefiner -setprop cpa.value.refinement.pathSlicing=false -setprop cpa.value.refinement.prefixPreference=NONE -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-linux-3.7.3/ALL.prp ../svcomp15/ldv-linux-3.7.3/main1_false-unreach-call_drivers-vhost-vhost_net-ko--32_7a--linux-3.7.3.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_-1523938821_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+lines 14270-14271: Function pointer *(sock->ops->getname) with type int (*)(struct socket *, struct sockaddr *, int *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 13728: Function pointer *(sock->ops->recvmsg) with type int (*)(struct kiocb *, struct socket *, struct msghdr *, size_t , int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 13262: Function pointer *(sock->ops->sendmsg) with type int (*)(struct kiocb *, struct socket *, struct msghdr *, size_t ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                    290 (count: 128, min: 0, max: 4, avg: 2.27)
+Number of global variables:                             123 (count: 128, min: 0, max: 1, avg: 0.96)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                     306
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                0.037s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     0.058s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 0
+Most constraints before refinement in state: 1
+Constraints after refinement in state: 0
+Constraints before refinement in state: 4
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 3ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  0.049s
+Automaton transfers with branching:                0
+Automaton transfer successors:                         1733 (count: 1733, min: 1, max: 1, avg: 1.00) [1 x 1733]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            255
+Max size of waitlist:            18
+Average size of waitlist:        8
+Number of computed successors:   306
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         6
+Number of times breaked:         3
+
+Total time for CPA algorithm:         0.300s (Max:     0.165s)
+  Time for choose from waitlist:      0.001s
+  Time for precision adjustment:      0.063s
+  Time for transfer relation:         0.207s
+  Time for stop operator:             0.006s
+  Time for adding to reached set:     0.009s
+
+SymbolicDelegatingRefiner statistics
+------------------------------------
+Explicit refinements: 3
+Successful explicit refinements: 2
+Symbolic refinements: 1
+Successful symbolic refinements: 0
+Overall explicit refinement time: 737ms
+Average explicit refinement time: 245ms
+Overall symbolic refinement time: 244ms
+Average symbolic refinement time: 244ms
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                3
+Number of successful refinements:     2
+Number of failed refinements:         0
+Max. size of reached set before ref.: 128
+Max. size of reached set after ref.:  20
+Avg. size of reached set before ref.: 108.67
+Avg. size of reached set after ref.:  12.50
+
+Total time for CEGAR algorithm:       1.281s
+Time for refinements:                 0.981s
+Average time for refinement:          0.327s
+Max time for refinement:              0.361s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.065
+  Visited lines:          5752
+  Total lines:            9923
+  Line coverage:          0.580
+  Visited conditions:     42
+  Total conditions:       1046
+  Condition coverage:     0.040
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     3406
+Number of CFA edges:             4791
+Number of relevant variables:    1153
+Number of functions:             230
+Number of loops:                 27
+Size of reached set:             128
+  Number of reached locations:   123 (4%)
+    Avg states per location:     1
+    Max states per location:     2 (at node N904)
+  Number of reached functions:   15 (7%)
+  Number of partitions:          125
+    Avg size of partitions:      1
+    Max size of partitions:      2 (with key [N914 (before line 7997), Function vhost_dev_check_owner called from node N1775, stack depth 5 [6663f834], stack [main, vhost_net_compat_ioctl, vhost_net_ioctl, vhost_dev_ioctl, vhost_dev_check_owner], Init])
+  Number of target states:       1
+  Size of final wait list        18
+
+Time for analysis setup:          6.584s
+  Time for loading CPAs:          0.663s
+  Time for loading parser:        0.590s
+  Time for CFA construction:      5.235s
+    Time for parsing file(s):     1.317s
+    Time for AST to CFA:          2.576s
+    Time for CFA sanity check:    0.226s
+    Time for post-processing:     0.846s
+      Time for var class.:        0.000s
+Time for Analysis:                1.281s
+CPU time for analysis:            2.300s
+Total time for CPAchecker:        7.870s
+Total CPU time for CPAchecker:   14.790s
+
+Time for Garbage Collector:       0.000s (in 0 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:                391MB (   373 MiB) max;    191MB (   182 MiB) avg;    412MB (   393 MiB) peak
+Used non-heap memory:             22MB (    21 MiB) max;     15MB (    14 MiB) avg;     22MB (    21 MiB) peak
+Used in PS Old Gen pool:           0MB (     0 MiB) max;      0MB (     0 MiB) avg;      0MB (     0 MiB) peak
+Allocated heap memory:          2024MB (  1930 MiB) max;   2024MB (  1930 MiB) avg
+Allocated non-heap memory:        25MB (    24 MiB) max;     24MB (    23 MiB) avg
+Total process virtual memory:  13597MB ( 12967 MiB) max;  13583MB ( 12953 MiB) avg
+
+Verification result: FALSE. Property violation (__VERIFIER_error(); called in line 15516) found by chosen configuration.
+More details about the verification run can be found in the directory "./output".

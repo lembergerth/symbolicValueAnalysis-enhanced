@@ -1,0 +1,178 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic-refiner -setprop cpa.value.symbolic.refinement.strategy=CONSTRAINTS_FIRST -setprop cpa.constraints.lessOrEqualType=SUBSET -setprop cegar.refiner=cpa.value.symbolic.refiner.delegation.SymbolicDelegatingRefiner -setprop cpa.value.refinement.pathSlicing=false -setprop cpa.value.refinement.prefixPreference=NONE -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-consumption/ALL.prp ../svcomp15/ldv-consumption/32_7a_cilled_false-unreach-call_linux-3.8-rc1-32_7a-fs--ubifs--ubifs.ko-ldv_main2_sequence_infinite_withcheck_stateful.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_-618894349_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 57499: Function pointer *(tmp->cot_compress) with type int (*)(struct crypto_tfm *, u8 *, unsigned int, u8 *, unsigned int *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 57518: Function pointer *(tmp->cot_decompress) with type int (*)(struct crypto_tfm *, u8 *, unsigned int, u8 *, unsigned int *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 15042-15043: Function pointer *filldir with type int (*)(void *, const char *, int, loff_t , u64 , unsigned int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 14927: Function pointer *filldir with type int (*)(void *, const char *, int, loff_t , u64 , unsigned int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 14894: Function pointer *filldir with type int (*)(void *, const char *, int, loff_t , u64 , unsigned int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+Skipping recursive function call from ubifs_lpt_lookup to ubifs_get_pnode (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from add_to_lpt_heap to dbg_check_heap (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from update_cats to ubifs_add_to_cat (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from dbg_check_heap to ubifs_lpt_lookup (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from ubifs_get_pnode to update_cats (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 82602: Ignoring call via function pointer dbg_walk_index::znode_cb for which no suitable target was found in line: err = (*znode_cb)(c, znode, priv); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 14894: Ignoring call via function pointer ubifs_readdir::filldir for which no suitable target was found in line: over = (*filldir)(dirent, ".", 1, 0LL, __CPAchecker_TMP_2, 4U); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 14927: Ignoring call via function pointer ubifs_readdir::filldir for which no suitable target was found in line: over = (*filldir)(dirent, "..", 2, 1LL, (u64 )tmp___5, 4U); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Shutdown requested (The CPU-time limit of 900s has elapsed.), waiting for termination. (ForceTerminationOnShutdown$1.shutdownRequested, WARNING)
+
+Warning: Analysis stopped (The CPU-time limit of 900s has elapsed.) (ShutdownNotifier.shutdownIfNecessary, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                4783139 (count: 140114, min: 0, max: 36, avg: 34.14)
+Number of global variables:                         1961526 (count: 140114, min: 0, max: 14, avg: 14.00)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                 1271687
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                8.989s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     5.723s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 0
+Most constraints before refinement in state: 1
+Constraints after refinement in state: 0
+Constraints before refinement in state: 2942
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 1662ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  9.138s
+  Time for transition matches:                         3.828s
+  Time for transition assertions:                      0.001s
+  Time for transition actions:                         0.000s
+Automaton transfers with branching:                0
+Automaton transfer successors:                      1948981 (count: 1948981, min: 1, max: 1, avg: 1.00) [1 x 1948981]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            1109821
+Max size of waitlist:            1001
+Average size of waitlist:        137
+Number of computed successors:   1271687
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         160819
+Number of times breaked:         15
+
+Total time for CPA algorithm:       794.565s (Max:   698.699s)
+  Time for choose from waitlist:      1.402s
+  Time for precision adjustment:     30.850s
+  Time for transfer relation:       748.572s
+  Time for stop operator:             3.390s
+  Time for adding to reached set:     3.353s
+
+SymbolicDelegatingRefiner statistics
+------------------------------------
+Explicit refinements: 15
+Successful explicit refinements: 15
+Symbolic refinements: 0
+Successful symbolic refinements: 0
+Overall explicit refinement time: 8425ms
+Average explicit refinement time: 561ms
+Overall symbolic refinement time: 0ms
+Average symbolic refinement time: 0ms
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                15
+Number of successful refinements:     15
+Number of failed refinements:         0
+Max. size of reached set before ref.: 970449
+Max. size of reached set after ref.:  86
+Avg. size of reached set before ref.: 64727.40
+Avg. size of reached set after ref.:  10.40
+
+Total time for CEGAR algorithm:     802.993s
+Time for refinements:                 8.425s
+Average time for refinement:          0.561s
+Max time for refinement:              6.816s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.027
+  Visited lines:          4673
+  Total lines:            42710
+  Line coverage:          0.109
+  Visited conditions:     246
+  Total conditions:       9964
+  Condition coverage:     0.025
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     29766
+Number of CFA edges:             45701
+Number of relevant variables:    10323
+Number of functions:             1275
+Number of loops:                 339
+Size of reached set:             140114
+  Number of reached locations:   623 (2%)
+    Avg states per location:     224
+    Max states per location:     6096 (at node N15)
+  Number of reached functions:   34 (3%)
+  Number of partitions:          103957
+    Avg size of partitions:      1
+    Max size of partitions:      609 (with key [N24445 (before line 47577), Function ubifs_gc_start_commit called from node N22187, stack depth 6 [6421f3c1], stack [main, ubifs_fsync, ubifs_sync_fs, ubifs_run_commit, do_commit, ubifs_gc_start_commit], Init])
+  Number of target states:       0
+  Size of final wait list        975
+
+Time for analysis setup:         33.371s
+  Time for loading CPAs:          0.956s
+  Time for loading parser:        0.535s
+  Time for CFA construction:     31.779s
+    Time for parsing file(s):     3.401s
+    Time for AST to CFA:         21.911s
+    Time for CFA sanity check:    1.453s
+    Time for post-processing:     4.708s
+      Time for var class.:        0.000s
+Time for Analysis:              802.993s
+CPU time for analysis:          835.430s
+Total time for CPAchecker:      836.369s
+Total CPU time for CPAchecker:  900.120s
+
+Time for Garbage Collector:      21.218s (in 20 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               4263MB (  4066 MiB) max;   2097MB (  2000 MiB) avg;   4522MB (  4313 MiB) peak
+Used non-heap memory:             26MB (    25 MiB) max;     25MB (    24 MiB) avg;     27MB (    25 MiB) peak
+Used in PS Old Gen pool:        1282MB (  1223 MiB) max;    670MB (   639 MiB) avg;   1282MB (  1223 MiB) peak
+Allocated heap memory:          5586MB (  5327 MiB) max;   4402MB (  4198 MiB) avg
+Allocated non-heap memory:        44MB (    42 MiB) max;     31MB (    30 MiB) avg
+Total process virtual memory:  13653MB ( 13020 MiB) max;  13598MB ( 12968 MiB) avg
+
+Verification result: UNKNOWN, incomplete analysis.
+More details about the verification run can be found in the directory "./output".

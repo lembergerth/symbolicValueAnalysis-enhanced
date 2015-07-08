@@ -1,0 +1,284 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic-refiner-pred -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-consumption/ALL.prp ../svcomp15/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--infiniband--hw--mlx4--mlx4_ib.ko-ldv_main4_sequence_infinite_withcheck_stateful.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_1821756020_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 22920: Function pointer *(ops->alloc) with type void * (*)(struct device *, size_t , dma_addr_t *, gfp_t , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 22968: Function pointer *(ops->free) with type void (*)(struct device *, size_t , void *, dma_addr_t , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 9185: Function pointer *(ops->sync_single_for_cpu) with type void (*)(struct device *, dma_addr_t , size_t , enum dma_data_direction ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 11941: Function pointer *(ops->sync_single_for_cpu) with type void (*)(struct device *, dma_addr_t , size_t , enum dma_data_direction ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 11986: Function pointer *(ops->sync_single_for_device) with type void (*)(struct device *, dma_addr_t , size_t , enum dma_data_direction ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 24090: Function pointer *(ops->sync_single_for_device) with type void (*)(struct device *, dma_addr_t , size_t , enum dma_data_direction ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 11896: Function pointer *(ops->unmap_page) with type void (*)(struct device *, dma_addr_t , size_t , enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 24045: Function pointer *(ops->unmap_page) with type void (*)(struct device *, dma_addr_t , size_t , enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 12081: Function pointer *(dev->dma_ops->map_single) with type u64  (*)(struct ib_device *, void *, size_t , enum dma_data_direction ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 24114: Function pointer *(dev->dma_ops->map_single) with type u64  (*)(struct ib_device *, void *, size_t , enum dma_data_direction ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 9416: Function pointer *(dev->dma_ops->sync_single_for_cpu) with type void (*)(struct ib_device *, u64 , size_t , enum dma_data_direction ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 12122: Function pointer *(dev->dma_ops->sync_single_for_cpu) with type void (*)(struct ib_device *, u64 , size_t , enum dma_data_direction ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 12141: Function pointer *(dev->dma_ops->sync_single_for_device) with type void (*)(struct ib_device *, u64 , size_t , enum dma_data_direction ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 24155: Function pointer *(dev->dma_ops->sync_single_for_device) with type void (*)(struct ib_device *, u64 , size_t , enum dma_data_direction ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 12103: Function pointer *(dev->dma_ops->unmap_single) with type void (*)(struct ib_device *, u64 , size_t , enum dma_data_direction ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 24136: Function pointer *(dev->dma_ops->unmap_single) with type void (*)(struct ib_device *, u64 , size_t , enum dma_data_direction ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 37153: Function pointer *(dev->ib_dev.query_gid) with type int (*)(struct ib_device *, u8 , int, union ib_gid *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+line 37153: Ignoring function call through function pointer *(dev->ib_dev.query_gid): tmp___1 = (*(dev->ib_dev.query_gid))(&(dev->ib_dev), (int)((u8 )i), 0, &gid); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+The void * pointer kmalloc::__retval__ to a deferred allocation escaped form tracking! Allocating array void[4]. (in the following line(s):
+ lines 15128-15129:	N4026 -{((tun_qp->tx_ring) + ((unsigned long)i))->buf.addr = kmalloc((size_t )tx_buf_size, 208U);}-> N4027) (PredicateCPA:DynamicMemoryHandler.handleDeferredAllocationPointerEscape, WARNING)
+
+lines 11849-11850: Ignoring function call through function pointer *(ops->map_page): addr = (*(ops->map_page))(dev, 18446719884453740544UL + (tmp___2 >> 12), ((unsigned long)ptr) & 4095UL, size, dir, attrs); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 12081: Ignoring function call through function pointer *(dev->dma_ops->map_single): tmp = (*(dev->dma_ops->map_single))(dev, cpu_addr, size, direction); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 11896: Ignoring function call through function pointer *(ops->unmap_page): (*(ops->unmap_page))(dev, addr, size, dir, attrs); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 12103: Ignoring function call through function pointer *(dev->dma_ops->unmap_single): (*(dev->dma_ops->unmap_single))(dev, addr, size, direction); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+The void * pointer kmalloc::__retval__ to a deferred allocation escaped form tracking! Allocating array void[4]. (in the following line(s):
+ line 15100:	N4009 -{((tun_qp->ring) + ((unsigned long)i))->addr = kmalloc((size_t )rx_buf_size, 208U);}-> N4010) (PredicateCPA:DynamicMemoryHandler.handleDeferredAllocationPointerEscape, WARNING)
+
+line 11986: Ignoring function call through function pointer *(ops->sync_single_for_device): (*(ops->sync_single_for_device))(dev, addr, size, dir); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 12141: Ignoring function call through function pointer *(dev->dma_ops->sync_single_for_device): (*(dev->dma_ops->sync_single_for_device))(dev, addr, size, dir); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 12033: Ignoring function call through function pointer *(qp->device->post_recv): tmp = (*(qp->device->post_recv))(qp, recv_wr, bad_recv_wr); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 24090: Ignoring function call through function pointer *(ops->sync_single_for_device): (*(ops->sync_single_for_device))(dev, addr, size, dir); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 24155: Ignoring function call through function pointer *(dev->dma_ops->sync_single_for_device): (*(dev->dma_ops->sync_single_for_device))(dev, addr, size, dir); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 12063: Ignoring function call through function pointer *(cq->device->req_notify_cq): tmp = (*(cq->device->req_notify_cq))(cq, flags); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+Warning: Analysis stopped (The CPU-time limit of 900s has elapsed.) (ShutdownNotifier.shutdownIfNecessary, WARNING)
+
+Shutdown requested (The CPU-time limit of 900s has elapsed.), waiting for termination. (ForceTerminationOnShutdown$1.shutdownRequested, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                6560541 (count: 2151789, min: 0, max: 4, avg: 3.05)
+Number of global variables:                         4303574 (count: 2151789, min: 0, max: 2, avg: 2.00)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                 2534978
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                9.754s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     4.706s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 4
+Most constraints before refinement in state: 4
+Constraints after refinement in state: 72
+Constraints before refinement in state: 180
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 4059ms
+
+PredicateCPA statistics
+-----------------------
+Number of abstractions:            2534972 (100% of all post computations)
+  Times abstraction was reused:    0
+  Because of function entry/exit:  476755 (19%)
+  Because of loop head:            54971 (2%)
+  Because of join nodes:           0 (0%)
+  Because of threshold:            0 (0%)
+  Times precision was empty:       2534972 (100%)
+  Times precision was {false}:     0 (0%)
+  Times result was cached:         0 (0%)
+  Times cartesian abs was used:    0 (0%)
+  Times boolean abs was used:      0 (0%)
+  Times result was 'false':        0 (0%)
+Number of strengthen sat checks:   6
+  Times result was 'false':        0 (0%)
+Number of coverage checks:         271401
+  BDD entailment checks:           271401
+Number of SMT sat checks:          6
+  trivial:                         6
+  cached:                          0
+
+Max ABE block size:                       1
+Number of predicates discovered:          7
+Number of abstraction locations:          0
+Max number of predicates per location:    0
+Avg number of predicates per location:    0
+
+Number of path formula cache hits:   2905289 (71%)
+
+Time for post operator:                428.086s
+  Time for path formula creation:      421.930s
+    Actual computation:                385.383s
+Time for strengthen operator:            3.008s
+  Time for satisfiability checks:        0.000s
+Time for prec operator:                143.504s
+  Time for abstraction:                 77.978s (Max:    25.957s, Count: 2534972)
+    Solving time:                        0.000s (Max:     0.000s)
+    Model enumeration time:              0.000s
+    Time for BDD construction:           0.000s (Max:     0.000s)
+Time for merge operator:                 0.000s
+Time for coverage check:                 2.415s
+  Time for BDD entailment checks:        2.054s
+Total time for SMT solver (w/o itp):     0.000s
+
+Number of BDD nodes:                               202
+Size of BDD node table:                            466043
+Size of BDD cache:                                 46619
+Size of BDD node cleanup queue:                           0 (count: 2806387, min: 0, max: 0, avg: 0.00)
+Time for BDD node cleanup:                             2.029s
+Time for BDD garbage collection:                       0.000s (in 0 runs)
+
+PrecisionBootstrap statistics
+-----------------------------
+Init. function predicates:                         0
+Init. global predicates:                           0
+Init. location predicates:                         0
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                 14.409s
+  Time for transition matches:                         6.429s
+  Time for transition assertions:                      0.000s
+  Time for transition actions:                         0.000s
+Automaton transfers with branching:                0
+Automaton transfer successors:                      3780291 (count: 3780291, min: 1, max: 1, avg: 1.00) [1 x 3780291]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            2263388
+Max size of waitlist:            64
+Average size of waitlist:        44
+Number of computed successors:   2534978
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         271401
+Number of times breaked:         6
+
+Total time for CPA algorithm:       723.147s (Max:   687.715s)
+  Time for choose from waitlist:      2.484s
+  Time for precision adjustment:    173.396s
+  Time for transfer relation:       516.239s
+  Time for merge operator:            0.780s
+  Time for stop operator:             7.893s
+  Time for adding to reached set:     8.307s
+
+Predicate-Abstraction Refiner statistics
+----------------------------------------
+Avg. length of target path (in blocks):                2398 (count: 6, min: 174, max: 524, avg: 399.67)
+Number of infeasible sliced prefixes:                     0 (count: 0, min: 0, max: 0, avg: 0.00)
+
+Time for refinement:                                   3.104s
+  Counterexample analysis:                2.216s (Max:     0.477s, Calls: 6)
+    Refinement sat check:                 1.437s
+    Interpolant computation:              0.000s
+  Error path post-processing:                          0.000s
+  Path-formulas extraction:                            0.000s
+  Building the counterexample trace:                   2.216s
+  Extracting precise counterexample:                   0.000s
+  Extracting infeasible sliced prefixes:               0.000s
+  Selecting infeasible sliced prefixes:                0.000s
+  Predicate creation:                                  0.014s
+  Precision update:                                    0.022s
+  ARG update:                                          0.000s
+
+Length of refined path (in blocks):                    1502 (count: 6, min: 55, max: 520, avg: 250.33)
+Number of affected states:                             1059 (count: 6, min: 3, max: 515, avg: 176.50)
+Length (states) of path with itp 'true':                437 (count: 6, min: 4, max: 178, avg: 72.83)
+Length (states) of path with itp non-trivial itp:      1059 (count: 6, min: 3, max: 515, avg: 176.50)
+Length (states) of path with itp 'false':                 6 (count: 6, min: 1, max: 1, avg: 1.00)
+Different non-trivial interpolants along paths:           0 (count: 6, min: 0, max: 0, avg: 0.00)
+Equal non-trivial interpolants along paths:            1053 (count: 6, min: 2, max: 514, avg: 175.50)
+Different precisions along paths:                         0 (count: 0, min: 0, max: 0, avg: 0.00)
+Equal precisions along paths:                             0 (count: 0, min: 0, max: 0, avg: 0.00)
+Number of refs with location-based cutoff:                0
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                6
+Number of successful refinements:     6
+Number of failed refinements:         0
+Max. size of reached set before ref.: 27529
+Max. size of reached set after ref.:  1
+Avg. size of reached set before ref.: 18632.50
+Avg. size of reached set after ref.:  1.00
+
+Total time for CEGAR algorithm:     726.356s
+Time for refinements:                 3.209s
+Average time for refinement:          0.534s
+Max time for refinement:              0.897s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.351
+  Visited lines:          12957
+  Total lines:            23133
+  Line coverage:          0.560
+  Visited conditions:     1278
+  Total conditions:       3790
+  Condition coverage:     0.337
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     11743
+Number of CFA edges:             16696
+Number of relevant variables:    4119
+Number of functions:             632
+Number of loops:                 154
+Size of reached set:             2151789
+  Size of final wait list        50
+
+Time for analysis setup:         10.339s
+  Time for loading CPAs:          0.822s
+  Time for loading parser:        0.554s
+  Time for CFA construction:      8.866s
+    Time for parsing file(s):     2.367s
+    Time for AST to CFA:          3.610s
+    Time for CFA sanity check:    0.326s
+    Time for post-processing:     2.264s
+      Time for var class.:        0.000s
+Time for Analysis:              726.356s
+CPU time for analysis:          880.720s
+Total time for CPAchecker:      736.701s
+Total CPU time for CPAchecker:  900.410s
+
+Time for Garbage Collector:     139.765s (in 56 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               6329MB (  6036 MiB) max;   3331MB (  3177 MiB) avg;   7964MB (  7595 MiB) peak
+Used non-heap memory:             29MB (    27 MiB) max;     26MB (    25 MiB) avg;     29MB (    28 MiB) peak
+Used in PS Old Gen pool:        3974MB (  3790 MiB) max;   1935MB (  1845 MiB) avg;   3974MB (  3790 MiB) peak
+Allocated heap memory:          8614MB (  8215 MiB) max;   5777MB (  5509 MiB) avg
+Allocated non-heap memory:        53MB (    50 MiB) max;     43MB (    41 MiB) avg
+Total process virtual memory:  13685MB ( 13051 MiB) max;  13629MB ( 12998 MiB) avg
+
+Verification result: UNKNOWN, incomplete analysis.
+More details about the verification run can be found in the directory "./output".
