@@ -401,5 +401,46 @@ PS long        & 516 & 1810   &  88 & 1 & 3602 \\ \hline
 \label{tab:prefSel}
 \end{table}
 
-It is clearly visible that performance of analysis strongly depends on the type of interpolants used for refinement, with symbolic execution being able to prove the safety of 366~more tasks when using \emph{domain good, short} in contrast to using \emph{assumptions fewest, short}.
-Using preferences aiming at increasing precision fast like \emph{assumptions most, short} or \emph{pivot shallow, long} allows analysis to find more errors thanks to its faster-growing precision, just as expected.
+It is clearly visible that performance of analysis strongly depends on the type of interpolants used for refinement, with symbolic execution being able to prove the safety of 366~more tasks when using the prefix selection preference \emph{domain good, short} in contrast to \emph{assumptions fewest, short}.
+
+Using preferences aiming at increasing precision fast like \emph{assumptions most, short} or \emph{pivot shallow, long} allows analysis to find more errors thanks to its faster-growing precision and fewer needed refinements, just as expected.
+Preference \emph{assumptions most, short} increases the precision of the \constraintsCPA as fast as possible by always incrementing the amount of constraints tracked as much as possible by choosing sliced prefixes relying on the most assumptions for proving infeasibility of the prefix.
+Preference \emph{pivot shallow, long}, chooses the prefixes closest to the initial location of the error path so that new precisions are propagated to the most abstract states possible. It takes the longest prefixes, in addition, so that precision grows fast.
+Increasing precision fast and continuing analysis after refinement higher in the abstract reachability graph avoids unnecessary refinements for error paths that are infeasible for the same reasons.
+
+In contrast to these, \emph{assumptions fewest, short} has the slowest growing precision, 
+
+\begin{figure}
+\begin{tikzpicture}[->,>=stealth, mynode/.style={circle, draw, minimum size=0.5cm}, every node/.style={font=\small}]
+
+\node[mynode] (-1) {0};
+\node[mynode] (-2) [below = 0.6cm of -1] {1};
+\node[mynode] (l-3) [below left = 0.7cm and 0.8cm of -2] {2};
+\node[mynode] (0) [below right = 0.7cm and 0.8cm of -2]{3};
+\node[mynode] (1) [below = 0.6cm of 0] {2};
+\node[mynode] (l2) [below left = 0.7cm and 0.8cm of 1] {2};
+\node[mynode] (r2) [below right = 0.7cm and 0.8cm of 1, draw=red, very thick] {3};
+\node[mynode] (ll3) [below left = 0.7cm and 0.6cm of l2] {4};
+\node[mynode] (lr3) [below right = 0.7cm and 0.6cm of l2, draw=red, very thick] {5};
+\node[mynode] (llr4) [below right = 0.7cm and 0.4cm of ll3, draw=red, very thick] {6};
+\node[mynode] (lll6) [below left = 2cm and 0.4cm of ll3] {7};
+\node[mynode] (lllr6) [below right = 0.7cm and 0.3cm of lll6, draw=red, very thick] {9};
+\node[mynode] (llll6) [below left = 0.7cm and 0.3cm of lll6] {8};
+
+\path
+  (-1) edge node [left] {\textbf{var $\assign$ 2}} (-2)
+  (-2) edge node [left] {$\mathbf{[var == 2]}$} (l-3)
+  (-2) edge node [right] {$\mathbf{[!(var == 2)]}$} (0)
+  (0) edge node [left] {\textbf{a $\assign$ 2, b $\assign$ 2, ... z $\assign$ 2}} (1)
+  (1) edge node [left, pos=0.3] {$\mathbf{[!(a == 1)]}$} (l2)
+  (1) edge node [right, pos=0.3] {$\mathbf{[a == 1]}$} (r2)
+  (l2) edge node [left, pos=0.3] {$\mathbf{[!(b == 1)]}$} (ll3)
+  (l2) edge node [right, pos=0.3] {$\mathbf{[b == 1]}$} (lr3)
+  (ll3) edge node [right, pos=0.3] {$\mathbf{[c == 1]}$} (llr4)
+  (ll3) edge [dashed] (lll6)
+  (lll6) edge node [right, pos=0.5] {$\mathbf{[z == 2]}$} (lllr6)
+  (lll6) edge node [left, pos=0.5] {$\mathbf{[!(z == 2)]}$} (llll6)
+;
+\end{tikzpicture}
+\caption{CFA for program that creates problems when using the wrong prefix selection preference}
+\end{figure}
