@@ -1,4 +1,4 @@
-\section{General Overview of Configurable Program Analysis}
+\section{General Overview of configurable program analysis}
 \begin{figure}
 \lstset{numbers=left}
 \begin{subfigure}[b]{.48\textwidth}
@@ -19,11 +19,11 @@
   \node[mynode] (9) [below right = 1cm of 7]{16};
 
   \path
-    (1) edge node [left] {\footnotesize{\textbf{a $\assign$ \_\_VERIFIER\_nondet\_int()}}} (2)
+    (1) edge node [right] {\textbf{a $\assign$ \_\_VERIFIER\_nondet\_int()}} (2)
     (2) edge node [left, pos=0.5] {$\mathbf{[!(a \geq 0)]}$} (3)
     (2) edge node [right, pos=0.5] {$\mathbf{[a \geq 0]}$} (4)
     (3) edge node [left] {\textbf{b $\assign$ a + 1}} (5)
-    (4) edge node [left] {\textbf{b $\assign$ a}} (6)
+    (4) edge node [right] {\textbf{b $\assign$ a}} (6)
     (5) edge (7)
     (6) edge (7)
     (7) edge node [left] {$\mathbf{[!(b < a)]}$} (8)
@@ -31,7 +31,7 @@
   ;
 \end{tikzpicture}
 \end{subfigure}
-\caption{An example CFA}
+\caption{An example CFA.}
 \label{fig:exCFA}
 \end{figure}
 
@@ -53,19 +53,20 @@ The \emph{conjunction} of two constraint sequences $\gamma = \langle op_1, ..., 
 that means $\gamma \logicAnd \gamma' = \langle op_1, ..., op_n, op'_1, ..., op'_n \rangle$.
 The set $X$ is the set of all program variables occurring in a program.
 
-\subsection{Concrete state}
+\subsection{Concrete state definition}
 A concrete state $c$ is a total function $c: X \cup \{pc\} \rightarrow \integerset$ that assigns a specific value of $\integerset$ to every program variable $x \in X$ and to the program counter $pc$. The program counter $pc$ represents the current location in the program.
 The set of all concrete states of a program is $C$. A set $r \subseteq C$ is called a \emph{region}.
-A region of concrete states that violate a given specification is called \emph{target region} $\targetRegion$.
+For the reachability problem the region of concrete states that violate a given specification is called the \emph{target region} $\targetRegion$.
 
-\subsection{Abstract state}
+\subsection{Abstract state definition}
 \label{sec:abstractState}
 An abstract domain \cite{Beyer2007} $D = (C, \semilattice, \concretization)$ consists of a set of possible concrete states $C$, a semi-lattice $\semilattice$ that describes the abstract states and their possible relation to each other and a concretization function $\concretization : \semilattice \rightarrow 2^C$ which maps each element of $\semilattice$ to a subset of $C$.
 
 A semi-lattice $\semilattice = (E, \top, \bot, \lesserEqual, \join)$ consists of a set $E$ of elements, a top element $\top \in E$, a partial order $\lesserEqual\ \subseteq (E \times E)$
 and the total function $\join : (E \times E) \rightarrow E$ called join operator. The elements $e \in E$ of an abstract domain are called \emph{abstract states}.
 
-Two approaches for software verification are model checking and program analysis, also called data flow analysis.
+The basis of automatic software verification is the reachability problem: For a given specification it is derived whether a program state is reachable that violates this specification.
+Traditionally, two major approaches exist, both working on a reachability tree: Model checking and program analysis, also called data flow analysis.
 While model checking is mostly concerned with finding a program abstraction with a precision high enough to eliminate false alarms,
 which in turn only allows it to handle small programs because of poor performance,
 program analysis tries to reach high efficiency by looking at only a few chosen characteristics of a program. %\cite{Beyer2007}%cite here or below? out of lecture notes, so cite in some other way? 
@@ -78,13 +79,13 @@ Configurable software verification tries to bridge the gap of precision finding 
 \begin{enumerate}[label=\alph*)]
 \item one or more abstract interpretations, that is the abstract domains to work in and the transfer functions that describe the possible transfers between abstract states,
 \item a precision type,
-\item a merge operator which controls when two abstract states are merged,
+\item a merge operator which controls when two nodes of the reachability tree are merged, i.e. when two abstract states are merged,
 \item a stop operator that controls when the exploration of a path is stopped, i.e. when a state is already covered by the existing reached states (this is also called termination check), and
 \item a precision adjustment operator that can weaken or strengthen an abstract state based on a precision.
 \end{enumerate}
 These elements are encapsulated in a \emph{configurable program analysis} (CPA) \cite{Beyer2008}, which is used by the CPA algorithm.
 
-\subsection{Configurable program analysis}
+\subsection{Configurable program analysis definition}
 A CPA with dynamic precision adjustment $\cpa = (D, \Pi, \transfer, \cpaMerge, \cpaStop, \cpaPrec )$ consists of:
 
 \begin{enumerate}[leftmargin=*, label=\arabic*.]
@@ -97,7 +98,7 @@ For soundness (i.e. if a property violation exists, it is always found) and prog
 the top element of abstract states has to represent all possible concrete states and the bottom element must represent none, formally put $\llbracket \top \rrbracket = C$ and $\llbracket \bot \rrbracket = \varnothing$,
 
 \item
-the join operator has to be precise or over-approximating. That means the join of two abstract states always has to represent the same or more concrete states than the union of the concrete states both abstract states represent. This can be formally expressed as $\forall e, e' \in E: \llbracket e \join e' \rrbracket \supseteq \llbracket e \rrbracket \cup \llbracket e' \rrbracket$,
+the join operator has to be precise or over-approximating. That means the join of two abstractes states always has to represent the same or more concrete states than the union of the concrete states both abstract states represent. This can be formally expressed as $\forall e, e' \in E: \llbracket e \join e' \rrbracket \supseteq \llbracket e \rrbracket \cup \llbracket e' \rrbracket$,
 
 \item
 $\forall e, e' \in E : e \lesserEqual e' \Rightarrow \llbracket e \rrbracket \subseteq \llbracket e' \rrbracket$
@@ -122,7 +123,7 @@ Two characteristic merge operators are \[\cpaMerge^{sep}(e, e', \pi) = e'\] and 
 The stop operator $\cpaStop : E \times 2^E \times \Pi \rightarrow \booleanset$, which checks if the given abstract state with the given precision is covered by the set of abstract states given as second parameter.
 $\cpaStop(e, R, \pi) = true$ always has to imply $\llbracket e \rrbracket \subseteq \bigcup_{e' \in R} \llbracket e' \rrbracket$ to ensure soundness.
 Two characteristic stop operators are \[\cpaStop^{sep}(e, R, \pi) = \exists e' \in R : e \lesserEqual e'\] and \[\cpaStop^{join}(e, R, \pi) = e \lesserEqual \bigjoin\limits_{e' \in R} e'.\]
-For $\cpaStop^{join}$, the abstract domain has to be a powerset domain, that means $e~\lesserEqual~e' \Rightarrow e \supseteq e'$ for abstract states $e, e'$.
+For $\cpaStop^{join}$, the abstract domain has to be a powerset domain, that means $e \lesserEqual e' \Rightarrow e \supseteq e'$ for abstract states $e, e'$.
 
 \item
 The precision adjustment $\cpaPrec : E \times \Pi \times 2^{E \times \Pi} \rightarrow E \times \Pi$. It computes a new abstract state and precision for a given abstract state based on its precision and a set of abstract states with precision.
@@ -173,7 +174,7 @@ The following condition has to hold: $\forall e, \hat{e} \in E, \pi, \hat{\pi} \
 \end{algorithm}
 
 \subsection{CPA algorithm}
-The CPA algorithm described in Algorithm~\ref{alg:CPA} uses an arbitrary CPA of this form to verify programs.
+The CPA algorithm described in Algorithm \ref{alg:CPA} uses an arbitrary CPA of this form to solve the reachability problem.
 Given a CPA $\cpa$, an initial set $R_0$ of reached abstract states with their precisions and a subset $W_0 \subseteq R_0$ of abstract states that have to be examined,
 the algorithm computes the set \reachedSet\ of abstract states reachable without encountering a target state and the currently unprocessed abstract states of that set.
 Starting with the given sets $R_0$ and $W_0$ as set \reachedSet\ of reached abstract states and set \waitlistSet of abstract states not visited yet, the following steps are repeated until \waitlistSet\ is empty:
@@ -190,7 +191,7 @@ If it is not, it is added to \waitlistSet\ and \reachedSet.
 After this it is continued with the next element in the waitlist.
 If the waitlist is empty, there are no more reachable states and the reached set is returned, accompanied by the empty waitlist.
 
-\section{Basic Definition of CPAs used}
+\section{Basic definition of CPAs used in this paper}
 A definition of all CPAs important to this paper follows.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -208,7 +209,7 @@ It consists of:
 \item \label{it:compStop} A composite termination check $\cpaStop_\times : (E_1 \times E_2) \times 2^{E_1 \times E_2} \times \Pi_\times \rightarrow \booleanset$.
 \item A composite precision adjustment \[\cpaPrec_\times : (E_1 \times E_2) \times \Pi_\times \times 2^{(E_1 \times E_2) \times \Pi_\times} \rightarrow (E_1 \times E_2) \times \Pi_\times.\]
 \end{enumerate}
-The three composite operators \ref{it:compTransfer} - \ref{it:compStop} use the corresponding operators of the contained CPAs $\cpa_1$ to $\cpa_i$ as well as multiple \emph{strengthening operators} $\strengthen_j$ and \emph{compare relations} $\compare_j$. They only alter lattice elements through these components.
+The three composite operators \ref{it:compTransfer} - \ref{it:compStop} use the corresponding operators of the contained CPAs $\cpa_1$ to $\cpa_i$ as well as multiple \emph{strenghtening operators} $\strengthen_j$ and \emph{compare relations} $\compare_j$. They only alter lattice elements through these components.
 
 The strengthening operator $\strengthen : E_k \times E_l \rightarrow E_k$ computes a stronger abstract state of the type $E_k$ by using the information of an abstract state of the type $E_l$,
 with $1 \leq k,l \leq i$ and $k \neq l$ for $i$ being the number of CPAs in the composition.
@@ -311,7 +312,7 @@ The precision adjustment $\singletonPrec$ that does not change anything: $\singl
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\ValueAnalysisCPA}\label{sec:valueAnalysis}
-The \valueAnalysisCPA\ \cite{Beyer2013} tracks integer values for all program variables with a known value explicitly.
+The \valueAnalysisCPA\ \cite{Beyer2013} tracks integer values for all program variables explicitly.
 It does so by using \emph{abstract variable assignments} \cite{Beyer2013}. An abstract variable assignment $v: X \partialFunc \integerset \cup \{\bot\}$ is a partial function that maps program variables $x \in X$ to integer values - if their assignment is known - or to $\bot$, if no possible value assignment exists.
 An abstract variable assignment $v$ is \emph{contradicting} if $v(x) = \bot$ for any $x \in \defRange(v)$.
 For two abstract variable assignments $v$ and $v'$, $v$ is \emph{implied} by $v'$, that is $v' \Rightarrow v$, if $v'$ is contradicting or if $\defRange(v') \subseteq \defRange(v)$ and for each variable $x \in \defRange(v) \cap \defRange(v') : v(x) = v'(x)$.
@@ -456,7 +457,7 @@ An example for its wrong behaviour will be presented in Section~\ref{sec:leqOper
 				y & \parbox[t]{.6\textwidth}{if $x \not \in \defRange(v)$ and $x$ appears in $exp$. $y \in \symIds$ is a new symbolic identifier that has not been used in any other state before}\\
 				v(x) & \text{ if } x \in \defRange(v)
 			\end{dcases}\]
-			and $exp_\using{v'}$ defined as before. If any symbolic value occurs in $exp$ after replacing all occurrences $x \in X$ in $exp$ with $v'(x)$,
+			and $exp_\using{v'}$ defined as before. If any symbolic value occurs in $exp$ after replacing all occurences $x \in X$ in $exp$ with $v'(x)$,
 			the expression is only partially evaluated. In this case $exp_\using{v'} \in \symValues$.
 		\item $v'' = \top_\symValCPA$.
 	\end{enumerate}
@@ -496,7 +497,7 @@ In \cite{Lemberger2015}\ we used a less-or-equal operator using an $\aliasFunc$ 
 
 \item
 The set $\Pi_\constrCPA = L \rightarrow 2^{\goodconstraintsset}$ of precisions. Each precision $\pi \in \Pi_\constrCPA$ contains for each program location $l \in L$ all tracked constraints, with $\goodconstraintsset \subseteq \constraintsset$ being the set of all possible boolean expressions over $\symvalset$.
-The constraints of $\goodconstraintsset$ do not contain any program variables, but the only variables occurring in them are symbolic identifiers of $\symIds$.
+The constraints of $\goodconstraintsset$ do not contain any program variables, but the only variables occuring in them are symbolic identifiers of $\symIds$.
 
 A second option is to use the location-based precision $\Pi_L \subseteq L$, which is a subset of program locations.
 A precision $\pi \in \Pi_L$ tracks all constraints for every location $l \in \pi$.
@@ -528,7 +529,7 @@ Since we only track the program location in the \locationCPA, a composite precis
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{\SymbolicExecutionCPA}
+\subsection{\SymbolicExecutionCPA : Composition of Location CPA, Symbolic Value Analysis CPA and Constraints CPA}
 The \symbolicExecutionCPA\ \cite{Lemberger2015}\ is the composition of \locationCPA, \symbolicValueAnalysisCPA\ and \constraintsCPA.
 Besides connecting the \locationCPA\ to the other CPAs so abstract states can be mapped to a program location, its most important task is the definition of a strengthening operator that creates new constraints in the \constraintsCPA\ and checks their satisfiability.
 
@@ -574,7 +575,7 @@ The precision adjustment of the symbolic value state removes the abstract variab
 The precision adjustment of the constraints state depends on the type of precision used for the \constraintsCPA:
 The adjustment $\auxiliaryPrec_\constrCPA$  removes all constraints that are not tracked at the current location.
 Its concrete implementation depends on the used precision type of the \constraintsCPA:
-If $\Pi_\constrCPA$ is used, which stores all tracked constraints explicitly, the adjustment is defined as
+If $\Pi_\constrCPA$ is used, which stores all tracked constraints explicitely, the adjustment is defined as
 \[\auxiliaryPrec_\constrCPA(a, l, \pi)= a \cap \pi(l).\]
 If $\Pi_\symValCPA$ is used, which only stores the program variables constraints may originate from, the adjustment deletes all constraints that originate from at least one program variable that does not occur in $\pi(l)$ with $\pi$ being the current precision.
 \end{enumerate}

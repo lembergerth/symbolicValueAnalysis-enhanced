@@ -1,0 +1,128 @@
+\chapter{Related Work}
+\label{sec:relatedWork}
+Symbolic execution was first introduced by \cite{King1976} in 1976 for program testing and verification.
+In this classic symbolic execution, a programming language is extended to be able to handle symbolic values without changing its syntax.
+Then, a program in this language is executed using symbolic values as its input.
+If a fork in the program control flow occurs, for example because of an if-statement, for which both branches are possible, execution splits into two parallel executions,
+recording the particular branching condition (i.e. assume statement).
+Each such execution represents the execution of the program for a set of concrete input values, which can be derived based on all recorded branching conditions of an execution.
+This way, a lot less symbolic executions are necessary for reaching a certain test coverage than when using concrete executions.
+Verification at this stage was only possible by providing conditions the output of the program had to fulfill.
+Today, symbolic execution is used for testing, test case generation and verification.
+
+\subsection*{Concolic Testing}
+In the context of testing, \emph{concolic testing} \cite{Sen2005} \cite{Godefroid2005} \cite{Majumdar2007} evolved from symbolic execution.
+In concolic testing, a program is executed with some arbitrary, but concrete input values, while tracking the conditions created by the branches the concrete execution takes.
+When finished, the last encountered, not yet negated condition is negated, new input values are created based on the conjunction of this negated condition and all other encountered conditions, and
+the program is executed with these new values, forced to take the previously unexplored branch the negated condition stems from.
+While this technique alone still suffers from path explosion, single executions are very fast as only concrete values are used, which allow easy and precise reasoning about complex data structures \cite{Burnim2008} and allows the simplification of constraints unsolvable using symbolic values by concrete values.
+In addition, the used concrete input values can be used for easy test case generation.
+Nevertheless, concolic testing is obviously not suitable for verification, as program properties can only be examined based on the current set of concrete input.
+It still deserves a mention because of its wide use and as most techniques we will present in the following are based on it.
+
+There are four major areas improvements focus on for mitigating the path-explosion problem:
+(1) Search heuristics for achieving a high level of branch or path coverage,
+(2) Compositional execution, this means creating summaries of functions or paths to reuse them instead of recomputing already explored states,
+(3) Handling of unbounded loops, which cause infinite path exploration when using symbolic execution, and
+(4) Using interpolants for tracking reasons why a certain path is infeasible.
+
+%denoting the conditions under which a certain path is infeasible at a certain program location.
+%If a path through a program location implies this location's interpolant, it can be subsumed, since it is already known that the further path will become infeasible.
+
+While the concepts are presented in the context of testing, they can be applied to verification, too.
+
+\subsection*{Search Heuristics}
+\cite{Burnim2008} proposes three different heuristics for exploring a CFA in concolic testing to reach a target region or uncovered branches faster, instead of simply using a depth-first search.
+The first heuristic chooses branches to take based on their distance in the CFA to currently uncovered branches/the target region.
+The second heuristic, inspired by random testing\footnote{Testing technique using input values randomly generated}, chooses random paths.
+For each branch at each execution, it is randomly decided whether to take it.
+The third heuristic chooses of all branches at the current path one it will not take in the next iteration, randomly.
+They were able to prove the increased effectiveness when using any of these three heuristics, with the first being the best in terms of coverage, quickly followed by the third.
+Klee \cite{Cadar2008}, a tool for automatic test generation running one symbolic execution for each branch taken in parallel, uses two different heuristics in turn to decide at each program location which execution to continue first.
+The first heuristic, called \emph{random path selection}, maintains a binary tree representing the program path followed by all active executions.
+The leaves of the tree are the executions, while each node represents a fork in the program control flow.
+The tree is traversed from the root and each branch is taken with a possibility of $1/2$.
+This way, executions high in the tree, which have the most freedom to reach currently uncovered branches, are more likely to be chosen.
+In addition, starvation is impossible due to the randomness of the heuristic.
+1. Using the first heuristic increases the chance to cover previously uncovered code as soon as possible.
+2. Choosing each processes at a program location with the same probability, starting at the top of the execution tree, favors executions currently high up in the tree.
+
+While heuristics can assist in speeding up the process of finding an error, they hardly mitigate the problem of path explosion when trying to prove that a program is error-free.
+\subsection*{Compositional Execution}
+The compositional symbolic execution proposed in \cite{Godefroid2007} tests functions in isolation to create summaries of them.
+A summary of a function is a formula describing preconditions for its input and postconditions for its output.
+If the preconditions are met for the current used input, the function summary can be used instead of executing the function again.
+Summaries are computed for functions whenever no fitting summary exists, based on their call hierarchy.
+This use of summaries is implemented as an extension to the symbolic execution testing tool DART \cite{Godefroid2005}, called SMART.
+\cite{Anand2008} extends this notion by \emph{lazy} and \emph{relevant exploration}, computing new function summaries only if no conjunction of summaries can be used to reach a ceratin branch or program location and
+recognizing branches that are not able to reach a certain branch or program location.
+It uses uninterpreted functions and predicates describing a functions (possibly not fully known) semantics for this.
+Thanks to its flexibility, it can be combined with any search heuristic.
+\CpaChecker\ supports block- and function summaries for the \predicateCPA\ and \valueAnalysisCPA, so it should be easy to adapt this for the \symbolicExecutionCPA.
+The use of such summaries might prove useful for programs requiring a high precision, but we assume that, when analysing a program which only requires to track few program variables and constraint, just reducing the state space by using CEGAR and as such minimizing repeated computations is more useful.
+Both approaches are orthogonal though, and can be used in combination.
+
+\subsection*{Handling of Unbounded Loops}
+In classic symbolic execution, unbounded loops result in infinite execution.
+% Lazy annotation
+Lazy Annotation \cite{McMillan2010} tackles this problem by computing inductive invariants for loops, unrolling loops up to the point interpolants which are also loop invariants can prove infeasiblity of an error path.
+A major downside to this approach is that it will only terminate if such invariants can be found.
+% Invariant computation for loops with CEGA for loop
+Inspired by this approach, \cite{Jaffar2012} abstracts symbolic states at loop headers to only consist of invariants that hold for one path.
+If these invariants are too coarse to prove the infeasiblity of a counterexample, a refinement procedure similar to CEGAR is used to refine them.
+This is a compromise between performing eager symbolic execution and lazy CEGAR when encountering unbounded loops.
+% Compact SE
+\cite{Slaby2013} analyses cyclic paths in the CFA and computes a so called \emph{template} for each one,
+describing all possible program states that may leave the cycle after any number of iterations.
+In the following symbolic execution, these templates are then used when encountering loops to directly jump to the loop exits, resulting in symbolic states based on the path to the cycle, a parameter $k$ of iterations along the cycle, and the execution step leading to the exit.
+This mitigates the path explosion problem considerably, as no more loops exist in execution, but deepens the complexity of formulas to solve, due to the parameter $k$.
+Evaluation shows that despite this trade-off, analysis can still be speeded up considerably.
+
+Using CEGAR with symbolic execution mitigates the problem of unbounded loops, since no informationen altered by the loop is necessary, most of the time.
+But if it is, it results in infinite execution, also.
+One advantage of configurable software verification over classic symbolic execution is the possibility to combine multiple CPAs.
+For handling unbounded loops, a CPA specialised on doing so can be used in parallel to the \symbolicExecutionCPA\ instead of extending it.
+A strengthening operator could be used to derive information about symbolic identifiers.
+In this work, we focus on the \symbolicExecutionCPA's performance only.
+
+\subsection*{Interpolation}
+A technique closely related to CEGAR and the functionality of the termination check $\cpaStop$ of configurable program verification is based on interpolation.
+If a path is found to be infeasible, an interpolant is computed for each program location on the path and stored.
+If such a program location is visited again on a different path, it is checked whether the interpolant is implied by the current abstract state.
+If it is, execution on this path can halt, as it is known that it is infeasible based on the interpolant.
+\cite{Jaffar2009} introduced this concept for the first time in the context of the Constraint Logic Programming Scheme \cite{Jaffar1992}.
+\cite{Jaffar2012} stated the idea of using weakest preconditions instead of strongest postconditions for the computation of weaker interpolants in the context of verification.
+\cite{Jaffar2013} adapted it for concolic testing with arbitrary search heuristics and
+\cite{Chu2014} added the notion of \emph{lazy symbolic execution}.
+Instead of computing interpolants immediately after a path is proven to be infeasible, execution continues on this path ignoring the infeasibility to be able to learn better interpolants.
+This is similar to the selection of sliced path prefixes \cite{Beyer2015} to influence the kind of interpolants that will be computed in CEGAR.
+
+Lazy Annotation \cite{McMillan2010} uses interpolants to store conditions for nodes and edges on the CFA under which no target region is reachable from this node or using this edge.
+Instead of annotating all edges on an infeasible path with interpolants in one procedure, interpolants are computed bottom-up if the current program path using this edge is infeasible up to the next possible branch.
+
+A main difference that persists between symbolic execution with CEGAR and symbolic execution using interpolants is the amount of information stored.
+CEGAR is lazy, starting with a coarse precision and refining it, while symbolic execution is eager,
+tracking all information and computing interpolants for subsuming new states only.
+Using CEGAR, expensive refinements and iterative analysis happens,
+but the probability of a successful termination check is higher from the beginning due to the abstraction.
+This pays off if only few program variables/constraints have to be tracked or only few possible error paths exist
+by generally eliminating the path explosion problem.
+
+
+\subsection*{CEGAR with predicate CPA/model checking and with explicit-value analysis}
+CEGAR was introduced for boosting the speed of symbolic model checking in \cite{Clarke2003}.
+First applied to the \predicateCPA\ \cite{Beyer2012} in the context of configurable software verification,
+it was adapted to work with explicit-value analysis (e.g. the \valueAnalysisCPA) in \cite{Beyer2013}.
+While the first takes interpolants computed by an off-the-shelf SMT solver, the trial-and-error technique
+for computing interpolants of the latter was extended in this work for symbolic execution.
+Conceptually, the \symbolicExecutionCPA\ is between the \valueAnalysisCPA\ and \predicateCPA.
+Just like the \valueAnalysisCPA, it uses abstract variable assignments to track the explicit values of variables, where possible.
+In addition, symbolic values are tracked for values of unknown explicit value.
+The \predicateCPA\ creates a boolean formula over a program path's statements and assumptions and checks its satisfiability.
+Similarily, the \symbolicExecutionCPA\ tracks constraints created by assumptions on a path to derive more information about symbolic values.
+A SMT solver is needed to check the satisfiability of both.
+In contrast to the \predicateCPA, formulas are not based on program variables, but on symbolic values/identifiers.
+Due to this, no transformation to a single static assignment form (SSA) is necessary for SAT checks.
+In addition, since only conditions of assumptions are tracked as constraints, boolean formulas are significantly smaller in the \symbolicExecutionCPA
+and as such faster to solve.
+Still, the \predicateCPA\ is a sophisticated and matured CPA that supports lots of features and optimizations.
