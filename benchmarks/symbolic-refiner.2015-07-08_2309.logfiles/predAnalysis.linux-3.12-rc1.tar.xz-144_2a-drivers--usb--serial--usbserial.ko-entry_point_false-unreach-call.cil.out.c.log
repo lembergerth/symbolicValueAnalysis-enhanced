@@ -1,0 +1,60 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -predicateAnalysis-bitprecise -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-linux-3.12-rc1/ALL.prp ../svcomp15/ldv-linux-3.12-rc1/linux-3.12-rc1.tar.xz-144_2a-drivers--usb--serial--usbserial.ko-entry_point_false-unreach-call.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_8551593_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 6423: Function pointer *(port->serial->type->set_termios) with type void (*)(struct tty_struct *, struct usb_serial_port *, struct ktermios *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 11726: Function pointer *(port->serial->type->tx_empty) with type bool  (*)(struct usb_serial_port *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker
+ cpa.value.symbolic.handlePointers 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+line 8328: Ignoring function call through function pointer *(serial->type->disconnect): (*(serial->type->disconnect))(serial); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+lines 11341-11342: Ignoring function call through function pointer *(port->serial->type->prepare_write_buffer): count = (*(port->serial->type->prepare_write_buffer))(port, urb->transfer_buffer, __CPAchecker_TMP_0); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 13642: Ignoring call via function pointer completeFnInt for which no suitable target was found in line: (*completeFnInt)(usb_urb); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 13642: Ignoring function call through function pointer *completeFnInt: (*completeFnInt)(usb_urb); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+Skipping recursive function call from ldv_submit_urb to usb_serial_generic_write_bulk_callback (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 8362: Ignoring function call through function pointer *(serial->type->suspend): r = (*(serial->type->suspend))(serial, message); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+Skipping recursive function call from usb_serial_suspend to usb_serial_suspend (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Exception in thread "main" java.lang.IllegalArgumentException: To assign to/from arrays/structures/unions use makeDestructiveAssignment
+	at com.google.common.base.Preconditions.checkArgument(Preconditions.java:122)
+	at org.sosy_lab.cpachecker.util.predicates.pathformula.pointeraliasing.AssignmentHandler.makeSimpleDestructiveAssignment(AssignmentHandler.java:412)
+	at org.sosy_lab.cpachecker.util.predicates.pathformula.pointeraliasing.AssignmentHandler.makeDestructiveAssignment(AssignmentHandler.java:388)
+	at org.sosy_lab.cpachecker.util.predicates.pathformula.pointeraliasing.AssignmentHandler.makeAssignment(AssignmentHandler.java:233)
+	at org.sosy_lab.cpachecker.util.predicates.pathformula.pointeraliasing.AssignmentHandler.handleAssignment(AssignmentHandler.java:168)
+	at org.sosy_lab.cpachecker.util.predicates.pathformula.pointeraliasing.CToFormulaConverterWithPointerAliasing.makeAssignment(CToFormulaConverterWithPointerAliasing.java:507)
+	at org.sosy_lab.cpachecker.util.predicates.pathformula.ctoformula.CtoFormulaConverter.makeFunctionCall(CtoFormulaConverter.java:1023)
+	at org.sosy_lab.cpachecker.util.predicates.pathformula.pointeraliasing.CToFormulaConverterWithPointerAliasing.makeFunctionCall(CToFormulaConverterWithPointerAliasing.java:701)
+	at org.sosy_lab.cpachecker.util.predicates.pathformula.ctoformula.CtoFormulaConverter.createFormulaForEdge(CtoFormulaConverter.java:757)
+	at org.sosy_lab.cpachecker.util.predicates.pathformula.ctoformula.CtoFormulaConverter.makeAnd(CtoFormulaConverter.java:618)
+	at org.sosy_lab.cpachecker.util.predicates.pathformula.PathFormulaManagerImpl.makeAnd(PathFormulaManagerImpl.java:231)
+	at org.sosy_lab.cpachecker.util.predicates.pathformula.PathFormulaManagerImpl.makeAnd(PathFormulaManagerImpl.java:265)
+	at org.sosy_lab.cpachecker.util.predicates.pathformula.CachingPathFormulaManager.makeAnd(CachingPathFormulaManager.java:96)
+	at org.sosy_lab.cpachecker.cpa.predicate.PredicateTransferRelation.convertEdgeToPathFormula(PredicateTransferRelation.java:271)
+	at org.sosy_lab.cpachecker.cpa.predicate.PredicateTransferRelation.getAbstractSuccessorsForEdge(PredicateTransferRelation.java:152)
+	at org.sosy_lab.cpachecker.cpa.composite.CompositeTransferRelation.getAbstractSuccessorForSimpleEdge(CompositeTransferRelation.java:179)
+	at org.sosy_lab.cpachecker.cpa.composite.CompositeTransferRelation.getAbstractSuccessorForEdge(CompositeTransferRelation.java:159)
+	at org.sosy_lab.cpachecker.cpa.composite.CompositeTransferRelation.getAbstractSuccessors(CompositeTransferRelation.java:111)
+	at org.sosy_lab.cpachecker.cpa.arg.ARGTransferRelation.getAbstractSuccessors(ARGTransferRelation.java:68)
+	at org.sosy_lab.cpachecker.core.algorithm.CPAAlgorithm.run0(CPAAlgorithm.java:278)
+	at org.sosy_lab.cpachecker.core.algorithm.CPAAlgorithm.run(CPAAlgorithm.java:219)
+	at org.sosy_lab.cpachecker.core.algorithm.CEGARAlgorithm.run(CEGARAlgorithm.java:239)
+	at org.sosy_lab.cpachecker.core.CPAchecker.runAlgorithm(CPAchecker.java:394)
+	at org.sosy_lab.cpachecker.core.CPAchecker.run(CPAchecker.java:284)
+	at org.sosy_lab.cpachecker.cmdline.CPAMain.main(CPAMain.java:133)
