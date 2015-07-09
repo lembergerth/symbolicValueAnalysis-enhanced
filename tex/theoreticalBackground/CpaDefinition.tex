@@ -37,35 +37,35 @@
 
 For the sake of simplicity, all theoretical concepts are based on a fictional programming language that only consists of variable assignments (e.g. $x \assign 5$ or $y \assign x$) and assumptions (e.g. $[x > 5]$ or $[y < x]$).
 All values are integers of arbitrary magnitude.
-The implementation of our presented concepts is performed in \cpaChecker\, a verification tool for C programs, though.
+The implementation of our presented concepts is performed in \cpaChecker, a verification tool for C programs.
 
 We represent a program by a \emph{control flow automaton} (CFA) \cite{BeyerBook}\cite{Beyer2012}.
 A CFA $A = (L, l_0, G)$ is a directed graph whose nodes $L$ represent the program locations of the program.
 The initial node $l_0 \in L$ represents the program entry.
 An edge $g \in G \subseteq L \times Ops \times L$ exists between two nodes if a program statement exists that transfers control between the program locations represented by the nodes.
 Each edge is labeled with the operation that transfers the control.
-If a node has no leaving edges it is a final node. Final nodes represent the program exit.
+If a node has no leaving edges, it is a \emph{final node}. Final nodes represent the program exit.
 A CFA for the previously mentioned example program can be seen in Figure \ref{fig:exCFA}.
 A \emph{path} $\sigma$ \cite{Beyer2015} is a sequence $\langle (op_1, l_1), ..., (op_n, l_n)$ of program locations and their corresponding operations.
-A path $\sigma$ is a \emph{program path}, if $\sigma$ represents a syntactic walk through the CFA, that means for every $1 \leq i \leq n$ a CFA edge $g = (l_{i-1}, op_i, l_i)$ exists and $l_0$ is the initial program location.
+A path $\sigma$ is a \emph{program path} if $\sigma$ represents a syntactic walk through the CFA, that means for every $1 \leq i \leq n$ a CFA edge $g = (l_{i-1}, op_i, l_i)$ exists and $l_0$ is the initial program location.
 Every path $\sigma = \langle (op_1, l_1), ..., (op_n, l_n) \rangle$ defines a \emph{constraint sequence} $\gamma_\sigma = \langle op_1, ..., op_n \rangle$.
 The \emph{conjunction} of two constraint sequences $\gamma = \langle op_1, ..., op_n \rangle$ and $\gamma' = \langle op'_1, .., op'_n \rangle$ is defined as their concatenation,
 that means $\gamma \logicAnd \gamma' = \langle op_1, ..., op_n, op'_1, ..., op'_n \rangle$.
 The set $X$ is the set of all program variables occurring in a program.
 
 \subsection{Concrete state}
-A concrete state $c$ is a total function $c: X \cup \{pc\} \rightarrow \integerset$ that assigns a specific value of $\integerset$ to every program variable $x \in X$ and to the program counter $pc$. The program counter $pc$ represents the current location in the program.
+A \emph{concrete state} $c$ is a total function $c: X \cup \{pc\} \rightarrow \integerset$ that assigns a specific value of $\integerset$ to every program variable $x \in X$ and to the program counter $pc$. The program counter $pc$ represents the current location in the program.
 The set of all concrete states of a program is $C$. A set $r \subseteq C$ is called a \emph{region}.
 A region of concrete states that violate a given specification is called \emph{target region} $\targetRegion$.
 
 \subsection{Abstract state}
 \label{sec:abstractState}
-An abstract domain \cite{Beyer2007} $D = (C, \semilattice, \concretization)$ consists of a set of possible concrete states $C$, a semi-lattice $\semilattice$ that describes the abstract states and their possible relation to each other and a concretization function $\concretization : \semilattice \rightarrow 2^C$ which maps each element of $\semilattice$ to a subset of $C$.
+An \emph{abstract domain} \cite{Beyer2007} $D = (C, \semilattice, \concretization)$ consists of a set of possible concrete states $C$, a semi-lattice $\semilattice$ that describes the abstract states and their possible relation to each other and a concretization function $\concretization : \semilattice \rightarrow 2^C$ which maps each element of $\semilattice$ to a subset of $C$.
 
-A semi-lattice $\semilattice = (E, \top, \bot, \lesserEqual, \join)$ consists of a set $E$ of elements, a top element $\top \in E$, a partial order $\lesserEqual\ \subseteq (E \times E)$
-and the total function $\join : (E \times E) \rightarrow E$ called join operator. The elements $e \in E$ of an abstract domain are called \emph{abstract states}.
+A \emph{semi-lattice} $\semilattice = (E, \top, \bot, \lesserEqual, \join)$ consists of a set $E$ of elements, a top element $\top \in E$, a partial order $\lesserEqual\ \subseteq (E \times E)$
+and the total function $\join : (E \times E) \rightarrow E$ called \emph{join operator}. The elements $e \in E$ of an abstract domain are called \emph{abstract states}.
 
-Two approaches for software verification are model checking and program analysis, also called data flow analysis.
+Two approaches for software verification are \emph{model checking} and \emph{program analysis}, also called data flow analysis.
 While model checking is mostly concerned with finding a program abstraction with a precision high enough to eliminate false alarms,
 which in turn only allows it to handle small programs because of poor performance,
 program analysis tries to reach high efficiency by looking at only a few chosen characteristics of a program. %\cite{Beyer2007}%cite here or below? out of lecture notes, so cite in some other way? 
@@ -76,11 +76,11 @@ Customization of program analysis usually means to choose one or more abstract i
 
 Configurable software verification tries to bridge the gap of precision finding of model checking and the efficiency focus of program analysis to allow for arbitrary algorithms between these two extremes by providing the possibility to control the precision and efficiency of the algorithm by choosing all of the following:
 \begin{enumerate}[label=\alph*)]
-\item one or more abstract interpretations, that is the abstract domains to work in and the transfer functions that describe the possible transfers between abstract states,
-\item a precision type,
-\item a merge operator which controls when two abstract states are merged,
-\item a stop operator that controls when the exploration of a path is stopped, i.e. when a state is already covered by the existing reached states (this is also called termination check), and
-\item a precision adjustment operator that can weaken or strengthen an abstract state based on a precision.
+\item one or more abstract domains to work in and the transfer functions that describe the possible transfers between abstract states,
+\item a set of precision that describes the degree of abstraction within the abstract domains,
+\item a \emph{merge operator} which controls when two abstract states are merged,
+\item a \emph{stop operator} that controls when the exploration of a path is stopped, i.e. when a state is already covered by the existing reached states (this is also called termination check), and
+\item a \emph{precision adjustment operator} that can weaken or strengthen an abstract state based on a precision.
 \end{enumerate}
 These elements are encapsulated in a \emph{configurable program analysis} (CPA) \cite{Beyer2008}, which is used by the CPA algorithm.
 
@@ -97,14 +97,14 @@ For soundness (i.e. if a property violation exists, it is always found) and prog
 the top element of abstract states has to represent all possible concrete states and the bottom element must represent none, formally put $\llbracket \top \rrbracket = C$ and $\llbracket \bot \rrbracket = \varnothing$,
 
 \item
-the join operator has to be precise or over-approximating. That means the join of two abstract states always has to represent the same or more concrete states than the union of the concrete states both abstract states represent. This can be formally expressed as $\forall e, e' \in E: \llbracket e \join e' \rrbracket \supseteq \llbracket e \rrbracket \cup \llbracket e' \rrbracket$,
+the join operator has to be precise or over-approximating. That means the join of two abstract states always has to represent the same or more concrete states than the union of the concrete states both abstract states represent. This can be formally expressed as $\forall e, e' \in E: \llbracket e \join e' \rrbracket \supseteq \llbracket e \rrbracket \cup \llbracket e' \rrbracket$, and
 
 \item
-$\forall e, e' \in E : e \lesserEqual e' \Rightarrow \llbracket e \rrbracket \subseteq \llbracket e' \rrbracket$
+if one abstract state $e$ is smaller than another abstract state $e'$, the concrete states it represents must be a subset of the concrete states $e'$ represents. Formally, that is $\forall e, e' \in E : e \lesserEqual e' \Rightarrow \llbracket e \rrbracket \subseteq \llbracket e' \rrbracket$
 \end{enumerate}
 
 \item
-The precision type $\Pi$.
+A set $\Pi$ of precisions.
 
 \item
 The transfer relation $\transfer\ \subseteq (E \times G \times E \times \Pi)$. It assigns to each abstract state $e \in E$ possible abstract successors $e' \in E$ with a precision $\pi \in \Pi$.
@@ -116,12 +116,12 @@ This can be formally expressed as $\forall e \in E, g \in G: \bigcup_{e \gtransf
 
 \item
 The merge operator $\cpaMerge : E \times E \times \Pi \rightarrow E$, which weakens the information of the second given state based on the first state. It returns an abstract state of the given precision. The result of $\cpaMerge(e, e', \pi)$ can be anywhere between $e'$ and $\top$.
-Two characteristic merge operators are \[\cpaMerge^{sep}(e, e', \pi) = e'\] and \[\cpaMerge^{join}(e, e', \pi) = e \join e'.\]
+Two common merge operators are \[\cpaMerge^{sep}(e, e', \pi) = e'\] and \[\cpaMerge^{join}(e, e', \pi) = e \join e'.\]
 
 \item
 The stop operator $\cpaStop : E \times 2^E \times \Pi \rightarrow \booleanset$, which checks if the given abstract state with the given precision is covered by the set of abstract states given as second parameter.
 $\cpaStop(e, R, \pi) = true$ always has to imply $\llbracket e \rrbracket \subseteq \bigcup_{e' \in R} \llbracket e' \rrbracket$ to ensure soundness.
-Two characteristic stop operators are \[\cpaStop^{sep}(e, R, \pi) = \exists e' \in R : e \lesserEqual e'\] and \[\cpaStop^{join}(e, R, \pi) = e \lesserEqual \bigjoin\limits_{e' \in R} e'.\]
+Two common stop operators are \[\cpaStop^{sep}(e, R, \pi) = \exists e' \in R : e \lesserEqual e'\] and \[\cpaStop^{join}(e, R, \pi) = e \lesserEqual \bigjoin\limits_{e' \in R} e'.\]
 For $\cpaStop^{join}$, the abstract domain has to be a powerset domain, that means $e~\lesserEqual~e' \Rightarrow e \supseteq e'$ for abstract states $e, e'$.
 
 \item
@@ -173,10 +173,10 @@ The following condition has to hold: $\forall e, \hat{e} \in E, \pi, \hat{\pi} \
 \end{algorithm}
 
 \subsection{CPA algorithm}
-The CPA algorithm described in Algorithm~\ref{alg:CPA} uses an arbitrary CPA of this form to verify programs.
+The CPA algorithm displayed in Algorithm~\ref{alg:CPA} uses an arbitrary CPA of this form to verify programs.
 Given a CPA $\cpa$, an initial set $R_0$ of reached abstract states with their precisions and a subset $W_0 \subseteq R_0$ of abstract states that have to be examined,
 the algorithm computes the set \reachedSet\ of abstract states reachable without encountering a target state and the currently unprocessed abstract states of that set.
-Starting with the given sets $R_0$ and $W_0$ as set \reachedSet\ of reached abstract states and set \waitlistSet of abstract states not visited yet, the following steps are repeated until \waitlistSet\ is empty:
+Afer initializing \reachedSet\ and \waitlistSet\ with the given sets $R_0$ and $W_0$, the following steps are repeated until \waitlistSet\ is empty:
 An abstract state $e \in \waitlistSet$ is removed from the waitlist and each possible abstract successor $e'$ and its precision $\pi$ is examined:
 
 First, precision adjustment is performed on $e'$ based on $\pi$ and $\reachedSet$. This produces a new abstract state $\hat{e}$ and a new precision $\hat{\pi}$.
@@ -191,13 +191,12 @@ After this it is continued with the next element in the waitlist.
 If the waitlist is empty, there are no more reachable states and the reached set is returned, accompanied by the empty waitlist.
 
 \section{Basic Definition of CPAs used}
-A definition of all CPAs important to this paper follows.
+The following CPAs are used and extended in this work.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\CompositeCPA}
 It is often useful to use multiple CPAs in parallel to combine their individual strengths, mitigate their weaknesses, and simplify CPAs by separating concerns.
-A composition of two CPAs \cite{Beyer2008} can be expressed as $(\cpa_1, \cpa_2, \Pi_\times, \transfer_\times, \cpaMerge_\times, \cpaStop_\times, \cpaPrec_\times)$.
-We will extend this definition to allow the composition of an arbitrary number of CPAs.
+A composition of two CPAs \cite{Beyer2008} can be expressed as \[(\cpa_1, \cpa_2, \Pi_\times, \transfer_\times, \cpaMerge_\times, \cpaStop_\times, \cpaPrec_\times).\]
 It consists of:
 \begin{enumerate}[leftmargin=*, label=\arabic*.]
 
@@ -208,23 +207,24 @@ It consists of:
 \item \label{it:compStop} A composite termination check $\cpaStop_\times : (E_1 \times E_2) \times 2^{E_1 \times E_2} \times \Pi_\times \rightarrow \booleanset$.
 \item A composite precision adjustment \[\cpaPrec_\times : (E_1 \times E_2) \times \Pi_\times \times 2^{(E_1 \times E_2) \times \Pi_\times} \rightarrow (E_1 \times E_2) \times \Pi_\times.\]
 \end{enumerate}
-The three composite operators \ref{it:compTransfer} - \ref{it:compStop} use the corresponding operators of the contained CPAs $\cpa_1$ to $\cpa_i$ as well as multiple \emph{strengthening operators} $\strengthen_j$ and \emph{compare relations} $\compare_j$. They only alter lattice elements through these components.
+The three composite operators \ref{it:compTransfer} - \ref{it:compStop} use the corresponding operators of the contained CPAs $\cpa_1$ and $\cpa_2$ as well as \emph{strengthening operators} $\strengthen_j$ and \emph{compare relations} $\compare_j$ with $1 \leq j \leq 2$. They only alter lattice elements through these components.
 
 The strengthening operator $\strengthen : E_k \times E_l \rightarrow E_k$ computes a stronger abstract state of the type $E_k$ by using the information of an abstract state of the type $E_l$,
-with $1 \leq k,l \leq i$ and $k \neq l$ for $i$ being the number of CPAs in the composition.
+with $1 \leq k,l \leq 2$ and $k \neq l$.
 It has to meet the requirement $\strengthen(e, e') \lesserEqual e$.
 The use of strengthening operators in the transfer relation $\transfer_\times$ allows the use of a transfer relation that is stronger than the simple combination of the transfer relations of $\cpa_1$ and $\cpa_2$.
 
 A compare relation $\compare\ \subseteq E_k \times E_l$ allows the comparison of two abstract states of different types.
 
-The composition of CPAs can be used to construct a \compositeCPA\ $\compCPA = (D_\times, \Pi_\times, \transfer_\times, \cpaMerge_\times, \cpaStop_\times, \cpaPrec_\times)$
+The composition of CPAs can be used to construct a \compositeCPA\ \[\compCPA = (D_\times, \Pi_\times, \transfer_\times, \cpaMerge_\times, \cpaStop_\times, \cpaPrec_\times)\]
 with abstract domain $D_\times = D_1 \times D_2 = (C, \semilattice_\times, \concretization_\times)$
 and semi-lattice $\semilattice_\times = \semilattice_1 \times \semilattice_2 = (E_1 \times E_2, (\top_1, \top_2), (\bot_1, \bot_2), \lesserEqual_\times, \join_\times)$.
 The semi-lattice uses the less-or-equal operator $\lesserEqual_\times$ defined as $(e_1, e_2) \lesserEqual_\times (e'_1, e'_2)$ if $e_1 \lesserEqual_1 e'_1$ and $e_2 \lesserEqual_2 e'_2$
 and the join operator defined as $(e_1, e_2) \join_\times (e'_1, e'_2) = (e_1 \join_1 e'_1, e_2 \join_2 e'_2)$.
 The concretization function $\concretization_\times$ is defined as $\llbracket (e_1, e_2) \rrbracket_\times = \llbracket e_1 \rrbracket_1 \cap \llbracket e_2 \rrbracket_2$.
 
-A special merge operator in this context is \[\mergeAgree : (E_1 \times E_2) \times (E_1 \times E_2) \times (\Pi_1 \times \Pi_2) \rightarrow (E_1 \times E_2)\]. It uses the merge operators of each CPA on the corresponding abstract states individually, if, after the merge, every component's state is less or equal the both given states. Otherwise it behaves like $\cpaMerge^{sep}$, i.e. no merge is performed.
+A special merge operator in this context is \[\mergeAgree : (E_1 \times E_2) \times (E_1 \times E_2) \times (\Pi_1 \times \Pi_2) \rightarrow (E_1 \times E_2).\] It uses the merge operators of each CPA on the corresponding abstract states individually, if, after the merge, every component's state is less or equal the both given states. Otherwise it behaves like $\cpaMerge^{sep}$, i.e. no merge is performed.
+We extend this definition of \compositeCPA\ to allow the composition of an arbitrary number of CPAs.
 \begin{align*}
 &\mergeAgree(e_1, e_2, e'_1, e'_2, \pi_1, \pi_2) =\\
 &\begin{dcases}
@@ -248,7 +248,7 @@ The abstract domain $D_\locCPA = (C, \loclattice, \concretization)$. It consists
 	The concretization function is defined as $\llbracket \top_\locCPA \rrbracket = C$, $\llbracket l \rrbracket = \{ c \in C |\ c(pc) = l\}$ for all $l \in L$.
 
 \item
-The set $\singletonPi = \{ \singletonPrecision$ of precisions that only contains a single precision. This means that all abstract states have the same precision all the time.
+The set $\singletonPi = \{ \singletonPrecision \}$ of a single precision that tracks all information.
 
 \item
 The transfer relation $\transfer_\locCPA$, which has the transfer $l \gtransfer_\locCPA (l', \singletonPrecision)$ if $g = (l, op, l')$ for any operation $op$

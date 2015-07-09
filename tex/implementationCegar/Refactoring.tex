@@ -39,7 +39,7 @@ The interpolation algorithm (Alg.~\ref{alg:interpolateExplicit}) gets a prefix a
 In the implementation, \objectName{Value\-Analysis\-Edge\-Inter\-polator} receives the interpolant and the current operation in form of a CFA edge, separately.
 It is possible to recreate a \objectName{Value\-Analysis\-State} from the interpolant class \objectName{Value\-Analysis\-Interpolant}, so the strongest-post operator only has to be applied to the current operation with the reconstructed state as initial one. This way, no redundant computations happen.
 
-\objectName{Value\-Analysis\-Edge\-Inter\-polator} uses the \objectName{Value\-Analysis\-Transfer\-Relation}\ with full precision as strongest-post operator $\strongestPostOpExplicit$ for single operations, as it represents the same semantics. The \objectName{Value\-Analysis\-State} also used in the abstract domain of the \valueAnalysisCPA\ is used to represent abstract variable assignments. A program variable is represented as a \objectName{Me\-mo\-ry\-Lo\-ca\-tion}.
+\objectName{Value\-Analysis\-Edge\-Inter\-polator} uses the \objectName{Value\-Analysis\-Trans\-fer\-Re\-la\-tion}\ with full precision as strongest-post operator $\strongestPostOpExplicit$ for single operations, as it represents the same semantics. The \objectName{Value\-Analysis\-State} also used in the abstract domain of the \valueAnalysisCPA\ is used to represent abstract variable assignments. A program variable is represented as a \objectName{Me\-mo\-ry\-Lo\-ca\-tion}.
 The class \objectName{Value\-Analysis\-Feasibility\-Checker} is used for the feasibility check $\isFeasibleFunc$ (Alg.~\ref{alg:cegar}, Line~\ref{alg:cegar:feasibilityCheck}).
 Since it applies the \objectName{Value\-Analysis\-Transfer\-Relation} also representing $\strongestPostOpExplicit$ sequentially to a program path to check whether it is feasible, it is also used as the sequential application of the strongest-post operator on a program path by the  \objectName{Value\-Analysis\-Edge\-Inter\-polator}.
 It is not necessary to transform program paths to constraints sequences, as the transfer relation can work on their edges directly.
@@ -59,7 +59,7 @@ In addition, the infeasibility of a chosen prefix is checked again by using the 
 \end{figure}
 
 \subsection{Introduction of interfaces}
-Except for \objectName{Value\-Analysis\-Refiner} and \objectName{Value\-Analysis\-Prefix\-Provider}, none of these classes are accessed through an interface.
+Except for the two classes \objectName{Value\-Analysis\-Refiner} and \objectName{Value\-Analysis\-Prefix\-Provider}, none of these classes are accessed through an interface.
 So first, we created interfaces with type parameters that represent all components required for refinement in the domain of abstract variable assignments, based on the existing implementation of the value analysis refinement. These interfaces are displayed in Figure \ref{fig:refInterfaces} next to the \objectName{Refiner} interface.
 \objectName{Feasibility\-Checker}, \objectName{Path\-Inter\-po\-lator}, \objectName{Edge\-Inter\-po\-lator}, \objectName{Inter\-po\-lant} are based on their counterpart in value analysis refinement.
 The interface \objectName{Strongest\-Post\-Operator} provides the functionality of the strongest-post operator in the refinement algorithms. Its previous counterpart in value analysis refinement is the \objectName{ValueAnalysisTransferRelation} that was used without an interface.
