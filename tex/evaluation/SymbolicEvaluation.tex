@@ -148,7 +148,7 @@ and last one iteration of analysis using CEGAR. The last iteration also equals t
 \end{figure}
 
 Figure~\ref{fig:cegarFailsEx:cfa} shows a CFA representing one such program. The highlighted nodes are error locations.
-Although only the last one of them is really reachable as all program variables are initialised with the concrete value $2$ at the beginning of the program,
+Although only the last one of them is really reachable as all program variables are initialized with the concrete value $2$ at the beginning of the program,
 the CEGAR algorithm visits one after the other, always refining the precision to track only one additional variable and then restarting
 from the beginning of the program, since all variable assignments happen there.
 The first three iterations of this procedure are shown in Figures~\ref{fig:cegarFailsEx:first} -- \ref{fig:cegarFailsEx:third}.
@@ -173,12 +173,12 @@ Tasks of the latter category constitute almost all of the 84~unique correct \res
 \end{figure}
 
 Most of the programs with these characteristics are of the task sets of ProductLines and ECA.
-To recap, of the 598~tasks symbolic execution without CEGAR can correctly find errors in, more than half (323~tasks) can't be analysed correctly by symbolic execution with CEGAR
+To recap, of the 598~tasks symbolic execution without CEGAR can correctly find errors in, more than half (323~tasks) can't be analyzed correctly by symbolic execution with CEGAR
 due to many infeasible error paths and the resulting amount of refinements.
 On the other hand, symbolic execution with CEGAR is able to prove for 101~new tasks that an error exists in them.
 This shows that the efficiency of symbolic execution with and without CEGAR strongly depends on the task on hand, especially when the program is not error-free.
 Fig.~\ref{fig:spTimeToFindError} illustrates that for many programs, either symbolic execution with or without CEGAR is able to find a (possibly non-existent) error within 900~seconds, but not both.
-For proving the safety of a program, analysis with CEGAR performs significantly better, being able to correctly analyse 1623~tasks more than analysis without CEGAR, but its laziness results in bad performance for some programs, too (Fig.~\ref{fig:spTimeToProveSafe}).
+For proving the safety of a program, analysis with CEGAR performs significantly better, being able to correctly analyze 1623~tasks more than analysis without CEGAR, but its laziness results in bad performance for some programs, too (Fig.~\ref{fig:spTimeToProveSafe}).
 
 \begin{figure}[h!]
 \centering
@@ -227,7 +227,7 @@ We compare three different techniques for computing interpolants of the \symboli
 \item removing unnecessary values first and then constraints (\emph{values first}), and
 \item removing unnecessary constraints first and then values (\emph{constraints first}).
 \end{enumerate}
-Table~\ref{tab:itpTechniqueComp} shows that almost no difference exists in the effectivenes of all three techniques.
+Table~\ref{tab:itpTechniqueComp} shows that almost no difference exists in the effectiveness of all three techniques.
 General time performance also differs in no significant way, as the scatter plots in Figure~\ref{fig:spTimeVOVF} show.
 \begin{figure}[t]
 \begin{subfigure}[b]{.48\textwidth}
@@ -246,7 +246,7 @@ The successful analysis of these two tasks is a result of the faster ''values on
 Since the strongest-post operator of symbolic execution refinement uses expensive SAT checks to check the satisfiability of current constraints, the two refinement procedures
 ''values first'' and ''constraints first'' take longer for a single refinement, as they call the strongest-post operator more often - for every abstract variable assignment and every constraint once, respectively.
 The ''values only'' computation only calls the strongest-post operator once for every value, in contrast.
-Similiarly, analyses using ''values only'' and ''values first'' are able to prove one more task safe then ''constraints first''.
+Similarly, analyses using ''values only'' and ''values first'' are able to prove one more task safe then ''constraints first''.
 This one is very close to the time limit (867.7 seconds using ''values only'', 836.6 seconds using ''values first''), too.
 
 Analysis with interpolation using ''values first'' or ''constraints first'' is also able to prove one task safe ''values only'' can't.
@@ -348,7 +348,8 @@ resource errors                & 1923       & 1926     &\\ \hline % includes tim
 The implication less-or-equal operator never performs better than the subset less-or-equal operator when using the constraints-based precision for the \constraintsCPA\ and worse than the subset less-or-equal operator when using the location-based precision. Tables~\ref{tab:leqOp} and~\ref{tab:leqOpOnLocPrec} show the results for benchmarks using these two different less-or-equal operators.
 The reason for this is the fixedness of constraints:
 The possibility that a state using a subset of or the same symbolic identifiers than another state consists of constraints that are implied by the other state without being a subset of its constraints, is very low.
-Figure~\ref{fig:leqComp:stopAmount} illustrates that this is the case very seldomly.
+Figure~\ref{fig:leqComp:stopAmount} illustrates that this is the case very seldom.
+As such, usage of the subset less-or-equal operator is encouraged due to its higher simplicity and no reliance on third-party SMT solvers.
 
 \begin{figure}
 \begin{subfigure}{.48\linewidth}
@@ -367,10 +368,10 @@ Figure~\ref{fig:leqComp:stopAmount} illustrates that this is the case very seldo
 
 \subsection{Sliced Prefix Selection}
 The use of sliced prefix selection \cite{Beyer2015} \cite{Beyer2015a} (Sec.~\ref{sec:assignmentRefinement}) is able to boost the performance of the \symbolicExecutionCPA\ with CEGAR significantly.
-Table~\ref{tab:prefSel} shows the benchmark results of the following selected prefix selection preferences:
+Table~\ref{tab:prefSel} shows the benchmark results of the following selected sliced prefix selection preferences:
 \begin{itemize}
-\item Random prefix selection, used as reference selection preference.
-\item Selection of the shortest prefix, \emph{length short}.
+\item Random sliced prefix selection, used as reference selection preference.
+item Selection of the shortest prefix, \emph{length short}.
 \item Selection of the prefix based on a score computed from the variable types, easy types like boolean and integer being preferred. (domain good, \emph{DG})
 \item Selection of the prefix based on a score computed from the variable types equal to ''DG'', but mixed with a score based on the size of the interpolants, preferring smaller ones. (domain good, narrow, \emph{DGN})
 \item Selection of the prefix containing the fewest assignments, \emph{AmF}.
@@ -401,11 +402,11 @@ AtM long       & \cellcolor{LightRed} 391 & 1827   &  92 & 1 & 3487 \\ \hline
 PS short       & 447 & 1812   &  94 & 1 & 3501 \\ \hline
 PS long        & 516 & 1810   &  88 & 1 & 3602 \\ \hline
 \end{tabular}
-\caption{Benchmark results for different prefix selection types, best and worst results highlighted}
+\caption{Benchmark results for different sliced prefix selection types, best and worst results highlighted}
 \label{tab:prefSel}
 \end{table}
 
-It is clearly visible that performance of analysis strongly depends on the type of interpolants used for refinement, with symbolic execution being able to prove the safety of 366~more tasks when using the prefix selection preference \emph{domain good, short} in contrast to \emph{assumptions fewest, short}.
+It is clearly visible that performance of analysis strongly depends on the type of interpolants used for refinement, with symbolic execution being able to prove the safety of 366~more tasks when using the sliced prefix selection preference \emph{domain good, short} in contrast to \emph{assumptions fewest, short}.
 
 Using preferences aiming at increasing precision fast like \emph{assumptions most, short} or \emph{pivot shallow, long} allows analysis to find more errors thanks to its faster-growing precision and fewer needed refinements, just as expected.
 Preference \emph{assumptions most, short} increases the precision of the \constraintsCPA as fast as possible by always incrementing the amount of constraints tracked as much as possible by choosing sliced prefixes relying on the most assumptions for proving infeasibility of the prefix.
@@ -445,13 +446,31 @@ If the prefix preference chooses the sliced prefix using program variable $var$,
   (ll3) edge node [left, pos=0.3] {$\mathbf{[!(c == 1)}$} (lll4)
 ;
 \end{tikzpicture}
-\caption{CFA representing a program that creates problems when using the wrong prefix selection preference}
+\caption{CFA representing a program that creates problems when using the wrong sliced prefix selection preference}
 \label{fig:cfaBadPref}
 \end{figure}
 
 In contrast to these, \emph{assumptions fewest, short} has the slowest growing precision, increasing precision of the \constraintsCPA\ only as little as possible by choosing the fewest assumptions possible and precision of the \symbolicValueAnalysisCPA\ only as much as needed to keep \constraintsCPA's precision low by choosing short prefixes.
 The slow growth of precision is also the cause \emph{domain good, short} only performs mediocre in relation to the other analysis in finding errors.
-Thanks to choosing variables whose types are easily handable by both the \valueAnalysisCPA\ and the \constraintsCPA, it boosts proving the safety of programs immensely.
+Thanks to choosing variables whose types are easily processible by both the \valueAnalysisCPA\ and the \constraintsCPA, it boosts proving the safety of programs immensely by improving runtime performance.
+Figure~\ref{fig:cputimeDGS} shows two scatter plots comparing the claimed CPU-time of the \symbolicExecutionCPA\ with CEGAR using the \emph{domain good, short} preference in comparison to no sliced prefix selection
+and the relatively bad performing \emph{assumptions fewest, short} preference. Only tasks are shown for which terminated and for which the same results were computed.
+It is clearly visible that analysis is faster for the significant amount of tasks when preferring precision refinements using easy-to-handle variables.
+
+\begin{figure}
+\begin{subfigure}{.48\linewidth}
+\includegraphics[trim=2cm 0 1cm 0, clip=true, scale=0.9]{evaluation/sp_cputime_DGS_noSelection}
+\caption{DG short vs. no sliced prefix selection}
+\end{subfigure}%
+\hfill
+\begin{subfigure}{.48\linewidth}
+\includegraphics[trim=2cm 0 1cm 0, clip=true, scale=0.9]{evaluation/sp_cputime_DGS_AtFS}
+\caption{DG short vs. AtF short}
+\end{subfigure}
+\caption{Comparison of runtime performance of analysis using \emph{domain good, short} prefix preference with analysis without sliced prefix selection and with preference \emph{assumptions fewest, short}}
+\label{fig:leqComp:stopAmount}
+\end{figure}
+
 For the domain-good preference, a more precise alternative exists. It performed worse then the default for all variations, though.
 
 %The choice of long or complicated prefixes increases time for refinement, too.
@@ -463,7 +482,7 @@ For \emph{assumptions most, short}, 5 tasks were affected. It still is the best 
 Unfortunately there was no time to repeat all benchmarks with this option turned off due to their long runtime.
 
 \subsection{Delegation to Concrete Value-Analysis Refinement}
-
+\subsubsection*{Without Sliced Prefix Selection}
 \begin{table}[t]
 \centering
 \begin{tabular}{|r|c|c|c|}
@@ -482,11 +501,11 @@ program errors                 & 2          & 3        & \\ \hline % exception b
 %timeouts & 3275 & 1927 & \\ \hline
 resource errors                & 1928       & 1924     &\\ \hline % includes timeouts + StackOverflowException
 \end{tabular}
-\caption{Results of benchmark runs of the \symbolicExecutionCPA\ with CEGAR using no delegation (the default) and using delegation to concrete value-analysis only refinement, both using no prefix selection}
+\caption{Results of benchmark runs of the \symbolicExecutionCPA\ with CEGAR using no delegation (the default) and using delegation to concrete value analysis only refinement, both using no sliced prefix selection}
 \label{tab:delegation}
 \end{table}
 
-Table~\ref{tab:delegation} shows the difference between analysis using CEGAR without and with delegation to refinement using concrete values only.
+Table~\ref{tab:delegation} shows the difference between analysis using CEGAR without and with delegation to refinement using concrete values only and no sliced prefix selection.
 While sometimes analysis always using symbolic refinement (using no delegation) performs better and sometimes analysis performing concrete value analysis whenever possible performs better, 137~of the 184~differences appears in the ECA task set, where the kind of refinement is very important.
 
 Although both techniques differ slightly in the tasks they can solve, delegation provides a significant boost to speed for tasks they can solve both (which are almost all of the tasks they can solve, after all).
@@ -508,4 +527,77 @@ Figure~\ref{fig:delegRefinetime} illustrates this difference in speed.
 \label{fig:delegRefinetime}
 \end{subfigure}
 \caption{Performance of analysis using CEGAR without delegation and with delegation for tasks both techniques terminate for with the same result}
+\end{figure}
+
+\subsubsection*{With Sliced Prefix Selection}
+\begin{table}[t]
+\centering
+\begin{tabular}{|r|c|c|c|}
+\hline
+                               & No deleg. + DG, short & Deleg. + DG, short  & Overall \\ \hline
+correct results                & 2476       & 2417     & 4092 \\ \hline
+\resultFalse, correct          & 476        & 462      & 2911 \\ \hline
+\resultTrue, correct           & 2000       & 1955     & 1181 \\ \hline
+unique \resultFalse, correct   & 24         & 10       & \\ \hline
+unique \resultTrue, correct    & 52         & 7       & \\ \hline
+\resultFalse, incorrect        & 94         & 86       & \\ \hline
+unique \resultFalse, incorrect & 7          & 0      & \\ \hline
+\resultTrue, incorrect         & 1          & 1        & \\ \hline
+unique \resultTrue, incorrect  & 0          & 0        & \\ \hline
+program errors                 & 2          & 12\footnotemark & \\ \hline % exception because of / 0, parsing error
+%timeouts & 3275 & 1927 & \\ \hline
+resource errors                & 1519       & 1924     &\\ \hline % includes timeouts + StackOverflowException
+\end{tabular}
+\caption{Results of benchmark runs of the \symbolicExecutionCPA\ with CEGAR using no delegation (the default) and using delegation to value analysis refinement, both using no sliced prefix selection}
+\label{tab:delegation}
+\end{table}
+\footnotetext{A new bug was discovered during this benchmark, affecting 10~tasks. Unfortunately, the bug could not be resolved in the scope of this work.} % belongs to footnotemark in table below
+
+Sliced prefix selection improves performance of analysis using delegation in the same way it improves analysis without delegation.
+Interestingly, the performance increase by the delegation disappears by the preferred use of easy-to-handle variables.
+Figure~\ref{fig:cputimeDelegDGS} illustrates this change.
+Of the 2487~tasks that are solved with the same result by the two analyses,
+551~tasks are more than 10\% faster using no delegation, while only 77~tasks are more than 10\% faster using delegation.
+As a conclusion, not delegating to the value analysis refinement yields better results both in effectiveness and performance when using sliced prefix selection, which is encouraged.
+
+\begin{figure}
+\centering
+\includegraphics{evaluation/sp_cputime_DGS_delegDGS}
+\caption{CPU-time claimed by analysis using \emph{domain good, short} with and without delegation, for tasks the same result was computed for}
+\label{fig:cputimeDelegDGS}
+\end{figure}
+
+\subsection{Utilization of Predicate Refinement}
+
+\begin{table}[t]
+\centering
+\begin{tabular}{|r|c|c|c|}
+\hline
+                               & Own refinement & Predicate refinement  & Overall \\ \hline
+correct results                & 2476       & 2209     & 4092 \\ \hline
+\resultFalse, correct          & 476        & 384      & 2911 \\ \hline
+\resultTrue, correct           & 2000       & 1825     & 1181 \\ \hline
+unique \resultFalse, correct   & 133        & 41       & \\ \hline
+unique \resultTrue, correct    & 187        & 12       & \\ \hline
+\resultFalse, incorrect        & 93         & 12     & \\ \hline
+unique \resultFalse, incorrect & 7          & 5      & \\ \hline
+\resultTrue, incorrect         & 1          & 0        & \\ \hline
+unique \resultTrue, incorrect  & 0          & 0        & \\ \hline
+program errors                 & 2          & 363      & \\ \hline
+%timeouts & 3275 & 1927 & \\ \hline
+resource errors                & 1519       & 1508     &\\ \hline % includes timeouts + StackOverflowException
+\end{tabular}
+\caption{Results of benchmark runs of the \symbolicExecutionCPA\ with CEGAR using our own refinement procedure and using the refinement procedure deriving precisions from predicate analysis's refinement.}
+\label{tab:predDelegation}
+\end{table}
+
+Evaluation shows that the \predicateCPA\ often creates predicate precisions that can't be used to derive precisions for the symbolic execution CPA. In some cases, however, precisions are created that are more reliable and result in analysis terminating when our own refinement can't.
+Performance-wise, our own refinement is faster, either (Fig.~\ref{fig:predDelegation}).
+It might be useful to extend this approach to see if performance changes, but evaluation at the current point does not show much advantages compared to our dedicated refinement procedure.
+
+\begin{figure}
+\centering
+\includegraphics{evaluation/sp_cputime_symEx_predDeleg}
+\caption{CPU-time claimed by analysis using symbolic execution with precisions created by symbolic execution refinement using sliced prefix selection and preference \emph{domain good, short} and with precisions derived from \predicateCPA's refinement}
+\label{fig:predDelegation}
 \end{figure}

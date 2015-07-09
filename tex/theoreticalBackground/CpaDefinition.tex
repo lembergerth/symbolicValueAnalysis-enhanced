@@ -98,7 +98,7 @@ For soundness (i.e. if a property violation exists, it is always found) and prog
 the top element of abstract states has to represent all possible concrete states and the bottom element must represent none, formally put $\llbracket \top \rrbracket = C$ and $\llbracket \bot \rrbracket = \varnothing$,
 
 \item
-the join operator has to be precise or over-approximating. That means the join of two abstractes states always has to represent the same or more concrete states than the union of the concrete states both abstract states represent. This can be formally expressed as $\forall e, e' \in E: \llbracket e \join e' \rrbracket \supseteq \llbracket e \rrbracket \cup \llbracket e' \rrbracket$,
+the join operator has to be precise or over-approximating. That means the join of two abstract states always has to represent the same or more concrete states than the union of the concrete states both abstract states represent. This can be formally expressed as $\forall e, e' \in E: \llbracket e \join e' \rrbracket \supseteq \llbracket e \rrbracket \cup \llbracket e' \rrbracket$,
 
 \item
 $\forall e, e' \in E : e \lesserEqual e' \Rightarrow \llbracket e \rrbracket \subseteq \llbracket e' \rrbracket$
@@ -209,7 +209,7 @@ It consists of:
 \item \label{it:compStop} A composite termination check $\cpaStop_\times : (E_1 \times E_2) \times 2^{E_1 \times E_2} \times \Pi_\times \rightarrow \booleanset$.
 \item A composite precision adjustment \[\cpaPrec_\times : (E_1 \times E_2) \times \Pi_\times \times 2^{(E_1 \times E_2) \times \Pi_\times} \rightarrow (E_1 \times E_2) \times \Pi_\times.\]
 \end{enumerate}
-The three composite operators \ref{it:compTransfer} - \ref{it:compStop} use the corresponding operators of the contained CPAs $\cpa_1$ to $\cpa_i$ as well as multiple \emph{strenghtening operators} $\strengthen_j$ and \emph{compare relations} $\compare_j$. They only alter lattice elements through these components.
+The three composite operators \ref{it:compTransfer} - \ref{it:compStop} use the corresponding operators of the contained CPAs $\cpa_1$ to $\cpa_i$ as well as multiple \emph{strengthening operators} $\strengthen_j$ and \emph{compare relations} $\compare_j$. They only alter lattice elements through these components.
 
 The strengthening operator $\strengthen : E_k \times E_l \rightarrow E_k$ computes a stronger abstract state of the type $E_k$ by using the information of an abstract state of the type $E_l$,
 with $1 \leq k,l \leq i$ and $k \neq l$ for $i$ being the number of CPAs in the composition.
@@ -457,7 +457,7 @@ An example for its wrong behaviour will be presented in Section~\ref{sec:leqOper
 				y & \parbox[t]{.6\textwidth}{if $x \not \in \defRange(v)$ and $x$ appears in $exp$. $y \in \symIds$ is a new symbolic identifier that has not been used in any other state before}\\
 				v(x) & \text{ if } x \in \defRange(v)
 			\end{dcases}\]
-			and $exp_\using{v'}$ defined as before. If any symbolic value occurs in $exp$ after replacing all occurences $x \in X$ in $exp$ with $v'(x)$,
+			and $exp_\using{v'}$ defined as before. If any symbolic value occurs in $exp$ after replacing all occurrences $x \in X$ in $exp$ with $v'(x)$,
 			the expression is only partially evaluated. In this case $exp_\using{v'} \in \symValues$.
 		\item $v'' = \top_\symValCPA$.
 	\end{enumerate}
@@ -497,7 +497,7 @@ In \cite{Lemberger2015}\ we used a less-or-equal operator using an $\aliasFunc$ 
 
 \item
 The set $\Pi_\constrCPA = L \rightarrow 2^{\goodconstraintsset}$ of precisions. Each precision $\pi \in \Pi_\constrCPA$ contains for each program location $l \in L$ all tracked constraints, with $\goodconstraintsset \subseteq \constraintsset$ being the set of all possible boolean expressions over $\symvalset$.
-The constraints of $\goodconstraintsset$ do not contain any program variables, but the only variables occuring in them are symbolic identifiers of $\symIds$.
+The constraints of $\goodconstraintsset$ do not contain any program variables, but the only variables occurring in them are symbolic identifiers of $\symIds$.
 
 A second option is to use the location-based precision $\Pi_L \subseteq L$, which is a subset of program locations.
 A precision $\pi \in \Pi_L$ tracks all constraints for every location $l \in \pi$.
@@ -575,7 +575,7 @@ The precision adjustment of the symbolic value state removes the abstract variab
 The precision adjustment of the constraints state depends on the type of precision used for the \constraintsCPA:
 The adjustment $\auxiliaryPrec_\constrCPA$  removes all constraints that are not tracked at the current location.
 Its concrete implementation depends on the used precision type of the \constraintsCPA:
-If $\Pi_\constrCPA$ is used, which stores all tracked constraints explicitely, the adjustment is defined as
+If $\Pi_\constrCPA$ is used, which stores all tracked constraints explicitly, the adjustment is defined as
 \[\auxiliaryPrec_\constrCPA(a, l, \pi)= a \cap \pi(l).\]
 If $\Pi_\symValCPA$ is used, which only stores the program variables constraints may originate from, the adjustment deletes all constraints that originate from at least one program variable that does not occur in $\pi(l)$ with $\pi$ being the current precision.
 \end{enumerate}

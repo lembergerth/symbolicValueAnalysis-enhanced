@@ -7,7 +7,7 @@ The feasibility check of the value analysis refinement uses the \valueAnalysisCP
 
 \item
 Precision type. \SymbolicExecutionCPA's precision is a pair of the \symbolicValueAnalysisCPA's precision, which is the same as the \valueAnalysisCPA's one, and the \constraintsCPA's precision. This changes the expected return type of the \extractPrecisionFunc\ function and the refine algorithm.
-Since the CEGAR implemention in \cpaChecker\ expects the refinement procedure to also update the precision in the CPAs, a different \extractPrecisionFunc\ function and a different
+Since the CEGAR implementation in \cpaChecker\ expects the refinement procedure to also update the precision in the CPAs, a different \extractPrecisionFunc\ function and a different
 precision update procedure are needed.
 
 \item
@@ -37,7 +37,7 @@ A deviation from the \refineExplicitFunc\ algorithm (Alg.~\ref{alg:refinementExp
 It basically represents Lines~\ref{alg:refinementExplicit:loopStart}~--~\ref{alg:refinementExplicit:interpolation} of the refine algorithm, while \objectName{Value\-Analysis\-Edge\-Inter\-polator} is used for concrete interpolation.
 The interpolation algorithm (Alg.~\ref{alg:interpolateExplicit}) gets a prefix and a suffix as parameters, with the prefix being combined from the interpolant computed for the last location and the current location's operation. It then applies the strongest-post operator to the complete prefix with an initial abstract variable assignment to get the abstract variable assignment for the current location.
 In the implementation, \objectName{Value\-Analysis\-Edge\-Inter\-polator} receives the interpolant and the current operation in form of a CFA edge, separately.
-It is possible to recreate a \objectName{Value\-Analysis\-State} from the interpolant class \objectName{Value\-Analysis\-Interpolant}, so the strongest-post operator only has to be applyed to the current operation with the reconstructed state as initial one. This way, no redundant computations happen.
+It is possible to recreate a \objectName{Value\-Analysis\-State} from the interpolant class \objectName{Value\-Analysis\-Interpolant}, so the strongest-post operator only has to be applied to the current operation with the reconstructed state as initial one. This way, no redundant computations happen.
 
 \objectName{Value\-Analysis\-Edge\-Inter\-polator} uses the \objectName{Value\-Analysis\-Transfer\-Relation}\ with full precision as strongest-post operator $\strongestPostOpExplicit$ for single operations, as it represents the same semantics. The \objectName{Value\-Analysis\-State} also used in the abstract domain of the \valueAnalysisCPA\ is used to represent abstract variable assignments. A program variable is represented as a \objectName{Me\-mo\-ry\-Lo\-ca\-tion}.
 The class \objectName{Value\-Analysis\-Feasibility\-Checker} is used for the feasibility check $\isFeasibleFunc$ (Alg.~\ref{alg:cegar}, Line~\ref{alg:cegar:feasibilityCheck}).
@@ -66,7 +66,7 @@ The interface \objectName{Strongest\-Post\-Operator} provides the functionality 
 \objectName{Inter\-po\-lant\-Ma\-na\-ger} is an interface providing a previously not needed functionality:
 To be able to use an interface for interpolants, this interface is introduced to assume creating them at one point only, through injecting an interpolant manager in other classes of refinement.
 \objectName{ForgetfulState} is the interface for states used and created by the \objectName{StrongestPostOperator} and used by the \objectName{EdgeInterpolator}.
-It provides means for checking whether an element of the state is needed during interpolation and readding it, if it is.
+It provides means for checking whether an element of the state is needed during interpolation and re-adding it, if it is.
 
 Its type parameter \typeParam{T} describes the type forgotten information is stored in.
 The method \objectName{For\-get\-ful\-State.forget(Me\-mo\-ry\-Lo\-ca\-tion)} returns the forgotten information as this type and the type is used to remember the forgotten information, if necessary.

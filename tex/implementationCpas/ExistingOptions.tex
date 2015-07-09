@@ -22,7 +22,7 @@ The options \configOption{cpa.value.symbolic.handleArrays} and \configOption{cpa
 can be used to disable the tracking of non-deterministic assignments to structs and arrays.
 This will only disable the tracking of non-deterministic assignments of the type struct or arrays, i.e.\ assignments to members of structs and array elements
 are always tracked, despite the value of those two options.
-When analysing
+When analyzing
 \begin{lstlisting}
 int[] b = new int[5];
 b[0] = __VERIFIER_nondet_int();
@@ -30,7 +30,7 @@ b[0] = __VERIFIER_nondet_int();
 with the \symbolicExecutionCPA, $b$ is always tracked.
 Arrays of unknown length are never tracked, though.
 
-Multiple optimizations are applied to the \constraintsCPA\ implementation in CPAchecker.
+Multiple optimizations are applied to the \constraintsCPA\ implementation in \cpaChecker.
 %\subsubsection{Constraints State simplifications}
 %\paragraph{Compute definite assignments}
 First, we use the SMT solver to create a model (a mapping of variables to concrete values) that satisfies the conjunction $F$ of all constraints of a state.
@@ -58,7 +58,7 @@ If it is, $s = n$ is necessary for the formula to be true and we can store it as
 %\paragraph{Completely trivial constraints not added to state, trivial ones removed (this is removed by us - causes!)}
 In addition, we only store constraints that contain at least one symbolic identifier.
 If a constraint does not contain a symbolic identifier, we call it \emph{trivial}.
-Its representing boolean formula then does not contain any variables and it can be checked whether it is satisifiable or not independently of all other constraints, as it can't influence any symbolic identifier's possible concrete values.
+Its representing boolean formula then does not contain any variables and it can be checked whether it is satisfiable or not independently of all other constraints, as it can't influence any symbolic identifier's possible concrete values.
 If the constraint is unsatisfiable, the path using this assumption is infeasible and no valid transfer to a new state exists.
 Otherwise, the old state is used without adding the trivial constraint.
 In our basic implementation, if a constraint that already is in the current abstract state becomes trivial because all symbolic identifiers occurring in it have definite assignments, the constraint was removed, too, while the definite assignments were preserved.
@@ -74,5 +74,5 @@ Last, we do not create boolean formulas for each constraint every time we want t
 This way we have to synchronize the set of constraints with an additional set of formulas, but save lots of redundant formula creations.
 
 %\paragraph{Strengthening in value analysis}
-We perform strenghtening of the \valueAnalysisCPA\ by using constraints states.
+We perform strengthening of the \valueAnalysisCPA\ by using constraints states.
 If an abstract assignment of a symbolic identifier with a definite assignment to a program variable exists in the value analysis state, the symbolic identifier is replaced by the definite assignment's value. This way we reduce the number of existing symbolic identifiers to the necessary minimum and create constraints with fewer symbolic identifiers.

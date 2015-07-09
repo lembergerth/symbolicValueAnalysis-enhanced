@@ -1,8 +1,8 @@
-\section{CEGAR for Symbolic Value Analysis + ConstraintsCPA}
+\section{CEGAR for Symbolic Value Analysis + Constraints CPA}
 For using the \symbolicExecutionCPA\ with CEGAR, we have to define a refinement procedure that returns a precision of type $\Pi_\symExCPA$ that fits the precision of the \symbolicExecutionCPA. We designed two such refinement procedures:
 The first uses adjusted versions of the refinement and interpolation algorithms as used for abstract variable assignments,
 with an adjusted strongest-post operator and a precision type that fits $\Pi_\symExCPA$.
-The second refinement procedure extracts a precision for the \symbolicExecutionCPA\ from the precision created by the refinement of the \predicateCPA, which is based on interpolation in the domain of linear arithmetics.
+The second refinement procedure extracts a precision for the \symbolicExecutionCPA\ from the precision created by the refinement of the \predicateCPA, which is based on interpolation in the domain of linear arithmetic.
 
 \subsection{Refinement based on refinement for abstract variable assignments}
 \label{sec:assignmentRefinement}
@@ -21,7 +21,7 @@ Formally:
 \bot & \text{ otherwise}
 \end{dcases}\]
 The contradiction $\bot$ represents the bottom element for both the \symbolicValueAnalysisCPA\ as well as for the \constraintsCPA.
-Both the transfer relation of the \symbolicValueAnalysisCPA\ $\transfer_\symValCPA$ and the transfer relation of the \constraintsCPA\ $\transfer_\constrCPA$ always produce only one successor, so we can use them in our definition while keeping $\strongestPostOpSym_{op}$ unambigious.
+Both the transfer relation of the \symbolicValueAnalysisCPA\ $\transfer_\symValCPA$ and the transfer relation of the \constraintsCPA\ $\transfer_\constrCPA$ always produce only one successor, so we can use them in our definition while keeping $\strongestPostOpSym_{op}$ unambiguous.
 The performance of this strongest-post operator can be significantly worse than when only using abstract variable assignments since SAT checks have to be performed in the strengthen operation.
 Because of this, the amount of calls of the strongest-post operator can make a notable difference in performance.
 
@@ -71,7 +71,7 @@ This could significantly decrease performance during interpolation due to the fo
 It might even be more effective to just use all constraints and not perform these additional strongest-post computations
 by omitting Lines \ref{alg:interpolateSym:aInterpolationBegin} - \ref{alg:interpolateSym:aInterpolationEnd} of the algorithm.
 Since constraints made of assume edges whose occurring program variables have an unknown value are discarded in strengthening of the \constraintsCPA, the precision of the \valueAnalysisCPA\ indirectly influences the constraints the \constraintsCPA\ tracks.
-Additionaly, it is also possible to eliminate variable assignments first, and constraints second.
+Additionally, it is also possible to eliminate variable assignments first, and constraints second.
 We will examine all three possibilities later in detail (Section~\ref{sec:eval:itpTechniques}). 
 
 \begin{algorithm}[t]
