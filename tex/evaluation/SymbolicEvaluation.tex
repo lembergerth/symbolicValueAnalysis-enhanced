@@ -258,6 +258,7 @@ For further evaluation we will use the ''constraints first'' technique, as it is
 \subsection{Precision Types}
 
 \begin{table}[t]
+\centering
 \begin{tabular}{|r|c|c|c|c|}
 \hline
                                & Constraint & Location & Overall \\ \hline
@@ -282,11 +283,13 @@ resource errors                & 1928       & 1923     &\\ \hline % includes tim
 \begin{subfigure}[b]{.48\textwidth}
 \includegraphics[trim=2cm 0 1cm 0, clip=true, scale=.9]{evaluation/sp_constPrec_locPrec_refinementsErrorFinding}
 \caption{For finding an error}
+\label{fig:precType:refsFalse}
 \end{subfigure}%
 \hfill
 \begin{subfigure}[b]{.48\textwidth}
 \includegraphics[trim=2cm 0 1cm 0, clip=true, scale=.9]{evaluation/sp_constPrec_locPrec_refinementsSafeProving}
 \caption{For proving a program safe}
+\label{fig:precType:refsTrue}
 \end{subfigure}
 \caption{Number of needed refinements for finding errors and proving a program safe}
 \end{figure}
@@ -295,7 +298,7 @@ Table~\ref{tab:precType} shows the performance of the \symbolicExecutionCPA with
 As it is already the case with the ''value only'' interpolation technique, using the location-based precision provides a small boost in the amount of correctly found property violations in exchange for a small decrease in tasks correctly proven safe.
 This is due to less needed refinements to reach a necessary precision to either find a feasible error path (Fig.~\ref{fig:precType:refsFalse}) or prove a program safe (Fig.~\ref{fig:precType:refsTrue}), as more constraints are tracked potentially.
 To prove a program safe, only few variables and constraints have to be tracked, most of the time, though.
-Because of this, the higher precision and the resulting bigger state space is often hindering when proving the safety ofa program.
+Because of this, the higher precision and the resulting bigger state space is often hindering when proving the safety of a program.
 
 \subsection{Less-or-equal Operators}
 \begin{table}[t]
@@ -363,7 +366,7 @@ Figure~\ref{fig:leqComp:stopAmount} illustrates that this is the case very seldo
 
 
 \subsection{Sliced Prefix Selection}
-The use of sliced prefix selection \cite{Beyer2015} (Sec.~\ref{sec:assignmentRefinement}) is able to boost the performance of the \symbolicExecutionCPA\ with CEGAR significantly.
+The use of sliced prefix selection \cite{Beyer2015} \cite{Beyer2015a} (Sec.~\ref{sec:assignmentRefinement}) is able to boost the performance of the \symbolicExecutionCPA\ with CEGAR significantly.
 Table~\ref{tab:prefSel} shows the benchmark results of the following selected prefix selection preferences:
 \begin{itemize}
 \item Random prefix selection, used as reference selection preference.
@@ -377,6 +380,7 @@ Table~\ref{tab:prefSel} shows the benchmark results of the following selected pr
 \end{itemize}
 For all preferences but the random one a second preference exists if multiple prefixes are equal in concern to the preference:
 \emph{short} for choosing the shortest prefix with the best score and \emph{long} for choosing the longest prefix with the best score.
+More information about the individual prefix preferences can be found in \cite{Beyer2015a}.
 
 \begin{table}[t]
 \centering
@@ -407,40 +411,101 @@ Using preferences aiming at increasing precision fast like \emph{assumptions mos
 Preference \emph{assumptions most, short} increases the precision of the \constraintsCPA as fast as possible by always incrementing the amount of constraints tracked as much as possible by choosing sliced prefixes relying on the most assumptions for proving infeasibility of the prefix.
 Preference \emph{pivot shallow, long}, chooses the prefixes closest to the initial location of the error path so that new precisions are propagated to the most abstract states possible. It takes the longest prefixes, in addition, so that precision grows fast.
 Increasing precision fast and continuing analysis after refinement higher in the abstract reachability graph avoids unnecessary refinements for error paths that are infeasible for the same reasons.
+An example CFA for this benefit can be seen in Fig.~\ref{fig:cfaBadPref}.
+While it is similar to the CFA in Fig.~\ref{fig:cegarFailsEx:cfa}, expensive refinement procedures can be avoided by choosing to track program variable $var$.
+If the prefix preference always chooses sliced prefixes close to the target location, three~refinement procedures are necessary at the end of which program variables $a$, $b$ and $c$ are tracked.
+If the prefix preference chooses the sliced prefix using program variable $var$, analysis already terminates after one~refinement.
 
-In contrast to these, \emph{assumptions fewest, short} has the slowest growing precision, 
-
-\begin{figure}
+\begin{figure}[t]
+\centering
 \begin{tikzpicture}[->,>=stealth, mynode/.style={circle, draw, minimum size=0.5cm}, every node/.style={font=\small}]
 
 \node[mynode] (-1) {0};
 \node[mynode] (-2) [below = 0.6cm of -1] {1};
-\node[mynode] (l-3) [below left = 0.7cm and 0.8cm of -2] {2};
+\node[mynode] (l-3) [below left = 0.5cm and 0.8cm of -2] {2};
 \node[mynode] (0) [below right = 0.7cm and 0.8cm of -2]{3};
-\node[mynode] (1) [below = 0.6cm of 0] {2};
-\node[mynode] (l2) [below left = 0.7cm and 0.8cm of 1] {2};
-\node[mynode] (r2) [below right = 0.7cm and 0.8cm of 1, draw=red, very thick] {3};
-\node[mynode] (ll3) [below left = 0.7cm and 0.6cm of l2] {4};
-\node[mynode] (lr3) [below right = 0.7cm and 0.6cm of l2, draw=red, very thick] {5};
-\node[mynode] (llr4) [below right = 0.7cm and 0.4cm of ll3, draw=red, very thick] {6};
-\node[mynode] (lll6) [below left = 2cm and 0.4cm of ll3] {7};
-\node[mynode] (lllr6) [below right = 0.7cm and 0.3cm of lll6, draw=red, very thick] {9};
-\node[mynode] (llll6) [below left = 0.7cm and 0.3cm of lll6] {8};
+\node[mynode] (1) [below = 0.6cm of 0] {4};
+\node[mynode] (l2) [below left = 0.7cm and 0.8cm of 1] {5};
+\node[mynode] (r2) [below right = 0.7cm and 0.8cm of 1, draw=red, very thick] {6};
+\node[mynode] (ll3) [below left = 0.7cm and 0.6cm of l2] {7};
+\node[mynode] (lr3) [below right = 0.7cm and 0.6cm of l2, draw=red, very thick] {8};
+\node[mynode] (llr4) [below right = 0.7cm and 0.4cm of ll3, draw=red, very thick] {9};
+\node[mynode] (lll4) [below left = 0.7cm and 0.4cm of ll3] {10};
 
 \path
   (-1) edge node [left] {\textbf{var $\assign$ 2}} (-2)
   (-2) edge node [left] {$\mathbf{[var == 2]}$} (l-3)
   (-2) edge node [right] {$\mathbf{[!(var == 2)]}$} (0)
-  (0) edge node [left] {\textbf{a $\assign$ 2, b $\assign$ 2, ... z $\assign$ 2}} (1)
+  (0) edge node [left] {\textbf{a $\assign$ 2, b $\assign$ 2, c $\assign$ 2}} (1)
   (1) edge node [left, pos=0.3] {$\mathbf{[!(a == 1)]}$} (l2)
   (1) edge node [right, pos=0.3] {$\mathbf{[a == 1]}$} (r2)
   (l2) edge node [left, pos=0.3] {$\mathbf{[!(b == 1)]}$} (ll3)
   (l2) edge node [right, pos=0.3] {$\mathbf{[b == 1]}$} (lr3)
   (ll3) edge node [right, pos=0.3] {$\mathbf{[c == 1]}$} (llr4)
-  (ll3) edge [dashed] (lll6)
-  (lll6) edge node [right, pos=0.5] {$\mathbf{[z == 2]}$} (lllr6)
-  (lll6) edge node [left, pos=0.5] {$\mathbf{[!(z == 2)]}$} (llll6)
+  (ll3) edge node [left, pos=0.3] {$\mathbf{[!(c == 1)}$} (lll4)
 ;
 \end{tikzpicture}
-\caption{CFA for program that creates problems when using the wrong prefix selection preference}
+\caption{CFA representing a program that creates problems when using the wrong prefix selection preference}
+\label{fig:cfaBadPref}
+\end{figure}
+
+In contrast to these, \emph{assumptions fewest, short} has the slowest growing precision, increasing precision of the \constraintsCPA\ only as little as possible by choosing the fewest assumptions possible and precision of the \symbolicValueAnalysisCPA\ only as much as needed to keep \constraintsCPA's precision low by choosing short prefixes.
+The slow growth of precision is also the cause \emph{domain good, short} only performs mediocre in relation to the other analysis in finding errors.
+Thanks to choosing variables whose types are easily handable by both the \valueAnalysisCPA\ and the \constraintsCPA, it boosts proving the safety of programs immensely.
+For the domain-good preference, a more precise alternative exists. It performed worse then the default for all variations, though.
+
+%The choice of long or complicated prefixes increases time for refinement, too.
+
+It must be added that the benchmarks for sliced prefix preferences were run with configuration option \configOption{cpa.value.optimizeBooleanVariables=true}, which causes a bug for few tasks in the \symbolicExecutionCPA.
+When using \emph{domain good, short}, one task was affected by this error, which exceeds the time limit with the option turned off.
+For \emph{assumptions fewest, short} and \emph{pivot shallow, long}, no task was affected.
+For \emph{assumptions most, short}, 5 tasks were affected. It still is the best preference for finding errors and the fourth-best for proving the safety of programs.
+Unfortunately there was no time to repeat all benchmarks with this option turned off due to their long runtime.
+
+\subsection{Delegation to Concrete Value-Analysis Refinement}
+
+\begin{table}[t]
+\centering
+\begin{tabular}{|r|c|c|c|}
+\hline
+                               & No delegation & Delegation  & Overall \\ \hline
+correct results                & 2078       & 2081     & 4092 \\ \hline
+\resultFalse, correct          & 376        & 423      & 2911 \\ \hline
+\resultTrue, correct           & 1702       & 1658     & 1181 \\ \hline
+unique \resultFalse, correct   & 64         & 20       & \\ \hline
+unique \resultTrue, correct    & 86         & 89       & \\ \hline
+\resultFalse, incorrect        & 83         & 84       & \\ \hline
+unique \resultFalse, incorrect & 2          & 2        & \\ \hline
+\resultTrue, incorrect         & 1          & 1        & \\ \hline
+unique \resultTrue, incorrect  & 0          & 0        & \\ \hline
+program errors                 & 2          & 3        & \\ \hline % exception because of / 0, parsing error
+%timeouts & 3275 & 1927 & \\ \hline
+resource errors                & 1928       & 1924     &\\ \hline % includes timeouts + StackOverflowException
+\end{tabular}
+\caption{Results of benchmark runs of the \symbolicExecutionCPA\ with CEGAR using no delegation (the default) and using delegation to concrete value-analysis only refinement, both using no prefix selection}
+\label{tab:delegation}
+\end{table}
+
+Table~\ref{tab:delegation} shows the difference between analysis using CEGAR without and with delegation to refinement using concrete values only.
+While sometimes analysis always using symbolic refinement (using no delegation) performs better and sometimes analysis performing concrete value analysis whenever possible performs better, 137~of the 184~differences appears in the ECA task set, where the kind of refinement is very important.
+
+Although both techniques differ slightly in the tasks they can solve, delegation provides a significant boost to speed for tasks they can solve both (which are almost all of the tasks they can solve, after all).
+Figure~\ref{fig:delegCputime} shows the CPU-time both analysis with CEGAR using no delegation and analysis with CEGAR using delegation claim for tasks they both terminate for with the same result (no matter whether it is correct or incorrect).
+While there are some tasks analysis with delegation can solve faster using symbolic refinement all the time, it is clearly visible that for the majority of tasks, analysis using delegation performs significantly better.
+This is attributed to the faster refinement procedure that goes without expensive SAT checks, in contrast to symbolic refinement.
+Figure~\ref{fig:delegRefinetime} illustrates this difference in speed.
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{.48\textwidth}
+\includegraphics[trim=2cm 0 1cm 0, clip=true, scale=0.9]{evaluation/sp_cputime_noDeleg_deleg}
+\caption{CPU-time for complete analysis}
+\label{fig:delegCputime}
+\end{subfigure}
+\begin{subfigure}[b]{.48\textwidth}
+\includegraphics[trim=2cm 0 1cm 0, clip=true, scale=0.9]{evaluation/sp_refinetime_noDeleg_deleg}
+\caption{CPU-time for refinement procedure}
+\label{fig:delegRefinetime}
+\end{subfigure}
+\caption{Performance of analysis using CEGAR without delegation and with delegation for tasks both techniques terminate for with the same result}
 \end{figure}

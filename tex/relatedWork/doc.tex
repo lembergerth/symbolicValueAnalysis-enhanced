@@ -1,4 +1,5 @@
-\chapter{Related work}
+\chapter{Related Work}
+\label{sec:relatedWork}
 Symbolic execution was first introduced by \cite{King1976} in 1976 for program testing and verification.
 In this classic symbolic execution, a programming language is extended to be able to handle symbolic values without changing its syntax.
 Then, a program in this language is executed using symbolic values as its input.
@@ -9,7 +10,7 @@ This way, a lot less symbolic executions are necessary for reaching a certain te
 Verification at this stage was only possible by providing conditions the output of the program had to fulfill.
 Today, symbolic execution is used for testing, test case generation and verification.
 
-\subsection*{Concolic testing}
+\subsection*{Concolic Testing}
 In the context of testing, \emph{concolic testing} \cite{Sen2005} \cite{Godefroid2005} \cite{Majumdar2007} evolved from symbolic execution.
 In concolic testing, a program is executed with some arbitrary, but concrete input values, while tracking the conditions created by the branches the concrete execution takes.
 When finished, the last encountered, not yet negated condition is negated, new input values are created based on the conjunction of this negated condition and all other encountered conditions, and
@@ -30,7 +31,7 @@ There are four major areas improvements focus on for mitigating the path-explosi
 
 While the concepts are presented in the context of testing, they can be applied to verification, too.
 
-\subsection*{Search heuristics}
+\subsection*{Search Heuristics}
 \cite{Burnim2008} proposes three different heuristics for exploring a CFA in concolic testing to reach a target region or uncovered branches faster, instead of simply using a depth-first search.
 The first heuristic chooses branches to take based on their distance in the CFA to currently uncovered branches/the target region.
 The second heuristic, inspired by random testing\footnote{Testing technique using input values randomly generated}, chooses random paths.
@@ -47,7 +48,7 @@ In addition, starvation is impossible due to the randomness of the heuristic.
 2. Choosing each processes at a program location with the same probability, starting at the top of the execution tree, favors executions currently high up in the tree.
 
 While heuristics can assist in speeding up the process of finding an error, they hardly mitigate the problem of path explosion when trying to prove that a program is error-free.
-\subsection*{Compositional execution}
+\subsection*{Compositional Execution}
 The compositional symbolic execution proposed in \cite{Godefroid2007} tests functions in isolation to create summaries of them.
 A summary of a function is a formula describing preconditions for its input and postconditions for its output.
 If the preconditions are met for the current used input, the function summary can be used instead of executing the function again.
@@ -61,7 +62,7 @@ Thanks to its flexibility, it can be combined with any search heuristic.
 The use of such summaries might prove useful for programs requiring a high precision, but we assume that, when analysing a program which only requires to track few program variables and constraint, just reducing the state space by using CEGAR and as such minimizing repeated computations is more useful.
 Both approaches are orthogonal though, and can be used in combination.
 
-\subsection*{Handling of unbounded loops}
+\subsection*{Handling of Unbounded Loops}
 In classic symbolic execution, unbounded loops result in infinite execution.
 % Lazy annotation
 Lazy Annotation \cite{McMillan2010} tackles this problem by computing inductive invariants for loops, unrolling loops up to the point interpolants which are also loop invariants can prove infeasiblity of an error path.
