@@ -83,7 +83,7 @@ A boolean formula $\craigItp$ is a Craig interpolant \cite{Craig1957}\ for two b
 \end{enumerate}
 It is proven that such an interpolant always exists in the domain of abstract variable assignments \cite{Beyer2013} as well as in the theory of linear arithmetic \cite{Craig1957}.
 
-%\subsubsection{Refinement for the domain of abstract variable assignments}
+\subsubsection*{Refinement for explicit-state model checking}
 \label{sec:assignmentRefinement}
 Our work is strongly based on the refinement technique for abstract variable assignments.
 The strongest-post operator $\strongestPostOp_{op}$ describes the semantics of an operation $op \in Ops$.
@@ -93,7 +93,7 @@ The semantics of a path $\sigma = \langle (l_1, op_1), ..., (l_n, op_n) \rangle$
 $\strongestPostOp_{\gamma_\sigma}(v) = \strongestPostOp_{op_n}(\strongestPostOp_{op_{n-1}} (...\ \strongestPostOp_{op_1}(v) ... ))$.
 We use strongest-post operators during interpolation and refinement to evaluate paths.
 
-\subsubsection*{Strongest-post Operator}
+\paragraph*{Strongest-post Operator}
 The strongest-post operator $\strongestPostOpExplicit_{op}$ is defined in the following way:
 %\begin{enumerate}[label=\alph*)]
 %\item
@@ -109,7 +109,7 @@ For an assume operation $\assume(p)$,
 	with $p_\using{v}$ as defined in Section \ref{sec:valueAnalysis}.
 %\end{enumerate}
 
-\subsubsection*{Interpolation}
+\paragraph*{Interpolation}
 %\subsubsection{Interpolation for abstract variable assignments}
 \begin{algorithm}[t]
 \caption{$\interpolateExplicit(\prefix, \suffix)$, adapted from \cite{Beyer2013}}
@@ -140,7 +140,7 @@ If it is not, it can be removed from $v$.
 After all variable assignments are checked, $v$ only contains variable assignments that are necessary to prove that $\suffix$ is contradicting.
 From these, the interpolant is built (Lines \ref{alg:interpolateExplicit:itpStart} - \ref{alg:interpolateExplicit:itpFinish}).
 
-\subsubsection*{Refinement}
+\paragraph*{Refinement}
 \begin{algorithm}[t]
 \caption{$\refineExplicit{\sigma}$, adapted from \cite{Beyer2015}}
 \label{alg:refinementExplicit}
@@ -170,7 +170,7 @@ It is not only sufficient, but also required to use $\Gamma \logicAnd \langle op
 
 This refinement procedure can be used in CEGAR (Alg. \ref{alg:cegar}) in combination with a CPA with precision adjustment that expects these precision types, like the \valueAnalysisCPA\ in combination with refinement for abstract variable assignments.
 
-\subsubsection*{Lazy Abstraction}
+\paragraph*{Lazy Abstraction}
 Resetting the reached set and waitlist to their initial values after every refinement results in the CPA algorithm starting at the first state, always.
 Most of the time, this is not actually necessary though, because precision only changed for a few program locations.
 Because of this, lazy abstraction \cite{Henzinger2002} resumes analysis not at the beginning of the CFA, but at the first location that has to be revisited with its new precision so that the current error path is computed as infeasible.
@@ -179,7 +179,7 @@ We realize lazy abstraction by not resetting the waitlist and reached set in the
 Instead, only abstract states for locations whose precision has changed and all their children are removed from the reached set and added to the waitlist.
 This way redundant computations without any finer precision are avoided.
 
-\subsubsection*{Using Path Prefix Selection}
+\paragraph*{Path Prefix Selection}
 When computing the interpolant for a prefix and a suffix, the resulting interpolant is random if more than one possible interpolant exist. But some interpolants are better suited for creating a precision reaching a fast termination of analysis than others.
 The enhanced refinement procedure proposed by \cite{Beyer2015} allows to guide the interpolation process based on arbitrary criteria.
 A sliced path prefix is a path in an error path $\sigma$ resulting from omitting pairs of operations and locations from the end and replacing assume operations by no-op operations. If a sliced prefix of $\sigma$ is infeasible, $\sigma$ is infeasible.\cite{Beyer2015}
