@@ -1,0 +1,180 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic-refiner -setprop cpa.value.symbolic.refinement.strategy=CONSTRAINTS_FIRST -setprop cpa.constraints.lessOrEqualType=SUBSET -setprop cegar.refiner=cpa.value.symbolic.refiner.delegation.SymbolicDelegatingRefiner -setprop cpa.value.refinement.pathSlicing=true -setprop cpa.value.refinement.prefixPreference=DOMAIN_GOOD_SHORT -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-linux-3.16-rc1/ALL.prp ../svcomp15/ldv-linux-3.16-rc1/205_9a_array_unsafes_linux-3.16-rc1.tar.xz-205_9a-drivers--net--ethernet--intel--ixgb--ixgb.ko-entry_point_false-unreach-call.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_1526531002_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 8019: Function pointer *(ops->alloc) with type void * (*)(struct device *, size_t , dma_addr_t *, gfp_t , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 8066: Function pointer *(ops->free) with type void (*)(struct device *, size_t , void *, dma_addr_t , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 7840: Function pointer *(ops->map_page) with type dma_addr_t  (*)(struct device *, struct page *, unsigned long, size_t , enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 7747-7748: Function pointer *(ops->map_page) with type dma_addr_t  (*)(struct device *, struct page *, unsigned long, size_t , enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 7882: Function pointer *(ops->unmap_page) with type void (*)(struct device *, dma_addr_t , size_t , enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 7794: Function pointer *(ops->unmap_page) with type void (*)(struct device *, dma_addr_t , size_t , enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+Skipping recursive function call from ixgb_tx_map to dma_mapping_error (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from ixgb_set_features to ixgb_up (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from ixgb_set_settings to ixgb_up (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from ixgb_set_ringparam to ixgb_up (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from ixgb_set_pauseparam to ixgb_up (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from dma_mapping_error to ixgb_set_ringparam (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from dma_mapping_error to ixgb_set_settings (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from dma_mapping_error to ixgb_set_pauseparam (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Warning: Analysis stopped (The CPU-time limit of 900s has elapsed.) (ShutdownNotifier.shutdownIfNecessary, WARNING)
+
+Shutdown requested (The CPU-time limit of 900s has elapsed.), waiting for termination. (ForceTerminationOnShutdown$1.shutdownRequested, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                 995327 (count: 995379, min: 0, max: 1, avg: 1.00)
+Number of global variables:                          995327 (count: 995379, min: 0, max: 1, avg: 1.00)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                 1388882
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                3.007s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     3.098s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 0
+Most constraints before refinement in state: 0
+Constraints after refinement in state: 0
+Constraints before refinement in state: 0
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 1691ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  9.119s
+  Time for transition matches:                         3.856s
+  Time for transition assertions:                      0.000s
+  Time for transition actions:                         0.000s
+Automaton transfers with branching:                0
+Automaton transfer successors:                      2035944 (count: 2035944, min: 1, max: 1, avg: 1.00) [1 x 2035944]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            1238927
+Max size of waitlist:            10165
+Average size of waitlist:        4008
+Number of computed successors:   1388882
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         139787
+Number of times breaked:         1
+
+Total time for CPA algorithm:       854.559s (Max:   832.594s)
+  Time for choose from waitlist:      1.629s
+  Time for precision adjustment:     11.123s
+  Time for transfer relation:        51.679s
+  Time for stop operator:           778.135s
+  Time for adding to reached set:     4.203s
+
+SymbolicDelegatingRefiner statistics
+------------------------------------
+Explicit refinements: 1
+Successful explicit refinements: 1
+Symbolic refinements: 0
+Successful symbolic refinements: 0
+Overall explicit refinement time: 1697ms
+Average explicit refinement time: 1697ms
+Overall symbolic refinement time: 0ms
+Average symbolic refinement time: 0ms
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                1
+Number of successful refinements:     1
+Number of failed refinements:         0
+Max. size of reached set before ref.: 253769
+Max. size of reached set after ref.:  52
+Avg. size of reached set before ref.: 253769.00
+Avg. size of reached set after ref.:  52.00
+
+Total time for CEGAR algorithm:     856.256s
+Time for refinements:                 1.697s
+Average time for refinement:          1.697s
+Max time for refinement:              1.697s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.513
+  Visited lines:          10676
+  Total lines:            13364
+  Line coverage:          0.799
+  Visited conditions:     728
+  Total conditions:       1384
+  Condition coverage:     0.526
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     4961
+Number of CFA edges:             7315
+Number of relevant variables:    1830
+Number of functions:             304
+Number of loops:                 45
+Size of reached set:             995379
+  Number of reached locations:   2645 (53%)
+    Avg states per location:     376
+    Max states per location:     20648 (at node N630)
+  Number of reached functions:   156 (51%)
+  Number of partitions:          711465
+    Avg size of partitions:      1
+    Max size of partitions:      10141 (with key [N1691 (before line 10739), Function ixgb_clean_rx_ring called from node N1059, stack depth 9 [3b8fd4dc], stack [main, choose_timer_2, ixgb_io_resume, ixgb_up, ixgb_alloc_rx_buffers, dma_mapping_error, ixgb_set_features, ixgb_down, ixgb_clean_rx_ring], Init])
+  Number of target states:       0
+  Size of final wait list        10164
+
+Time for analysis setup:          6.561s
+  Time for loading CPAs:          0.564s
+  Time for loading parser:        0.561s
+  Time for CFA construction:      5.340s
+    Time for parsing file(s):     1.851s
+    Time for AST to CFA:          1.628s
+    Time for CFA sanity check:    0.226s
+    Time for post-processing:     1.418s
+      Time for var class.:        0.000s
+Time for Analysis:              856.256s
+CPU time for analysis:          887.940s
+Total time for CPAchecker:      862.822s
+Total CPU time for CPAchecker:  900.060s
+
+Time for Garbage Collector:      23.247s (in 70 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               4837MB (  4613 MiB) max;   2607MB (  2486 MiB) avg;   5030MB (  4797 MiB) peak
+Used non-heap memory:             24MB (    23 MiB) max;     24MB (    23 MiB) avg;     24MB (    23 MiB) peak
+Used in PS Old Gen pool:        1386MB (  1322 MiB) max;    975MB (   929 MiB) avg;   1397MB (  1332 MiB) peak
+Allocated heap memory:          5424MB (  5173 MiB) max;   4724MB (  4505 MiB) avg
+Allocated non-heap memory:        41MB (    39 MiB) max;     28MB (    27 MiB) avg
+Total process virtual memory:  13597MB ( 12967 MiB) max;  13596MB ( 12967 MiB) avg
+
+Verification result: UNKNOWN, incomplete analysis.
+More details about the verification run can be found in the directory "./output".

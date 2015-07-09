@@ -1,0 +1,237 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -predicateAnalysis-bitprecise -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-linux-3.0/ALL.prp ../svcomp15/ldv-linux-3.0/module_get_put-drivers-net-ppp_generic.ko_false-unreach-call.cil.out.i.pp.i
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_-599641444_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+lines 10725-10726: Function pointer *(ppp->xcomp->compress) with type int (*)(void *, unsigned char *, unsigned char *, int, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 7686: Function pointer *(p->qproc) with type void (*)(struct file *, wait_queue_head_t *, struct poll_table_struct *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 13627-13628: Function pointer *(ppp->xcomp->comp_init) with type int (*)(void *, unsigned char *, int, int, int, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 13605-13606: Function pointer *(ppp->rcomp->decomp_init) with type int (*)(void *, unsigned char *, int, int, int, int, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 12486: Function pointer *(ppp->rcomp->incomp) with type void (*)(void *, unsigned char *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 12448-12449: Function pointer *(ppp->rcomp->decompress) with type int (*)(void *, unsigned char *, int, unsigned char *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 8984: Function pointer *(chan->ops->ioctl) with type int (*)(struct ppp_channel *, unsigned int, unsigned long) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 10486: Function pointer *(ppp->rcomp->decomp_stat) with type void (*)(void *, struct compstat *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 10477: Function pointer *(ppp->xcomp->comp_stat) with type void (*)(void *, struct compstat *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 13443: Function pointer *(cp->decomp_alloc) with type void * (*)(unsigned char *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 13401: Function pointer *(cp->comp_alloc) with type void * (*)(unsigned char *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker
+ cpa.value.symbolic.handlePointers 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+line 10477: Ignoring function call through function pointer *(ppp->xcomp->comp_stat): (*(ppp->xcomp->comp_stat))(ppp->xc_state, &(cstats.c)); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 10486: Ignoring function call through function pointer *(ppp->rcomp->decomp_stat): (*(ppp->rcomp->decomp_stat))(ppp->rc_state, &(cstats.d)); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 11575: Ignoring function call through function pointer *(chan->ops->start_xmit): tmp___1 = (*(chan->ops->start_xmit))(chan, frag); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 13733: Ignoring function call through function pointer *(xcomp->comp_free): (*(xcomp->comp_free))(xstate); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+PredicateCPA statistics
+-----------------------
+Number of abstractions:            16 (1% of all post computations)
+  Times abstraction was reused:    0
+  Because of function entry/exit:  0 (0%)
+  Because of loop head:            16 (100%)
+  Because of join nodes:           0 (0%)
+  Because of threshold:            0 (0%)
+  Times precision was empty:       5 (31%)
+  Times precision was {false}:     0 (0%)
+  Times result was cached:         0 (0%)
+  Times cartesian abs was used:    0 (0%)
+  Times boolean abs was used:      11 (69%)
+  Times result was 'false':        1 (6%)
+Number of strengthen sat checks:   3
+  Times result was 'false':        0 (0%)
+Number of coverage checks:         354
+  BDD entailment checks:           4
+Number of SMT sat checks:          3
+  trivial:                         0
+  cached:                          0
+
+Max ABE block size:                       117
+Number of predicates discovered:          4
+Number of abstraction locations:          2
+Max number of predicates per location:    3
+Avg number of predicates per location:    3
+Total predicates per abstraction:         27
+Max number of predicates per abstraction: 3
+Avg number of predicates per abstraction: 2.45
+Number of irrelevant predicates:          3 (11%)
+Number of preds handled by boolean abs:   24 (89%)
+  Total number of models for allsat:      11
+  Max number of models for allsat:        2
+  Avg number of models for allsat:        1.00
+
+Number of path formula cache hits:   919 (24%)
+
+Time for post operator:                  0.743s
+  Time for path formula creation:        0.716s
+    Actual computation:                  0.807s
+Time for strengthen operator:            7.221s
+  Time for satisfiability checks:        7.207s
+Time for prec operator:                  0.937s
+  Time for abstraction:                  0.932s (Max:     0.194s, Count: 16)
+    Boolean abstraction:                 0.808s
+    Solving time:                        0.780s (Max:     0.161s)
+    Model enumeration time:              0.021s
+    Time for BDD construction:           0.000s (Max:     0.000s)
+Time for merge operator:                 0.117s
+Time for coverage check:                 0.021s
+  Time for BDD entailment checks:        0.020s
+Total time for SMT solver (w/o itp):     8.008s
+
+Number of BDD nodes:                               211
+Size of BDD node table:                            466043
+Size of BDD cache:                                 46619
+Size of BDD node cleanup queue:                           0 (count: 69, min: 0, max: 0, avg: 0.00)
+Time for BDD node cleanup:                             0.000s
+Time for BDD garbage collection:                       0.000s (in 0 runs)
+
+PrecisionBootstrap statistics
+-----------------------------
+Init. function predicates:                         0
+Init. global predicates:                           0
+Init. location predicates:                         0
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  0.088s
+Automaton transfers with branching:                0
+Automaton transfer successors:                         5253 (count: 5253, min: 1, max: 1, avg: 1.00) [1 x 5253]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            1858
+Max size of waitlist:            45
+Average size of waitlist:        27
+Number of computed successors:   2143
+Max successors for one state:    2
+Number of times merged:          175
+Number of times stopped:         178
+Number of times breaked:         3
+
+Total time for CPA algorithm:         9.425s (Max:     3.658s)
+  Time for choose from waitlist:      0.025s
+  Time for precision adjustment:      0.974s
+  Time for transfer relation:         8.157s
+  Time for merge operator:            0.136s
+  Time for stop operator:             0.035s
+  Time for adding to reached set:     0.031s
+
+Predicate-Abstraction Refiner statistics
+----------------------------------------
+Avg. length of target path (in blocks):                  16 (count: 3, min: 5, max: 6, avg: 5.33)
+Number of infeasible sliced prefixes:                     0 (count: 0, min: 0, max: 0, avg: 0.00)
+
+Time for refinement:                                   6.090s
+  Counterexample analysis:                5.138s (Max:     4.267s, Calls: 3)
+    Refinement sat check:                 4.498s
+    Interpolant computation:              0.000s
+  Error path post-processing:                          0.921s
+  Path-formulas extraction:                            0.000s
+  Building the counterexample trace:                   5.138s
+  Extracting precise counterexample:                   0.921s
+  Extracting infeasible sliced prefixes:               0.000s
+  Selecting infeasible sliced prefixes:                0.000s
+  Predicate creation:                                  0.000s
+  Precision update:                                    0.002s
+  ARG update:                                          0.005s
+
+Length of refined path (in blocks):                       3 (count: 1, min: 3, max: 3, avg: 3.00)
+Number of affected states:                                1 (count: 1, min: 1, max: 1, avg: 1.00)
+Length (states) of path with itp 'true':                  1 (count: 1, min: 1, max: 1, avg: 1.00)
+Length (states) of path with itp non-trivial itp:         1 (count: 1, min: 1, max: 1, avg: 1.00)
+Length (states) of path with itp 'false':                 1 (count: 1, min: 1, max: 1, avg: 1.00)
+Different non-trivial interpolants along paths:           0 (count: 1, min: 0, max: 0, avg: 0.00)
+Equal non-trivial interpolants along paths:               0 (count: 1, min: 0, max: 0, avg: 0.00)
+Different precisions along paths:                         0 (count: 0, min: 0, max: 0, avg: 0.00)
+Equal precisions along paths:                             0 (count: 0, min: 0, max: 0, avg: 0.00)
+Number of refs with location-based cutoff:                0
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                3
+Number of successful refinements:     2
+Number of failed refinements:         0
+Max. size of reached set before ref.: 804
+Max. size of reached set after ref.:  350
+Avg. size of reached set before ref.: 772.00
+Avg. size of reached set after ref.:  175.50
+
+Total time for CEGAR algorithm:      15.543s
+Time for refinements:                 6.117s
+Average time for refinement:          2.039s
+Max time for refinement:              5.196s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.331
+  Visited lines:          5719
+  Total lines:            9430
+  Line coverage:          0.606
+  Visited conditions:     226
+  Total conditions:       932
+  Condition coverage:     0.242
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     2863
+Number of CFA edges:             3874
+Number of relevant variables:    858
+Number of functions:             157
+Number of loops:                 20
+Size of reached set:             804
+  Number of reached locations:   658 (23%)
+    Avg states per location:     1
+    Max states per location:     6 (at node N154)
+  Number of reached functions:   52 (33%)
+  Number of partitions:          803
+    Avg size of partitions:      1
+    Max size of partitions:      2 (with key [N2648 (before line 11285), Function ppp_mp_explode called from node N2533, stack depth 5 [5256a8b7], stack [main, ppp_start_xmit, ppp_xmit_process, ppp_push, ppp_mp_explode], Init])
+  Number of target states:       1
+  Size of final wait list        43
+
+Time for analysis setup:          5.052s
+  Time for loading CPAs:          0.667s
+  Time for loading parser:        0.491s
+  Time for CFA construction:      3.820s
+    Time for parsing file(s):     1.254s
+    Time for AST to CFA:          1.512s
+    Time for CFA sanity check:    0.127s
+    Time for post-processing:     0.688s
+      Time for var class.:        0.000s
+Time for Analysis:               15.543s
+CPU time for analysis:           17.240s
+Total time for CPAchecker:       20.601s
+Total CPU time for CPAchecker:   26.700s
+
+Time for Garbage Collector:       0.000s (in 0 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:                359MB (   342 MiB) max;    273MB (   261 MiB) avg;    359MB (   342 MiB) peak
+Used non-heap memory:             22MB (    21 MiB) max;     20MB (    19 MiB) avg;     22MB (    21 MiB) peak
+Used in PS Old Gen pool:           0MB (     0 MiB) max;      0MB (     0 MiB) avg;      0MB (     0 MiB) peak
+Allocated heap memory:          2024MB (  1930 MiB) max;   2024MB (  1930 MiB) avg
+Allocated non-heap memory:        24MB (    23 MiB) max;     24MB (    23 MiB) avg
+Total process virtual memory:  13744MB ( 13107 MiB) max;  13681MB ( 13047 MiB) avg
+
+Verification result: FALSE. Property violation (__VERIFIER_error(); called in line 15017) found by chosen configuration.
+More details about the verification run can be found in the directory "./output".

@@ -1,0 +1,234 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -predicateAnalysis-bitprecise -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-linux-3.16-rc1/ALL.prp ../svcomp15/ldv-linux-3.16-rc1/43_2a_bitvector_linux-3.16-rc1.tar.xz-43_2a-net--unix--unix.ko-entry_point_false-unreach-call.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_880497612_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 8683: Function pointer *(p->_qproc) with type void (*)(struct file *, wait_queue_head_t *, struct poll_table_struct *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker
+ cpa.value.symbolic.handlePointers 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+line 8683: Ignoring function call through function pointer *(p->_qproc): (*(p->_qproc))(filp, wait_address, p); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 13659: Ignoring function call through function pointer *(sk->sk_state_change): (*(sk->sk_state_change))(sk); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 13685: Ignoring function call through function pointer *(other->sk_state_change): (*(other->sk_state_change))(other); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 11818: Ignoring function call through function pointer *(other->sk_data_ready): (*(other->sk_data_ready))(other); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 10372: Ignoring function call through function pointer *(skpair->sk_state_change): (*(skpair->sk_state_change))(skpair); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+Skipping recursive function call from unix_release_sock to unix_release_sock (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 10188: Ignoring function call through function pointer *(other->sk_error_report): (*(other->sk_error_report))(other); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 12653: Ignoring function call through function pointer *(other->sk_data_ready): (*(other->sk_data_ready))(other); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 12870: Ignoring function call through function pointer *(other->sk_data_ready): (*(other->sk_data_ready))(other); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+Shutdown requested (The CPU-time limit of 900s has elapsed.), waiting for termination. (ForceTerminationOnShutdown$1.shutdownRequested, WARNING)
+
+Warning: Analysis stopped (The CPU-time limit of 900s has elapsed.) (ShutdownNotifier.shutdownIfNecessary, WARNING)
+
+PredicateCPA statistics
+-----------------------
+Number of abstractions:            4634 (2% of all post computations)
+  Times abstraction was reused:    0
+  Because of function entry/exit:  0 (0%)
+  Because of loop head:            4634 (100%)
+  Because of join nodes:           0 (0%)
+  Because of threshold:            0 (0%)
+  Times precision was empty:       7 (0%)
+  Times precision was {false}:     0 (0%)
+  Times result was cached:         3211 (69%)
+  Times cartesian abs was used:    0 (0%)
+  Times boolean abs was used:      1416 (31%)
+  Times result was 'false':        104 (2%)
+Number of strengthen sat checks:   43
+  Times result was 'false':        41 (95%)
+Number of coverage checks:         32512
+  BDD entailment checks:           3258
+Number of SMT sat checks:          43
+  trivial:                         0
+  cached:                          6
+
+Max ABE block size:                       418
+Number of predicates discovered:          5
+Number of abstraction locations:          2
+Max number of predicates per location:    2
+Avg number of predicates per location:    2
+Total predicates per abstraction:         1419
+Max number of predicates per abstraction: 2
+Avg number of predicates per abstraction: 1.00
+Number of irrelevant predicates:          2 (0%)
+Number of preds handled by boolean abs:   1417 (100%)
+  Total number of models for allsat:      1344
+  Max number of models for allsat:        1
+  Avg number of models for allsat:        0.95
+
+Number of path formula cache hits:   105719 (45%)
+
+Time for post operator:                 26.532s
+  Time for path formula creation:       26.040s
+    Actual computation:                 22.107s
+Time for strengthen operator:           11.138s
+  Time for satisfiability checks:       10.855s
+Time for prec operator:                820.050s
+  Time for abstraction:                819.601s (Max:    42.105s, Count: 4634)
+    Boolean abstraction:               760.497s
+    Solving time:                      757.737s (Max:    41.561s)
+    Model enumeration time:              2.678s
+    Time for BDD construction:           0.084s (Max:     0.001s)
+Time for merge operator:                 9.029s
+Time for coverage check:                 0.061s
+  Time for BDD entailment checks:        0.041s
+Total time for SMT solver (w/o itp):   771.271s
+
+Number of BDD nodes:                               204
+Size of BDD node table:                            466043
+Size of BDD cache:                                 46619
+Size of BDD node cleanup queue:                        1164 (count: 8939, min: 0, max: 247, avg: 0.13)
+Time for BDD node cleanup:                             0.013s
+Time for BDD garbage collection:                       0.000s (in 0 runs)
+
+PrecisionBootstrap statistics
+-----------------------------
+Init. function predicates:                         0
+Init. global predicates:                           0
+Init. location predicates:                         0
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  1.305s
+  Time for transition matches:                         0.573s
+  Time for transition assertions:                      0.001s
+  Time for transition actions:                         0.001s
+Automaton transfers with branching:                0
+Automaton transfer successors:                       318889 (count: 318889, min: 1, max: 1, avg: 1.00) [1 x 318889]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            210216
+Max size of waitlist:            233
+Average size of waitlist:        99
+Number of computed successors:   227979
+Max successors for one state:    2
+Number of times merged:          14627
+Number of times stopped:         17305
+Number of times breaked:         2
+
+Total time for CPA algorithm:       874.471s (Max:   526.108s)
+  Time for choose from waitlist:      0.267s
+  Time for precision adjustment:    820.676s
+  Time for transfer relation:        41.509s
+  Time for merge operator:            9.437s
+  Time for stop operator:             0.502s
+  Time for adding to reached set:     0.781s
+
+Predicate-Abstraction Refiner statistics
+----------------------------------------
+Avg. length of target path (in blocks):                   6 (count: 2, min: 2, max: 4, avg: 3.00)
+Number of infeasible sliced prefixes:                     0 (count: 0, min: 0, max: 0, avg: 0.00)
+
+Time for refinement:                                   1.500s
+  Counterexample analysis:                1.096s (Max:     0.595s, Calls: 2)
+    Refinement sat check:                 0.902s
+    Interpolant computation:              0.000s
+  Error path post-processing:                          0.000s
+  Path-formulas extraction:                            0.000s
+  Building the counterexample trace:                   1.096s
+  Extracting precise counterexample:                   0.000s
+  Extracting infeasible sliced prefixes:               0.000s
+  Selecting infeasible sliced prefixes:                0.000s
+  Predicate creation:                                  0.002s
+  Precision update:                                    0.003s
+  ARG update:                                          0.339s
+
+Length of refined path (in blocks):                       2 (count: 1, min: 2, max: 2, avg: 2.00)
+Number of affected states:                                1 (count: 1, min: 1, max: 1, avg: 1.00)
+Length (states) of path with itp 'true':                  0 (count: 1, min: 0, max: 0, avg: 0.00)
+Length (states) of path with itp non-trivial itp:         1 (count: 1, min: 1, max: 1, avg: 1.00)
+Length (states) of path with itp 'false':                 1 (count: 1, min: 1, max: 1, avg: 1.00)
+Different non-trivial interpolants along paths:           0 (count: 1, min: 0, max: 0, avg: 0.00)
+Equal non-trivial interpolants along paths:               0 (count: 1, min: 0, max: 0, avg: 0.00)
+Different precisions along paths:                         0 (count: 0, min: 0, max: 0, avg: 0.00)
+Equal precisions along paths:                             0 (count: 0, min: 0, max: 0, avg: 0.00)
+Number of refs with location-based cutoff:                0
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                2
+Number of successful refinements:     2
+Number of failed refinements:         0
+Max. size of reached set before ref.: 90294
+Max. size of reached set after ref.:  504
+Avg. size of reached set before ref.: 46809.00
+Avg. size of reached set after ref.:  252.50
+
+Total time for CEGAR algorithm:     876.024s
+Time for refinements:                 1.551s
+Average time for refinement:          0.775s
+Max time for refinement:              0.975s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.843
+  Visited lines:          11155
+  Total lines:            11424
+  Line coverage:          0.976
+  Visited conditions:     1295
+  Total conditions:       1346
+  Condition coverage:     0.962
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     4329
+Number of CFA edges:             6207
+Number of relevant variables:    1463
+Number of functions:             281
+Number of loops:                 31
+Size of reached set:             117457
+  Number of reached locations:   3965 (92%)
+    Avg states per location:     29
+    Max states per location:     833 (at node N327)
+  Number of reached functions:   237 (84%)
+  Number of partitions:          117376
+    Avg size of partitions:      1
+    Max size of partitions:      2 (with key [N4790 (before line 15290), Function main called from node N4385, stack depth 1 [321c1cca], stack [main], Init])
+  Number of target states:       0
+  Size of final wait list        225
+
+Time for analysis setup:          5.603s
+  Time for loading CPAs:          0.633s
+  Time for loading parser:        0.612s
+  Time for CFA construction:      4.274s
+    Time for parsing file(s):     1.519s
+    Time for AST to CFA:          1.330s
+    Time for CFA sanity check:    0.154s
+    Time for post-processing:     1.055s
+      Time for var class.:        0.000s
+Time for Analysis:              876.024s
+CPU time for analysis:          889.880s
+Total time for CPAchecker:      881.633s
+Total CPU time for CPAchecker:  900.090s
+
+Time for Garbage Collector:       1.958s (in 11 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:                645MB (   615 MiB) max;    398MB (   379 MiB) avg;    817MB (   779 MiB) peak
+Used non-heap memory:             25MB (    24 MiB) max;     24MB (    23 MiB) avg;     25MB (    24 MiB) peak
+Used in PS Old Gen pool:         186MB (   177 MiB) max;     59MB (    56 MiB) avg;    186MB (   177 MiB) peak
+Allocated heap memory:          2024MB (  1930 MiB) max;   1987MB (  1895 MiB) avg
+Allocated non-heap memory:        27MB (    26 MiB) max;     27MB (    25 MiB) avg
+Total process virtual memory:  14125MB ( 13470 MiB) max;  13930MB ( 13285 MiB) avg
+
+Verification result: UNKNOWN, incomplete analysis.
+More details about the verification run can be found in the directory "./output".

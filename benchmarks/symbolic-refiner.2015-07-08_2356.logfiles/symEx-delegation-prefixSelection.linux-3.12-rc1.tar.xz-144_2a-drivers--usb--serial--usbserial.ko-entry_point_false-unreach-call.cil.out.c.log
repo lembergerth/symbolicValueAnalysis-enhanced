@@ -1,0 +1,183 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic-refiner -setprop cpa.value.symbolic.refinement.strategy=CONSTRAINTS_FIRST -setprop cpa.constraints.lessOrEqualType=SUBSET -setprop cegar.refiner=cpa.value.symbolic.refiner.delegation.SymbolicDelegatingRefiner -setprop cpa.value.refinement.pathSlicing=true -setprop cpa.value.refinement.prefixPreference=DOMAIN_GOOD_SHORT -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-linux-3.12-rc1/ALL.prp ../svcomp15/ldv-linux-3.12-rc1/linux-3.12-rc1.tar.xz-144_2a-drivers--usb--serial--usbserial.ko-entry_point_false-unreach-call.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_817479080_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 6423: Function pointer *(port->serial->type->set_termios) with type void (*)(struct tty_struct *, struct usb_serial_port *, struct ktermios *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 11726: Function pointer *(port->serial->type->tx_empty) with type bool  (*)(struct usb_serial_port *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+line 13642: Ignoring call via function pointer completeFnInt for which no suitable target was found in line: (*completeFnInt)(usb_urb); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from ldv_submit_urb to usb_serial_generic_write_bulk_callback (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Highest possible value reached in score computation. Error path prefix preference may not be applied reliably. (VariableClassification.obtainDomainTypeScoreForVariables, WARNING)
+
+Skipping recursive function call from ldv_usb_submit_urb_41 to ldv_submit_urb (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from serial_get_icount to serial_get_icount (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from serial_get_icount to usb_serial_probe (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from serial_port_activate to serial_get_icount (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from serial_port_activate to usb_serial_probe (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from serial_port_activate to serial_port_activate (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 13651: Ignoring call via function pointer completeFnBulk for which no suitable target was found in line: (*completeFnBulk)(usb_urb); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Highest possible value reached in score computation. Error path prefix preference may not be applied reliably. (VariableClassification.obtainDomainTypeScoreForVariables, WARNING)
+
+Highest possible value reached in score computation. Error path prefix preference may not be applied reliably. (VariableClassification.obtainDomainTypeScoreForVariables, WARNING)
+
+Highest possible value reached in score computation. Error path prefix preference may not be applied reliably. (VariableClassification.obtainDomainTypeScoreForVariables, WARNING)
+
+Highest possible value reached in score computation. Error path prefix preference may not be applied reliably. (VariableClassification.obtainDomainTypeScoreForVariables, WARNING)
+
+Highest possible value reached in score computation. Error path prefix preference may not be applied reliably. (VariableClassification.obtainDomainTypeScoreForVariables, WARNING)
+
+Highest possible value reached in score computation. Error path prefix preference may not be applied reliably. (VariableClassification.obtainDomainTypeScoreForVariables, WARNING)
+
+Highest possible value reached in score computation. Error path prefix preference may not be applied reliably. (VariableClassification.obtainDomainTypeScoreForVariables, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                  36056 (count: 2465, min: 0, max: 19, avg: 14.63)
+Number of global variables:                           33825 (count: 2465, min: 0, max: 15, avg: 13.72)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                   38471
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                0.368s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     1.174s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 2
+Most constraints before refinement in state: 3
+Constraints after refinement in state: 130
+Constraints before refinement in state: 608
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 96ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  0.428s
+Automaton transfers with branching:                0
+Automaton transfer successors:                        59157 (count: 59157, min: 1, max: 1, avg: 1.00) [1 x 59157]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            34861
+Max size of waitlist:            112
+Average size of waitlist:        38
+Number of computed successors:   38471
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         2309
+Number of times breaked:         26
+
+Total time for CPA algorithm:         5.462s (Max:     0.515s)
+  Time for choose from waitlist:      0.078s
+  Time for precision adjustment:      0.808s
+  Time for transfer relation:         3.814s
+  Time for stop operator:             0.228s
+  Time for adding to reached set:     0.154s
+
+SymbolicDelegatingRefiner statistics
+------------------------------------
+Explicit refinements: 26
+Successful explicit refinements: 20
+Symbolic refinements: 6
+Successful symbolic refinements: 5
+Overall explicit refinement time: 6326ms
+Average explicit refinement time: 243ms
+Overall symbolic refinement time: 13884ms
+Average symbolic refinement time: 2314ms
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                26
+Number of successful refinements:     25
+Number of failed refinements:         0
+Max. size of reached set before ref.: 2982
+Max. size of reached set after ref.:  1738
+Avg. size of reached set before ref.: 1949.69
+Avg. size of reached set after ref.:  581.16
+
+Total time for CEGAR algorithm:      25.690s
+Time for refinements:                20.211s
+Average time for refinement:          0.777s
+Max time for refinement:              4.013s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.396
+  Visited lines:          5709
+  Total lines:            8450
+  Line coverage:          0.676
+  Visited conditions:     346
+  Total conditions:       1636
+  Condition coverage:     0.211
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     4221
+Number of CFA edges:             6286
+Number of relevant variables:    1173
+Number of functions:             217
+Number of loops:                 41
+Size of reached set:             2465
+  Number of reached locations:   1128 (27%)
+    Avg states per location:     2
+    Max states per location:     28 (at node N343)
+  Number of reached functions:   86 (40%)
+  Number of partitions:          2132
+    Avg size of partitions:      1
+    Max size of partitions:      7 (with key [N2291 (exit of function usb_serial_init in lines 8516-8617), Function usb_serial_init called from node N3229, stack depth 2 [1d7275cd], stack [main, usb_serial_init], Init])
+  Number of target states:       1
+  Size of final wait list        84
+
+Time for analysis setup:          4.917s
+  Time for loading CPAs:          0.603s
+  Time for loading parser:        0.558s
+  Time for CFA construction:      3.676s
+    Time for parsing file(s):     1.165s
+    Time for AST to CFA:          1.119s
+    Time for CFA sanity check:    0.165s
+    Time for post-processing:     1.018s
+      Time for var class.:        0.000s
+Time for Analysis:               25.690s
+CPU time for analysis:           35.260s
+Total time for CPAchecker:       30.612s
+Total CPU time for CPAchecker:   44.100s
+
+Time for Garbage Collector:       0.467s (in 4 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               1782MB (  1699 MiB) max;    759MB (   724 MiB) avg;   1789MB (  1706 MiB) peak
+Used non-heap memory:             24MB (    23 MiB) max;     22MB (    21 MiB) avg;     25MB (    24 MiB) peak
+Used in PS Old Gen pool:           0MB (     0 MiB) max;      0MB (     0 MiB) avg;      0MB (     0 MiB) peak
+Allocated heap memory:          3611MB (  3444 MiB) max;   2954MB (  2818 MiB) avg
+Allocated non-heap memory:        27MB (    25 MiB) max;     26MB (    24 MiB) avg
+Total process virtual memory:  13597MB ( 12967 MiB) max;  13594MB ( 12964 MiB) avg
+
+Verification result: FALSE. Property violation (__VERIFIER_error(); called in line 5192) found by chosen configuration.
+More details about the verification run can be found in the directory "./output".
