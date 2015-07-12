@@ -1,7 +1,7 @@
 \section{CEGAR for Symbolic Execution}
 For using the \symbolicExecutionCPA\ with CEGAR, we have to define a refinement procedure that returns a precision of type $\Pi_\symExCPA$ that fits the precision of the \symbolicExecutionCPA. We designed two such refinement procedures:
 The first uses adjusted versions of the refinement and interpolation algorithms as used for abstract variable assignments,
-with an adjusted strongest-post operator and a precision type that fits $\Pi_\symExCPA$.
+with an adjusted strongest-post operator and a set of precisions that fits $\Pi_\symExCPA$.
 The second refinement procedure extracts a precision for the \symbolicExecutionCPA\ from the precision created by the refinement of the \predicateCPA, which is based on interpolation in the domain of linear arithmetic.
 
 \subsection{Refinement based on refinement for explicit-state model checking}
@@ -118,13 +118,13 @@ Another possible way of refinement is to delegate the procedure to the refinemen
 This might not always work as the \predicateCPA\ is able to handle more complex operations than the \symbolicExecutionCPA, for example non-deterministic arrays.
 Even if an error path $\sigma$ is infeasible by using the \symbolicExecutionCPA\ with full precision, the interpolant (and resulting precision) computed by the \predicateCPA 's refinement could rely on unsupported operations.
 
-Two other drawbacks exist due to the \predicateCPA's precision type:
+Two other drawbacks exist due to the \predicateCPA's set of precisions:
 In the current implementation of \CpaChecker, we are not able to create constraints out of the predicates of the precision created by the \predicateCPA's refinement, but can only extract program variables' names.
-Due to this it is not possible to use the precision type $\Pi_\constrCPA = L \rightarrow 2^\goodconstraintsset$ as part of $\Pi_\symExCPA$, but only $\Pi_\symValCPA$ (see Section \ref{sec:constraintsCPA}).
-Secondly, the precision type $\Pi_\predCPA = 2^P$ of the \predicateCPA\ is not location-based per definition. Because of this, we have to assign the same set of tracked program variables for each location.
+Due to this it is not possible to use the constraint-specific precision set $\Pi_\constrCPA = L \rightarrow 2^\goodconstraintsset$ as part of $\Pi_\symExCPA$, but only $\Pi_\symValCPA$ (see Sec.~\ref{sec:constraintsCPA}).
+Secondly, the set $\Pi_\predCPA = 2^P$ of precisions of the \predicateCPA\ is not location-based per definition. Because of this, we have to assign the same set of tracked program variables for each location.
 This is not a problem in the implementation though, because a more detailed adjustment of the \predicateCPA\ is possible there.
 
-Despite these problems this approach might still yield better performance then $\refineSymbolicFunc$.
+Despite these problems this approach might still yield better performance than $\refineSymbolicFunc$.
 Though both have to rely on SMT solvers, our own procedure performs one SAT check for every constraint, while the \predicateCPA's refinement utilizes a SMT solver to handle the complete interpolation process, which is presumably more performant due to its specialization.
 Algorithm \ref{alg:refineSym2} shows the refinement procedure delegating to \predicateCPA's refinement.
 After computing the precision $\pi'$ of the \predicateCPA, the variables used in the predicates of $\pi'$ are extracted and assigned as the precision $\pi_\symValCPA(l)$ for every location $l$. The precision $\pi_\symValCPA$ is then returned as precision for both \symbolicValueAnalysisCPA\ and \constraintsCPA.

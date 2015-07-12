@@ -288,7 +288,7 @@ The abstract domain
 	The concretization function $\concretization$ is defined by $\llbracket r \rrbracket = \{ c \in C |\ c \satisfies \varphi_r\}$.
 
 \item
-The precision type $\Pi_\predCPA = 2^P$ describes the precision of an abstract state as a set of predicates. If predicate $p \in P$ is in a precision $\pi$, $p$ is tracked by the analysis when $\pi$ is used.
+The precisions of set~$\Pi_\predCPA = 2^P$ describe the precision of an abstract state as a set of predicates. If predicate $p \in P$ is in a precision $\pi$, $p$ is tracked by the analysis when $\pi$ is used.
 
 \item
 The transfer relation $\transfer_\predCPA$ has the transfer $r \gtransfer_\predCPA (r', \pi)$ if $\strongestPost(\varphi_r, g)$ is satisfiable
@@ -433,7 +433,7 @@ An example for its wrong behaviour will be presented in Section~\ref{sec:leqOper
 	\end{dcases}\]
 	for all $x \in \defRange(v \join v')$.
 
-\item The precision type $\Pi_\symValCPA = L \rightarrow 2^X$. Just like $\Pi_\valCPA$, a precision $\pi \in \Pi$ contains for each program location all program variables of $X$ that are tracked at this location.
+\item The set $\Pi_\symValCPA = L \rightarrow 2^X$ of precisions. Just like $\Pi_\valCPA$, a precision $\pi \in \Pi$ contains for each program location all program variables of $X$ that are tracked at this location.
 
 \item The transfer relation $\transfer_\symValCPA$ contains the transfer $v \gtransfer_\symValCPA v''$, if one of the following conditions is true:
 	\begin{enumerate}[label = \alph*)]
@@ -536,7 +536,7 @@ The \symbolicExecutionCPA\ $\symExCPA$ is the \compositeCPA\ implied by the comp
 $(\locCPA, \symValCPA, \constrCPA, \Pi_\symExCPA, \transfer_\symExCPA, \cpaMerge_\symExCPA, \cpaStop_\symExCPA, \cpaPrec_\symExCPA)$. It consists of:
 \begin{enumerate}[leftmargin=*, label=\arabic*.]
 \item The three CPAs $\locCPA$, $\symValCPA$ and $\constrCPA$ and their abstract domains defined above.
-\item The precision type $\Pi_\symExCPA = \Pi_\symValCPA \times \Pi_\constrCPA$ that contains the individual precisions of the \symbolicValueAnalysisCPA\ and \constraintsCPA. We do not need the precision of the \locationCPA\ because it never changes.
+\item The set~$\Pi_\symExCPA = \Pi_\symValCPA \times \Pi_\constrCPA$ of precisions that contains the individual precisions of the \symbolicValueAnalysisCPA\ and \constraintsCPA. We do not need the precision of the \locationCPA\ because it never changes.
 \item The transfer relation $\transfer_\symExCPA$.
 	It contains the transfer $(l, v, a) \gtransfer_\symExCPA (l', v', a', \pi)$ if $l \gtransfer_\locCPA (l', \singletonPrecision)$, $v \gtransfer_\symValCPA (v', \pi_\symValCPA)$, if:
 	\begin{enumerate}[label=\alph*)]
@@ -573,7 +573,7 @@ The precision adjustment of the symbolic value state removes the abstract variab
 \[\auxiliaryPrec_\symValCPA(v, l, \pi) = v_\restrictedTo{\pi(l)}.\]
 The precision adjustment of the constraints state depends on the type of precision used for the \constraintsCPA:
 The adjustment $\auxiliaryPrec_\constrCPA$  removes all constraints that are not tracked at the current location.
-Its concrete implementation depends on the used precision type of the \constraintsCPA:
+Its concrete implementation depends on the used set of precisions of the \constraintsCPA:
 If $\Pi_\constrCPA$ is used, which stores all tracked constraints explicitly, the adjustment is defined as
 \[\auxiliaryPrec_\constrCPA(a, l, \pi)= a \cap \pi(l).\]
 If $\Pi_\symValCPA$ is used, which only stores the program variables constraints may originate from, the adjustment deletes all constraints that originate from at least one program variable that does not occur in $\pi(l)$ with $\pi$ being the current precision.
