@@ -30,7 +30,7 @@ The strongest-post operator $\strongestPostOpSym$ of symbolic execution refineme
 To minimize these expensive computations, we implement an additional refinement procedure that uses the semantics of value analysis's strongest-post operator $\strongestPostOpExplicit$ only, if possible.
 To do this, we can't just use value analysis refinement because of the wrong interpolant type of $\Gamma$ and the different set of precisions.
 If value analysis refinement was to update the precision by taking the current precisions of the locations whose states were removed from the reached set after successful interpolation and combining them with the newly computed precision, it would only consider the precision of the \valueAnalysisCPA\ and discard the existing precision of the \constraintsCPA.
-So instead, we built a new refinement procedure with a strongest-post operator representing the semantics of $\strongestPostOpExplicit$ (see Section \ref{sec:assignmentRefinement}),  generic refinement classes for interpolation and feasibility check using this strongest-post operator and \objectName{ForgettingCompositeState}, as well as \objectName{SymbolicValueAnalysisRefiner}, which considers the precisions of both \valueAnalysisCPA\ and \constraintsCPA.
+So instead, we build a new refinement procedure with a strongest-post operator representing the semantics of $\strongestPostOpExplicit$ (see Section \ref{sec:assignmentRefinement}),  generic refinement classes for interpolation and feasibility check using this strongest-post operator and \objectName{ForgettingCompositeState}, as well as \objectName{SymbolicValueAnalysisRefiner}, which considers the precisions of both \valueAnalysisCPA\ and \constraintsCPA.
 
 \begin{figure}[t!]
 \includegraphics[width=\linewidth]{implementationCegar/DelegatingRefinementFlow}
@@ -38,12 +38,12 @@ So instead, we built a new refinement procedure with a strongest-post operator r
 \label{fig:delegatingRefFlow}
 \end{figure}
 When refining, we first call this procedure. If it is able to prove the error path as infeasible, we use its refined precision.
-If it can't, we use our refinement procedure for symbolic execution to get a new precision.
+If it is not, we use our refinement procedure for symbolic execution to get a new precision.
 This way we only use SAT checks in refinement and only increase the precision of the expensive \constraintsCPA\ if this is really necessary for computing an error path as infeasible.
 
 %\subsubsection{Optimization: Different Precision Types}
-It is possible to choose the set of precisions to use for the \constraintsCPA\ with configuration property \configOption{cpa.constraints.refinement.precisionType}.
-Possible values are \configOption{CONSTRAINTS} and \configOption{LOCATION} for the corresponding types.
+%It is possible to choose the set of precisions to use for the \constraintsCPA\ with configuration property \configOption{cpa.constraints.refinement.precisionType}.
+%Possible values are \configOption{CONSTRAINTS} and \configOption{LOCATION} for the corresponding types.
 
 \subsection{Extract precision from predicate refinement}
 For using the refinement procedure extracting a precision from the predicate precision created by \predicateCPA's refinement, \predicateCPA's refinement is just executed
