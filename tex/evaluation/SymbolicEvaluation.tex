@@ -2,7 +2,7 @@
 
 \subsection{Comparison to symbolic execution CPA without CEGAR}
 Evaluation shows the great boost CEGAR provides to the \symbolicExecutionCPA. 
-Table~\ref{tab:cegarBenefits} shows the results of the \symbolicExecutionCPA\ without CEGAR using the subset less-or-equal operator and $\cpaMerge^{sep}$ (SymEx w/o CEGAR), in comparison to the \symbolicExecutionCPA\ using CEGAR with refinement based on CEGAR for explicit-state model checking (SymEx w/ CEGAR, Sec.~\ref{sec:assignmentRefinement}).
+Table~\ref{tab:cegarBenefits} shows the results of the \symbolicExecutionCPA\ without CEGAR using the subset less-or-equal operator and $\cpaMerge^{sep}$ (SymEx w/o CEGAR), in comparison to the \symbolicExecutionCPA\ using CEGAR with refinement based on CEGAR for explicit-state model checking (SymEx w/ CEGAR, Sec.~\ref{sec:newAssignmentRefinement}).
 \emph{Program errors} are errors in the execution of \cpaChecker, in this case a parsing error of a file for both analysis and an exception due to a failure of the SMT solver in the analysis without CEGAR and one due to a division by zero in the analysis with CEGAR.
 The increase in correctly handled tasks \emph{without} a safety violation (in the table row ''correct negatives'') by a factor of more than~10
 and the decrease in timeouts by more than~40\% are the most notable improvements by using CEGAR.
@@ -221,7 +221,7 @@ resource errors                & 1925        & 1926         & 1928              
 \caption{Results of benchmark runs of the \symbolicExecutionCPA\ with CEGAR using three different techniques for interpolation computation}
 \label{tab:itpTechniqueComp}
 \end{table}
-We compare three different techniques for computing interpolants of the \symbolicExecutionCPA\ already mentioned in Section~\ref{sec:assignmentRefinement}:
+We compare three different techniques for computing interpolants of the \symbolicExecutionCPA\ already mentioned in Section~\ref{sec:newAssignmentRefinement}:
 \begin{enumerate}[label=\alph*)]
 \item Only removing unnecessary values and using all constraints that resulted from the previous interpolant and the strongest-post operator at the current edge (\emph{values only}),
 \item removing unnecessary values first and then constraints (\emph{values first}), and
@@ -469,7 +469,7 @@ It is clearly visible that analysis is faster for the significant amount of task
 \caption{DG short vs. AtF short}
 \end{subfigure}
 \caption{Comparison of runtime performance of analysis using \emph{domain good, short} prefix preference with analysis without sliced prefix selection and with preference \emph{assumptions fewest, short}}
-\label{fig:leqComp:stopAmount}
+\label{fig:cputimeDGS}
 \end{figure}
 
 For the domain-good preference, a more precise alternative exists. It performed worse than the default for all variations, though.
@@ -550,11 +550,12 @@ program errors                 & 2          & 12\footnotemark & \\ \hline % exce
 resource errors                & 1519       & 1924     &\\ \hline % includes timeouts + StackOverflowException
 \end{tabular}
 \caption{Results of benchmark runs of the \symbolicExecutionCPA\ with CEGAR using no delegation (the default) and using delegation to value analysis refinement, both using no sliced prefix selection}
-\label{tab:delegation}
+\label{tab:delegationDGS}
 \end{table}
 \footnotetext{A new bug was discovered during this benchmark, affecting 10~tasks. Unfortunately, the bug could not be resolved in the scope of this work.} % belongs to footnotemark in table below
 
-Sliced prefix selection improves performance of analysis using delegation in the same way it improves analysis without delegation.
+Sliced prefix selection improves performance of analysis using delegation in the same way it improves analysis without delegation
+(Table~\ref{tab:delegationDGS}).
 Interestingly, the performance increase by the delegation disappears by the preferred use of easy-to-handle variables.
 Figure~\ref{fig:cputimeDelegDGS} illustrates this change.
 Of the 2487~tasks that are solved with the same result by the two analyses,

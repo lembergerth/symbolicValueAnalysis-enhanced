@@ -5,7 +5,7 @@ with an adjusted strongest-post operator and a set of precisions that fits $\Pi_
 The second refinement procedure extracts a precision for the \symbolicExecutionCPA\ from the precision created by the refinement of the \predicateCPA, which is based on interpolation in the domain of linear arithmetic.
 
 \subsection{Refinement based on refinement for explicit-state model checking}
-\label{sec:assignmentRefinement}
+\label{sec:newAssignmentRefinement}
 We adjust the refinement algorithm for abstract variable assignments (Alg. \ref{alg:refinementExplicit}).
 The feasibility check of an error path $\sigma$ is performed by executing the \symbolicExecutionCPA\ with full precision for all program locations $l$.
 If the error location of $\sigma$ is reached by the analysis, the path is feasible. It is infeasible, otherwise.
@@ -69,7 +69,7 @@ By using $\assume$ operations only for the constraints of $a$ we can easily dist
 It is not wrong to only use $\assume$ operations, but it would unnecessarily increase the precision for the \constraintsCPA\ and the constraints sets used in the inductive interpolations, as all assumptions are added here.
 This could significantly decrease performance during interpolation due to the for-loop over all constraints in Line \ref{alg:interpolateSym:itpAStart} and the strongest-post operators bad performance.
 It might even be more effective to just use all constraints and not perform these additional strongest-post computations
-by omitting Lines \ref{alg:interpolateSym:aInterpolationBegin} - \ref{alg:interpolateSym:aInterpolationEnd} of the algorithm.
+by omitting Lines \ref{alg:interpolateSym:aInterpolationBegin} -- \ref{alg:interpolateSym:aInterpolationEnd} of the algorithm.
 Since constraints made of assume edges whose occurring program variables have an unknown value are discarded in strengthening of the \constraintsCPA, the precision of the \valueAnalysisCPA\ indirectly influences the constraints the \constraintsCPA\ tracks.
 Additionally, it is also possible to eliminate variable assignments first, and constraints second.
 We will examine all three possibilities later in detail (Section~\ref{sec:eval:itpTechniques}). 
@@ -85,7 +85,7 @@ We will examine all three possibilities later in detail (Section~\ref{sec:eval:i
 \State $(\pi_\symValCPA(l), \pi_\constrCPA(l)) \assign (\varnothing, \varnothing)$ for all program locations $l$
 \For{$i \assign 1$ to $n - 1$}
 	\State $\suffix \assign \langle op_{i+1}, ..., op_n \rangle$
-	\State $\Gamma \assign \interpolateSym(\Gamma \logicAnd \langle op_i \rangle, \suffix)$ \Comment inductive interpolation \label{alg:refinementExplicit:interpolation}
+	\State $\Gamma \assign \interpolateSym(\Gamma \logicAnd \langle op_i \rangle, \suffix)$ \Comment inductive interpolation
 	\State $(\pi_\symValCPA(l_i), \pi_\constrCPA(l_i)) \assign \extractPrecisionSym{\Gamma}$
 \EndFor\\
 \Return $(\pi_\symValCPA, \pi_\constrCPA)$

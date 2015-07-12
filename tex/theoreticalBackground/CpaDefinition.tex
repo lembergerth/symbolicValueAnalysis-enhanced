@@ -31,7 +31,7 @@
   ;
 \end{tikzpicture}
 \end{subfigure}
-\caption{An example CFA}
+\caption{An example program and a CFA representing it}
 \label{fig:exCFA}
 \end{figure}
 
@@ -67,9 +67,7 @@ and the total function $\join : (E \times E) \rightarrow E$ called \emph{join op
 
 Two approaches for software verification are \emph{model checking} and \emph{program analysis}, also called data flow analysis.
 While model checking is mostly concerned with finding a program abstraction with a precision high enough to eliminate false alarms,
-which in turn only allows it to handle small programs because of poor performance,
 program analysis tries to reach high efficiency by looking at only a few chosen characteristics of a program. %\cite{Beyer2007}%cite here or below? out of lecture notes, so cite in some other way? 
-It does so by using abstract states of a specific, chosen abstract domain to abstract from concrete program states.
 
 Program analysis starts with an initial abstract state, usually $\top$, and uses a transfer relation to derive new abstract states from old abstract states and program statements.
 Customization of program analysis usually means to choose one or more abstract interpreters, that is the abstract domains, transfer functions and widening operators to use.\cite{Beyer2007}
@@ -82,10 +80,10 @@ Configurable software verification tries to bridge the gap of precision finding 
 \item a \emph{stop operator} that controls when the exploration of a path is stopped, i.e. when a state is already covered by the existing reached states (this is also called termination check), and
 \item a \emph{precision adjustment operator} that can weaken or strengthen an abstract state based on a precision.
 \end{enumerate}
-These elements are encapsulated in a \emph{configurable program analysis} (CPA) \cite{Beyer2008}, which is used by the CPA algorithm.
+These elements are encapsulated in a configurable program analysis \cite{Beyer2008}, which is used by the CPA algorithm.
 
 \subsection{Configurable program analysis}
-A CPA with dynamic precision adjustment $\cpa = (D, \Pi, \transfer, \cpaMerge, \cpaStop, \cpaPrec )$ consists of:
+A \emph{CPA with dynamic precision adjustment} $\cpa = (D, \Pi, \transfer, \cpaMerge, \cpaStop, \cpaPrec )$ consists of:
 
 \begin{enumerate}[leftmargin=*, label=\arabic*.]
 \item
@@ -97,7 +95,8 @@ For soundness (i.e. if a property violation exists, it is always found) and prog
 the top element of abstract states has to represent all possible concrete states and the bottom element must represent none, formally put $\llbracket \top \rrbracket = C$ and $\llbracket \bot \rrbracket = \varnothing$,
 
 \item
-the join operator has to be precise or over-approximating. That means the join of two abstract states always has to represent the same or more concrete states than the union of the concrete states both abstract states represent. This can be formally expressed as $\forall e, e' \in E: \llbracket e \join e' \rrbracket \supseteq \llbracket e \rrbracket \cup \llbracket e' \rrbracket$, and
+the join operator has to be precise or over-approximating. That means the join of two abstract states always has to represent the same or more concrete states than the union of the concrete states both abstract states represent.
+This can be formally expressed as $\forall e, e' \in E: \llbracket e \join e' \rrbracket \supseteq \llbracket e \rrbracket \cup \llbracket e' \rrbracket$, and
 
 \item
 if one abstract state $e$ is smaller than another abstract state $e'$, the concrete states it represents must be a subset of the concrete states $e'$ represents. Formally, that is $\forall e, e' \in E : e \lesserEqual e' \Rightarrow \llbracket e \rrbracket \subseteq \llbracket e' \rrbracket$
@@ -107,7 +106,7 @@ if one abstract state $e$ is smaller than another abstract state $e'$, the concr
 A set $\Pi$ of precisions.
 
 \item
-The transfer relation $\transfer\ \subseteq (E \times G \times E \times \Pi)$. It assigns to each abstract state $e \in E$ possible abstract successors $e' \in E$ with a precision $\pi \in \Pi$.
+The \emph{transfer relation} $\transfer\ \subseteq (E \times G \times E \times \Pi)$. It assigns to each abstract state $e \in E$ possible abstract successors $e' \in E$ with a precision $\pi \in \Pi$.
 For every program statement $g \in G$ we write $e \gtransfer (e', \pi)$ if $(e, g, e', \pi) \in \transfer$ and $e \transfer (e', \pi)$ if a program statement $g$ with $e \gtransfer (e', \pi)$ exists.
 
 The transfer relation $\transfer$ has to be total, that is $\forall e \in E: \exists e' \in E: e \transfer e'$, and
@@ -120,20 +119,22 @@ Two common merge operators are \[\cpaMerge^{sep}(e, e', \pi) = e'\] and \[\cpaMe
 
 \item
 The stop operator $\cpaStop : E \times 2^E \times \Pi \rightarrow \booleanset$, which checks if the given abstract state with the given precision is covered by the set of abstract states given as second parameter.
-$\cpaStop(e, R, \pi) = true$ always has to imply $\llbracket e \rrbracket \subseteq \bigcup_{e' \in R} \llbracket e' \rrbracket$ to ensure soundness.
+The value $\cpaStop(e, R, \pi) = true$ always has to imply $\llbracket e \rrbracket \subseteq \bigcup_{e' \in R} \llbracket e' \rrbracket$ to ensure soundness.
 Two common stop operators are \[\cpaStop^{sep}(e, R, \pi) = \exists e' \in R : e \lesserEqual e'\] and \[\cpaStop^{join}(e, R, \pi) = e \lesserEqual \bigjoin\limits_{e' \in R} e'.\]
 For $\cpaStop^{join}$, the abstract domain has to be a powerset domain, that means $e~\lesserEqual~e' \Rightarrow e \supseteq e'$ for abstract states $e, e'$.
 
 \item
-The precision adjustment $\cpaPrec : E \times \Pi \times 2^{E \times \Pi} \rightarrow E \times \Pi$. It computes a new abstract state and precision for a given abstract state based on its precision and a set of abstract states with precision.
+The precision adjustment $\cpaPrec : E \times \Pi \times 2^{E \times \Pi} \rightarrow E \times \Pi$.
+It computes a new abstract state and precision for a given abstract state, a given precision and a given set of abstract states with precision.
 It can both strengthen and weaken an abstract state.
-The following condition has to hold: $\forall e, \hat{e} \in E, \pi, \hat{\pi} \in \Pi, R \subseteq (E \times \Pi) : (\hat{e}, \hat{p}) = \cpaPrec(e, \pi, R) \Rightarrow \llbracket e \rrbracket \subseteq \llbracket \hat{e} \rrbracket$.
+The following condition has to hold:
+\[\forall e, \hat{e} \in E, \pi, \hat{\pi} \in \Pi, R \subseteq (E \times \Pi) : (\hat{e}, \hat{\pi}) = \cpaPrec(e, \pi, R) \Rightarrow \llbracket e \rrbracket \subseteq \llbracket \hat{e} \rrbracket.\]
 
 \end{enumerate} 
 
 \begin{algorithm}[t]
 \caption{$CPA(\cpaPlus, R_0, W_0)$, adapted from \cite{Beyer2013}}
-\label{alg:CPA}
+\label{alg:cpa}
 \begin{algorithmic}[1]
 
 \Input a CPA $\cpa = (D, \Pi, \transfer, \cpaMerge, \cpaStop, \cpaPrec)$,
@@ -173,22 +174,25 @@ The following condition has to hold: $\forall e, \hat{e} \in E, \pi, \hat{\pi} \
 \end{algorithm}
 
 \subsection{CPA algorithm}
-The CPA algorithm displayed in Algorithm~\ref{alg:CPA} uses an arbitrary CPA of this form to verify programs.
+The \emph{CPA algorithm} displayed in Algorithm~\ref{alg:cpa} uses an arbitrary CPA of this form to verify programs.
 Given a CPA $\cpa$, an initial set $R_0$ of reached abstract states with their precisions and a subset $W_0 \subseteq R_0$ of abstract states that have to be examined,
 the algorithm computes the set \reachedSet\ of abstract states reachable without encountering a target state and the currently unprocessed abstract states of that set.
-Afer initializing \reachedSet\ and \waitlistSet\ with the given sets $R_0$ and $W_0$, the following steps are repeated until \waitlistSet\ is empty:
+After initializing \reachedSet\ and \waitlistSet\ with the given sets $R_0$ and $W_0$, the following steps are repeated until \waitlistSet\ is empty:
 An abstract state $e \in \waitlistSet$ is removed from the waitlist and each possible abstract successor $e'$ and its precision $\pi$ is examined:
 
 First, precision adjustment is performed on $e'$ based on $\pi$ and $\reachedSet$. This produces a new abstract state $\hat{e}$ and a new precision $\hat{\pi}$.
 
-Next, it is checked whether the adjusted abstract state $\hat{e}$ is a target state, i.e. represents any concrete state that violates a property. This is done by $\isTargetStateFunc : E \rightarrow \booleanset$ in Line~\ref{alg:cpa:isTarget}, whose behaviour can be defined arbitrarily.
+Next, it is checked whether the adjusted abstract state $\hat{e}$ is a target state, i.e. represents any concrete state that violates a property.
+This is done by \mbox{$\isTargetStateFunc : E \rightarrow \booleanset$}~(Line~\ref{alg:cpa:isTarget}, Alg.~\ref{alg:cpa}), whose behaviour can be defined arbitrarily.
 If $\hat{e}$ is a target state, \reachedSet\ and \waitlistSet\ are returned, both containing $\hat{e}$.
 
-Otherwise, each already reached abstract state $e'' \in \reachedSet$ is individually merged with the new state $\hat{e}$ with precision $\hat{\pi}$. If the merge weakened $e''$, it and its precision are replaced with the weakened state and the new precision $\hat{\pi}$ in \reachedSet\ and \waitlistSet\ (Lines \ref{alg:cpa:mergeStart} - \ref{alg:cpa:mergeStop}).
+Otherwise, each already reached abstract state $e'' \in \reachedSet$ is individually merged with the new state $\hat{e}$ with precision $\hat{\pi}$.
+If the merge weakened $e''$, it and its precision are replaced with the weakened state
+and the new precision $\hat{\pi}$ in \reachedSet\ and \waitlistSet\ (Lines~\ref{alg:cpa:mergeStart} -- \ref{alg:cpa:mergeStop}, Alg.~\ref{alg:cpa}).
 Next, the termination check checks whether the new abstract successor $\hat{e}$ is already covered by the current reached set.
 If it is not, it is added to \waitlistSet\ and \reachedSet.
-After this it is continued with the next element in the waitlist.
-If the waitlist is empty, there are no more reachable states and the reached set is returned, accompanied by the empty waitlist.
+After this it the algorithm continues with the next element in \waitlistSet.
+If \waitlistSet\ is empty, there are no more reachable states and the reached set is returned, accompanied by the empty \waitlistSet.
 
 \section{Basic Definition of CPAs used}
 The following CPAs are used and extended in this work.
@@ -207,7 +211,7 @@ It consists of:
 \item \label{it:compStop} A composite termination check $\cpaStop_\times : (E_1 \times E_2) \times 2^{E_1 \times E_2} \times \Pi_\times \rightarrow \booleanset$.
 \item A composite precision adjustment \[\cpaPrec_\times : (E_1 \times E_2) \times \Pi_\times \times 2^{(E_1 \times E_2) \times \Pi_\times} \rightarrow (E_1 \times E_2) \times \Pi_\times.\]
 \end{enumerate}
-The three composite operators \ref{it:compTransfer} - \ref{it:compStop} use the corresponding operators of the contained CPAs $\cpa_1$ and $\cpa_2$ as well as \emph{strengthening operators} $\strengthen_j$ and \emph{compare relations} $\compare_j$ with $1 \leq j \leq 2$. They only alter lattice elements through these components.
+The three composite operators~\ref{it:compTransfer}~--~\ref{it:compStop} use the corresponding operators of the contained CPAs $\cpa_1$ and $\cpa_2$ as well as \emph{strengthening operators} $\strengthen_j$ and \emph{compare relations} $\compare_j$ with $1 \leq j \leq 2$. They only alter lattice elements through these components.
 
 The strengthening operator $\strengthen : E_k \times E_l \rightarrow E_k$ computes a stronger abstract state of the type $E_k$ by using the information of an abstract state of the type $E_l$,
 with $1 \leq k,l \leq 2$ and $k \neq l$.
@@ -216,9 +220,9 @@ The use of strengthening operators in the transfer relation $\transfer_\times$ a
 
 A compare relation $\compare\ \subseteq E_k \times E_l$ allows the comparison of two abstract states of different types.
 
-The composition of CPAs can be used to construct a \compositeCPA\ \[\compCPA = (D_\times, \Pi_\times, \transfer_\times, \cpaMerge_\times, \cpaStop_\times, \cpaPrec_\times)\]
+The composition of CPAs can be used to construct a \emph{\compositeCPA}\ \[\compCPA = (D_\times, \Pi_\times, \transfer_\times, \cpaMerge_\times, \cpaStop_\times, \cpaPrec_\times)\]
 with abstract domain $D_\times = D_1 \times D_2 = (C, \semilattice_\times, \concretization_\times)$
-and semi-lattice $\semilattice_\times = \semilattice_1 \times \semilattice_2 = (E_1 \times E_2, (\top_1, \top_2), (\bot_1, \bot_2), \lesserEqual_\times, \join_\times)$.
+and semi-lattice $\semilattice_\times = {\semilattice_1 \times \semilattice_2} = {(E_1 \times E_2, (\top_1, \top_2), (\bot_1, \bot_2), \lesserEqual_\times, \join_\times)}$.
 The semi-lattice uses the less-or-equal operator $\lesserEqual_\times$ defined as $(e_1, e_2) \lesserEqual_\times (e'_1, e'_2)$ if $e_1 \lesserEqual_1 e'_1$ and $e_2 \lesserEqual_2 e'_2$
 and the join operator defined as $(e_1, e_2) \join_\times (e'_1, e'_2) = (e_1 \join_1 e'_1, e_2 \join_2 e'_2)$.
 The concretization function $\concretization_\times$ is defined as $\llbracket (e_1, e_2) \rrbracket_\times = \llbracket e_1 \rrbracket_1 \cap \llbracket e_2 \rrbracket_2$.
@@ -235,7 +239,7 @@ We extend this definition of \compositeCPA\ to allow the composition of an arbit
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\LocationCPA}
-The \locationCPA\ \cite{BeyerBook} \cite{Beyer2008} $\locCPA = (D_\locCPA, \singletonPi, \transfer_\locCPA, \cpaMerge^{sep}, \cpaStop^{sep}, \singletonPrec)$ is a CPA that analyses the syntactical reachability of program locations.
+The \emph{\locationCPA}\ \cite{Beyer2008} $\locCPA = (D_\locCPA, \singletonPi, \transfer_\locCPA, \cpaMerge^{sep}, \cpaStop^{sep}, \singletonPrec)$ is a CPA that analyzes the syntactical reachability of program locations.
 It does not consider any semantics and is mostly used to track the program location for other CPAs by using a \compositeCPA.
 This allows for simpler CPAs since they do not have to care about location tracking individually.
 The \locationCPA\ contains:
@@ -266,11 +270,11 @@ The precision adjustment $\singletonPrec$ that does not change anything: $\singl
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\PredicateCPA}
-A predicate is a boolean formula using linear-arithmetic expressions and equality with uninterpreted functions.
-The \predicateCPA\ \cite{BeyerBook} \cite{Beyer2008} uses predicate abstraction \cite{Ball2001} to compute abstract states from a formula $\phi$ and a set $\pi$ of predicates (the precision).
+A \emph{predicate} is a boolean formula using linear-arithmetic expressions and equality with uninterpreted functions.
+The \emph{\predicateCPA}\ \cite{BeyerBook} \cite{Beyer2008} uses predicate abstraction \cite{Ball2001} to compute abstract states from a formula $\phi$ and a set $\pi$ of predicates (the precision).
 Two different kinds of predicate abstraction exist:
-The cartesian predicate abstraction $(\phi)^{\pi}_C$ is the strongest conjunction of predicates from $\pi$ that is implied by $\phi$.
-The boolean predicate abstraction $(\phi)^{\pi}_B$ is the strongest boolean combination of predicates from $\pi$ that is implied by $\phi$.
+The \emph{cartesian predicate abstraction} $(\phi)^{\pi}_C$ is the strongest conjunction of predicates from $\pi$ that is implied by $\phi$.
+The \emph{boolean predicate abstraction} $(\phi)^{\pi}_B$ is the strongest boolean combination of predicates from $\pi$ that is implied by $\phi$.
 In this work, we will only look at cartesian predicate abstraction because of its greater simplicity.
 For a set $r \subseteq \pi$, $\varphi_r$ denotes the conjunction of all predicates in $r$, with $\varphi_{\{\}} = true$.
 
@@ -279,11 +283,12 @@ The \predicateCPA\ $\predCPA = (D_\predCPA, \Pi_\predCPA, \transfer_\predCPA, \c
 \item
 The abstract domain
 	$D_\predCPA = (C, \predicatelattice, \concretization)$ with concrete states $C$, the semi-lattice $\predicatelattice$ and the concretization function $\concretization$.
-	The semi-lattice is defined by $\predicatelattice = (2^P, \top_\predCPA, \bot, \lesserEqual, \join)$.
+	The semi-lattice is defined by \[\predicatelattice = (2^P, \top_\predCPA, \bot, \lesserEqual, \join).\]
 	Each abstract state is a finite subset $r \in P$ of predicates, with $P$ denoting the set of quantifier-free predicates over program variables $X$.
 	An abstract state can be interpreted as the conjunction of all its predicates. $\top_\predCPA = \varnothing$ is an abstract state without any constraints (\emph{true}) and represents all possible concrete states.
-	The bottom element $\bot = \{false\}$ represents no concrete state. A state $r$ is less or equal another state $r'$, if $r$ contains all predicates of $r'$, formally $r \lesserEqual r'$ if $r \supseteq r'$.
-	The join of two states $r, r'$ is defined by $r \join r' = r \cap r'$.
+	The bottom element $\bot = \{false\}$ represents no concrete state.
+	An abstract state $r$ is less or equal to another abstract state $r'$, if $r$ contains all predicates of $r'$, formally $r \lesserEqual r'$ if $r \supseteq r'$.
+	The join of two abstract states $r, r'$ is defined by $r \join r' = r \cap r'$.
 
 	The concretization function $\concretization$ is defined by $\llbracket r \rrbracket = \{ c \in C |\ c \satisfies \varphi_r\}$.
 
@@ -311,7 +316,7 @@ The precision adjustment $\singletonPrec$ that does not change anything: $\singl
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\ValueAnalysisCPA}\label{sec:valueAnalysis}
-The \valueAnalysisCPA\ \cite{Beyer2013} tracks integer values for all program variables with a known value explicitly.
+The \emph{\valueAnalysisCPA}\ \cite{Beyer2013} tracks integer values for all program variables with a known value explicitly.
 It does so by using \emph{abstract variable assignments} \cite{Beyer2013}. An abstract variable assignment $v: X \partialFunc \integerset \cup \{\bot\}$ is a partial function that maps program variables $x \in X$ to integer values - if their assignment is known - or to $\bot$, if no possible value assignment exists.
 An abstract variable assignment $v$ is \emph{contradicting} if $v(x) = \bot$ for any $x \in \defRange(v)$.
 For two abstract variable assignments $v$ and $v'$, $v$ is \emph{implied} by $v'$, that is $v' \Rightarrow v$, if $v'$ is contradicting or if $\defRange(v') \subseteq \defRange(v)$ and for each variable $x \in \defRange(v) \cap \defRange(v') : v(x) = v'(x)$.
@@ -321,8 +326,7 @@ The \emph{conjunction} $v \logicAnd v'$ is defined as
 	v(x) & \text{ if } x \in \defRange(v)\\
 	v'(x) & \text{ if } x \in \defRange(v')
 \end{dcases}\]
-
-We define the \emph{definition range} of a partial function $f$ as $\defRange(f) = \{ x |\ \exists y : (x, y) \in f \}$ and
+We define the \emph{definition range} of a partial function $f$ as $\defRange(f) = $\mbox{$\{ x |\ \exists y : (x, y) \in f \}$} and
 the \emph{restriction} of a partial function $f$ to a new definition range $Y$ as $f_\restrictedTo{Y} = f \cap ( Y \times (\valueset \cup \{ \bot \}))$.
 
 The \valueAnalysisCPA\ $\valCPA = (D_\valCPA, \Pi_\valCPA, \transfer_\valCPA, \cpaMerge^{sep}, \cpaStop^{sep}, \singletonPrec)$ consists of the following components:
@@ -335,7 +339,7 @@ The abstract domain $D_\valCPA = (C, \vallattice, \concretization)$ contains the
 	The bottom element $\bot$ is defined as $\bot(x) = \bot_\valueset$ for all $x \in X$.
 	It represents an impossible variable assignment, that is a state that cannot be reached in the program execution.
 	The less-or-equal operator $\lesserEqual\ \subseteq \valAssignment \times \valAssignment$ defines $v \lesserEqual v'$ if $\defRange(v') \subseteq \defRange(v)$ and for all $x \in \defRange(v'): v(x) = v'(x)$ or $v(x) = \bot_\valueset$.
-	This means that a state $v$ is less or equal a state $v'$ if $v$ contains all variable assignments of $v'$ or restricts them even further.
+	This means that an abstract state $v$ is less or equal to an abstract state $v'$ if $v$ contains all variable assignments of $v'$ or restricts them even further.
 
 	The join operator $\join$ defines the least upper bound of two abstract variable assignments, but is never used in our configuration.
 	
@@ -384,16 +388,16 @@ Since we only track the program location in the \locationCPA, a composite precis
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\SymbolicValueAnalysisCPA}\label{sec:symValCPA}
-The \symbolicValueAnalysisCPA\ (introduced in \cite{Lemberger2015} without dynamic precision adjustment and using a different less-or-equal operator) is an extension to the \valueAnalysisCPA. It introduces \emph{symbolic values} to handle non-deterministic values and expressions of unknown value.
+The \emph{\symbolicValueAnalysisCPA}\ (introduced in \cite{Lemberger2015} without dynamic precision adjustment and using a different less-or-equal operator) is an extension to the \valueAnalysisCPA. It introduces \emph{symbolic values} to handle non-deterministic values and expressions of unknown value.
 
 The \symbolicValueAnalysisCPA\ $\symValCPA = (D_\symValCPA, \Pi_\symValCPA, \transfer_\symValCPA, \cpaMerge_\symValCPA, \cpaStop^{sep}, \singletonPrec)$ consists of:
 \begin{enumerate}[leftmargin=*, label=\arabic*.]
-\item The abstract domain $D_\symValCPA = (C, \symvallattice, \concretization)$ with the set $C$ of concrete states,
+\item The abstract domain $D_\symValCPA = {(C, \symvallattice, \concretization)}$ with the set $C$ of concrete states,
 	the semi-lattice $\symvallattice$ and
 	the concretization function $\concretization$.
-	The semi-lattice $\symvallattice = (\symvalAssignment, \top_\symValCPA, \bot, \lesserEqual, \join)$ is defined by
-	the set of abstract symbolic value assignments $\symvalAssignment = X \partialFunc \symvalset$ mapping program variables in its definition range to values of
-	$\symvalset = \integerset \cup \symValues \cup \{ \bot_\valueset \}$.
+	The semi-lattice is defined as $\symvallattice = {(\symvalAssignment, \top_\symValCPA, \bot, \lesserEqual, \join)}$.
+	Its elements are \emph{abstract symbolic value assignments} $\symvalAssignment = X \partialFunc \symvalset$ mapping program variables in its definition range to values of
+	$\symvalset = {\integerset \cup \symValues \cup \{ \bot_\valueset \}}$.
 	The value range of an abstract variable assignment of the type $\symvalAssignment$ consists of the set $\integerset$ of concrete integer values,
 	the set $\symValues$ of symbolic values and the bottom element $\bot_\valueset$, which represents an impossible variable assignment.
 	$\symValues = \symIds \cup \symExpressions$ consists of \emph{symbolic identifiers} $\symIds$ and \emph{symbolic expressions} $\symExpressions$.
@@ -412,8 +416,9 @@ The \symbolicValueAnalysisCPA\ $\symValCPA = (D_\symValCPA, \Pi_\symValCPA, \tra
   (b) for every concrete or invalid assignment of $v$, $v'$ must contain the same or a weaker one,
   that means \[\forall x \in \defRange(v') : v(x) \in \integerset \cup \{\bot_\valueset\} \Rightarrow v'(x) = v(x) \logicOr v(x) = \bot_\valueset\]
   and 
-	(c) a bijective function $\aliasFunc : \symIds \rightarrow \symIds$ exists that maps each symbolic identifier of $\symIds$ to another symbolic identifier, so that
-	$\forall x \in \defRange(v') : v'(x) \in \symValues \Rightarrow v(x)$ results from $v'(x)$ by replacing all $i \in \symIds$ occurring in $v'(x)$ with $\aliasFunc(i)$.
+	(c) a bijective function ${\aliasFunc : \symIds \rightarrow \symIds}$ exists that maps each symbolic identifier of $\symIds$ to another symbolic identifier, so that
+	the condition
+	\[\forall x \in \defRange(v') : v'(x) \in \symValues \Rightarrow v(x)\] is true for the abstract state resulting from $v'(x)$ by replacing all $i \in \symIds$ occurring in $v'(x)$ with $\aliasFunc(i)$.
 
 This operator can result in wrong behaviour when used in conjunction with the \constraintsCPA,
 so we will not use it in this work.
@@ -472,7 +477,7 @@ The precision adjustment $\singletonPrec$ that does not change anything: $\singl
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\ConstraintsCPA} \label{sec:constraintsCPA}
-The \constraintsCPA\
+The \emph{\constraintsCPA}\
 (introduced in \cite{Lemberger2015} without dynamic precision adjustment and with a less-or-equal operator using an $\aliasFunc$ function)
 tracks constraints (i.e. boolean formulas) on symbolic identifiers created by assume edges.
 For this, it relies on the values provided by the \symbolicValueAnalysisCPA\ to partially evaluate assume edges and create constraints out of them.
@@ -508,13 +513,12 @@ and $\pi(l) = \{ a, b \}$, then $\pi$ contains all program variables $p$ origina
 \item The transfer relation $\transfer_\constrCPA$ contains the transfer $a \gtransfer_\constrCPA a'$ if one of the following is true:
 	\begin{enumerate}[label=\alph*)]
 		\item $g = (\cdot, \assume(p), \cdot)$, $a' = a \cup p$ and
-			$a$ does not contain any variable $x \in X$.
+			$a$ does not contain any variable \mbox{$x \in X$}.
 			We just add the condition of the assume as a new constraint to the abstract state.
 			Since $a$ may not contain any program variables we enforce that
 			variables must always be replaced by concrete or symbolic values through strengthening before the next $\assume$ edge occurs.
 			As two $\assume$ edges might follow each other, we even enforce immediate strengthening.
-			Or,
-		\item $g = (\cdot, w \assign e, \cdot)$ and $a' = a$. \ConstraintsCPA\ only cares about assume edges.
+		\item $g = (\cdot, w \assign e, \cdot)$ and $a' = a$. The \constraintsCPA\ only cares about assume edges.
 	\end{enumerate}
 	
 \item The merge operator $\cpaMerge_\constrCPA = \cpaMerge^{sep}$. No merge is performed when the control flow meets. We will introduce an alternative merge operator later on.
@@ -529,7 +533,7 @@ Since we only track the program location in the \locationCPA, a composite precis
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\SymbolicExecutionCPA}
-The \symbolicExecutionCPA\ \cite{Lemberger2015}\ is the composition of \locationCPA, \symbolicValueAnalysisCPA\ and \constraintsCPA.
+The \emph{\symbolicExecutionCPA}\ \cite{Lemberger2015}\ is the composition of \locationCPA, \symbolicValueAnalysisCPA\ and \constraintsCPA.
 Besides connecting the \locationCPA\ to the other CPAs so abstract states can be mapped to a program location, its most important task is the definition of a strengthening operator that creates new constraints in the \constraintsCPA\ and checks their satisfiability.
 
 The \symbolicExecutionCPA\ $\symExCPA$ is the \compositeCPA\ implied by the composition
@@ -538,13 +542,19 @@ $(\locCPA, \symValCPA, \constrCPA, \Pi_\symExCPA, \transfer_\symExCPA, \cpaMerge
 \item The three CPAs $\locCPA$, $\symValCPA$ and $\constrCPA$ and their abstract domains defined above.
 \item The set~$\Pi_\symExCPA = \Pi_\symValCPA \times \Pi_\constrCPA$ of precisions that contains the individual precisions of the \symbolicValueAnalysisCPA\ and \constraintsCPA. We do not need the precision of the \locationCPA\ because it never changes.
 \item The transfer relation $\transfer_\symExCPA$.
-	It contains the transfer $(l, v, a) \gtransfer_\symExCPA (l', v', a', \pi)$ if $l \gtransfer_\locCPA (l', \singletonPrecision)$, $v \gtransfer_\symValCPA (v', \pi_\symValCPA)$, if:
+	It contains the transfer \mbox{$(l, v, a) \gtransfer_\symExCPA (l', v', a', \pi)$}, if:
+	\begin{enumerate}[label=\arabic*.]
+	\item \mbox{$l \gtransfer_\locCPA (l', \singletonPrecision)$}.
+	\item \mbox{$v \gtransfer_\symValCPA (v', \pi_\symValCPA)$}.
+	\item One of the following two is true:
 	\begin{enumerate}[label=\alph*)]
-		\item $g = (\cdot, \assume(p), \cdot)$ and $\strengthenOp{\constrCPA}{\symValCPA}(a'', v') = a'$ is defined, with $a \gtransfer_\constrCPA (a'', \pi_\constrCPA)$, or
+		\item $g = (\cdot, \assume(p), \cdot)$ and $\strengthenOp{\constrCPA}{\symValCPA}(a'', v') = a'$ is defined,
+			with the existing transfer \mbox{$a \gtransfer_\constrCPA (a'', \pi_\constrCPA)$}.
 
-		\item $g = (\cdot, w \assign e, \cdot)$ and $a \gtransfer (a, \pi_\constrCPA)$,
+		\item $g = (\cdot, w \assign e, \cdot)$ and \mbox{$a \gtransfer (a, \pi_\constrCPA)$}.
 	\end{enumerate}
-	and if $\pi = (\singletonPrecision, \pi_\symValCPA, \pi_\constrCPA)$.
+	\item $\pi = (\singletonPrecision, \pi_\symValCPA, \pi_\constrCPA)$.
+	\end{enumerate}
 
 	It uses the strengthening operator $\strengthenOp{\constrCPA}{\symValCPA} : 2^\constraintsset \times V_\symValCPA \rightarrow \goodconstraintsset$ that strengthens an abstract state of the \constraintsCPA\ by using an abstract state of the \symbolicValueAnalysisCPA.
 	$\strengthenOp{\constrCPA}{\symValCPA}(a'', v) = a'$ is defined if the following conditions are true:

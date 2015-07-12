@@ -40,7 +40,7 @@ In the implementation, \objectName{Value\-Analysis\-Edge\-Inter\-polator} receiv
 It is possible to recreate a \objectName{Value\-Analysis\-State} from the interpolant class \objectName{Value\-Analysis\-Interpolant}, so the strongest-post operator only has to be applied to the current operation with the reconstructed state as initial one. This way, no redundant computations happen.
 
 \objectName{Value\-Analysis\-Edge\-Inter\-polator} uses the \objectName{Value\-Analysis\-Trans\-fer\-Re\-la\-tion}\ with full precision as strongest-post operator $\strongestPostOpExplicit$ for single operations, as it represents the same semantics. The \objectName{Value\-Analysis\-State} also used in the abstract domain of the \valueAnalysisCPA\ is used to represent abstract variable assignments. A program variable is represented as a \objectName{Me\-mo\-ry\-Lo\-ca\-tion}.
-The class \objectName{Value\-Analysis\-Feasibility\-Checker} is used for the feasibility check $\isFeasibleFunc$ (Alg.~\ref{alg:cegar}, Line~\ref{alg:cegar:feasibilityCheck}).
+The class \objectName{Value\-Analysis\-Feasibility\-Checker} is used for the feasibility check $\isFeasibleFunc$ (Line~\ref{alg:cegar:feasibilityCheck}. Alg.~\ref{alg:cegar}).
 Since it applies the \objectName{Value\-Analysis\-Transfer\-Relation} also representing $\strongestPostOpExplicit$ sequentially to a program path to check whether it is feasible, it is also used as the sequential application of the strongest-post operator on a program path by the  \objectName{Value\-Analysis\-Edge\-Inter\-polator}.
 It is not necessary to transform program paths to constraints sequences, as the transfer relation can work on their edges directly.
 
@@ -69,7 +69,8 @@ To be able to use an interface for interpolants, this interface is introduced to
 It provides means for checking whether an element of the state is needed during interpolation and re-adding it, if it is.
 
 Its type parameter \typeParam{T} describes the type forgotten information is stored in.
-The method \objectName{For\-get\-ful\-State.forget(Me\-mo\-ry\-Lo\-ca\-tion)} returns the forgotten information as this type and the type is used to remember the forgotten information, if necessary.
+The method \objectName{For\-get\-ful\-State.forget(Me\-mo\-ry\-Lo\-ca\-tion)} returns the forgotten information as
+type \typeParam{T} and it is used to remember the forgotten information, if necessary.
 Another type parameter we use is \typeParam{S}, which represents the \objectName{ForgetfulState} implementation used. \objectName{Inter\-po\-lant} and \objectName{Feasibility\-Checker} don't need the additional functionality this interface provides,
 so we just use its super-type \objectName{AbstractState} for these.
 The third and last type parameter, \typeParam{I}, describes the concrete \objectName{Interpolant} implementation used.
@@ -87,7 +88,8 @@ The resulting structure can be seen in the UML diagram of Figure \ref{fig:refGen
 All aggregation relationships represent dependency injection through the constructor of the classes.
 All parts of the refinement procedure are easily interchangeable.
 \objectName{GenericRefiner} is an abstract class.
-By implementing the method \objectName{refineUsingInterpolants(ARGReachedSet, InterpolationTree)} that is expected to use an interpolation tree to update the precision and reset the reached and waitlist sets represented by the type \objectName{ARGReachedSet}, subtypes can represent a complete refinement procedure.
+By implementing the method \objectName{refineUsingInterpolants(ARGReachedSet, InterpolationTree)} that is expected to use an interpolation tree to update the precision and reset the reached and waitlist sets represented by the type \objectName{ARGReachedSet},
+subtypes can represent a complete refinement procedure.
 It is possible to reuse all of the shown classes.
 One only has to implement an \objectName{In\-ter\-po\-lant}, a \objectName{For\-get\-ful\-State}, an \objectName{Inter\-po\-lant\-Manager} managing this interpolant type and supporting the state type, and a \objectName{Strong\-est\-Post\-Op\-erator} using the state type.
 These types then have to be injected either through the constructor of the \objectName{Generic*} classes, or by choosing the correct type parameter.

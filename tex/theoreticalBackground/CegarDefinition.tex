@@ -138,7 +138,7 @@ For a prefix $\prefix$ and a suffix $\prefix$, the abstract variable assignment 
 Next, for each variable assignment in $v$ it is checked whether the assignment is necessary to prove that $\suffix$ is contradicting.
 If it is not, it can be removed from $v$.
 After all variable assignments are checked, $v$ only contains variable assignments that are necessary to prove that $\suffix$ is contradicting.
-From these, the interpolant is built (Lines \ref{alg:interpolateExplicit:itpStart} - \ref{alg:interpolateExplicit:itpFinish}).
+From these, the interpolant is built (Lines \ref{alg:interpolateExplicit:itpStart} -- \ref{alg:interpolateExplicit:itpFinish}, Alg.~\ref{alg:interpolateExplicit}).
 
 \paragraph*{Refinement}
 \begin{algorithm}[t]
@@ -162,7 +162,8 @@ From these, the interpolant is built (Lines \ref{alg:interpolateExplicit:itpStar
 The interpolants produced are used in the refinement of the precision (Alg. \ref{alg:refinementExplicit}).
 We use a location-specific precision $\pi : L \rightarrow 2^X$ that returns for a program location $l \in L$ all program variables of $X$ which are relevant for the analysis at this location. 
 The algorithm starts with an initial, empty interpolant $\Gamma$ and empty precision $\pi$ with $\pi(l) = \varnothing$ for all $l \in L$.
-For each location $(l_i, op_i)$ on the error path, the suffix $\suffix$ of this location are set and the interpolant is computed inductively from the existing interpolant in conjunction with the current operation $op_i$ and the suffix (Line \ref{alg:refinementExplicit:interpolation}).
+For each location $(l_i, op_i)$ on the error path, the suffix $\suffix$ of this location are set and the interpolant is computed inductively
+from the existing interpolant in conjunction with the current operation $op_i$ and the suffix (Line \ref{alg:refinementExplicit:interpolation}, Alg.~\ref{alg:refinementExplicit}).
 A precision for the current program location is then extracted from the interpolant.
 One straightforward way to do this is by using all program variables with a valid assignment in the  abstract variable assignment resulting from the application of the strongest-post operator to our interpolant:
 \[\extractPrecision{\Gamma} = \{ x |\ (x, z) \in \strongestPostOpExplicit_\Gamma (\varnothing ) \text{ and } z \neq \bot_\valueset \}.\]

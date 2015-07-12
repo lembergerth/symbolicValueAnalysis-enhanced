@@ -2,7 +2,7 @@
 %\subsubsection{Why Software Verification is important/needed}
 Software systems are prone to error due to multiple factors: The developer's skills, humans' limited understanding of software principles, communication problems in development, missing or sparse documentation and unforeseen inter-dependencies between software components are just some of them.
 
-Because of this, testing has been an integral part of software development for quite some time, often claiming about 50\% of development effort and more than 50\% of the budget.\cite{Myers2011}
+Because of this, testing has been an integral part of software development for quite some time, often claiming about 50\% of development effort and more than 50\% of the budget \cite{Myers2011}.
 \emph{Software testing} describes the execution of a program with the intention of finding errors.
 The tester, either a person or another program, uses different inputs and checks that the proper output is produced.
 The nature of this approach determines that only a finite amount of inputs is possible in finite time.
@@ -19,8 +19,8 @@ One area of formal verification is \emph{automated software verification}. It tr
 \CpaChecker\ is a framework for \emph{Configurable Software Verification} \cite{Beyer2007} utilizing different \emph{configurable program analyses} (CPAs) to locate possible property violations of a specification in a program.
 Three such CPAs are the \valueAnalysisCPA, which uses concrete variable assignments, the \predicateCPA, which creates predicates for describing properties of program paths,
 and the \symbolicExecutionCPA, which uses an extension of the \valueAnalysisCPA\ tracking non-deterministic values as symbolic ones in combination with the \constraintsCPA, which tracks constraints to symbolic values on program paths.
-While the \valueAnalysisCPA\ has high efficiency due to her simplicity, it can't handle complex program characteristics like pointers or non-deterministic values.
-The \predicateCPA, in contrast, is very expressive, but has low efficiency since SAT checks are necessary for computing the feasibility of a program path.
+While the \valueAnalysisCPA\ has high efficiency due to its simplicity, it can't handle complex program characteristics like pointers or non-deterministic values.
+The \predicateCPA, in contrast, is very expressive, but has low efficiency since satisfiability (SAT) checks are necessary for computing the feasibility of a program path.
 The \symbolicExecutionCPA\ based on the concepts of symbolic execution \cite{King1976} poses something in between these two, not being able to handle some complex program characteristics as it is partly based on the \valueAnalysisCPA, but being able to handle non-deterministic values.
 On the other hand, it uses SAT checks, too, though less often and over smaller formulas.
 
@@ -56,7 +56,7 @@ On the other hand, it uses SAT checks, too, though less often and over smaller f
     (3) edge (6)
     (5) edge (6)
     (6) edge node [left, pos=0.5] {$\mathbf{[!(b < a)]}$} (7)
-    (6) edge node [left, pos=0.5] {$\mathbf{[b < a]}$} (8)
+    (6) edge node [right, pos=0.5] {$\mathbf{[b < a]}$} (8)
     (7) edge node [left] {\textbf{return 0}} (e7)
   ;
 \end{tikzpicture}
@@ -125,10 +125,11 @@ In addition, the cost for SAT checks, which are performed at every assumption, a
 Evaluation in \cite{Lemberger2015} showed that the \symbolicExecutionCPA\ spends up to 95\% of its runtime for SAT checks.
 
 %\subsubsection{Goal: Try to speed up}
-In this work we design, implement and evaluate different approaches to increasing the performance of the \symbolicExecutionCPA.
-Our main contribution is, along with variations to the existing merge and less-or-equal operators of the CPA,
-the application of CEGAR \cite{Clarke2003} to the composition of the two strongly intertwined CPAs \symbolicValueAnalysisCPA\ and \constraintsCPA\ with precision refinement for both CPAs
-with two different sets of precisions.
+In this work we design, implement and evaluate different approaches to improving the performance of the \symbolicExecutionCPA.
+Our main contribution is
+the application of CEGAR \cite{Clarke2003} to the composition of the two strongly intertwined CPAs \symbolicValueAnalysisCPA\ and \constraintsCPA\ (which constitute the main semantics of the \symbolicExecutionCPA).
+We design two different precision refinements, both handling the two CPAs' domains and different sets of precisions successfully in one procedure.
+Along the way, we propose variations to the existing merge and less-or-equal operators of the \constraintsCPA\ and two different sets of precision for the same.
 
 This work is divided into four parts: Theoretical background and contributions, their implementation, their evaluation, and future work and a conclusion.
 First we will describe the concepts that are the basis for our work, such as Configurable Software Verification, used CPAs and CEGAR.
