@@ -1,1 +1,44 @@
-\section{Future work}
+\chapter{Future work}
+
+Multiple improvements can be made to the \symbolicExecutionCPA:
+To supplement symbolic execution with or without CEGAR, adding the handling of unbounded loops should be one of the biggest concerns.
+Multiple approaches were already mentioned in Section~\ref{sec:relatedWork}.
+
+We haven't evaluated the use of symbolic execution with a simpler SMT theory like integer values and rationals instead of bitvectors and floats, yet.
+This should yield a big performance boost for SAT checks without creating any disadvantages in most programs, as only few rely on precise bitvector and float arithmetic in regards to their specification.
+
+For improving symbolic executions competency in finding errors, two major approaches exist:
+Firstly, symbolic execution without CEGAR could be developed further by simplifying constraints states in different ways,
+reordering symbolic expressions by a fixed scheme, if possible, partially evaluating symbolic expressions as far as possible,
+and deleting constraints covered by others (e.g. $\{ s1 > 0, s1 > 10 \}$ could be simplified to $\{s1 > 10 \}$).
+This way, termination checks would be able to reflect coverage of concrete states more precisely.
+
+Secondly, symbolic execution using CEGAR could be improved further.
+We already showed the great benefits good selection preferences can produce in our evaluation.
+New sliced prefix selection preferences aimed at symbolic execution, specifically, could be developed.
+Not all existing selection preferences were evaluated in this work, either.
+In addition, functionality of symbolic execution could be altered to converge towards predicate abstraction.
+Instead of tracking constraints as they are derived from assumptions and performing the rather unsophisticated interpolation of just deleting constraints and testing whether they are needed for contradicting the suffix,
+interpolation could be performed by a SMT solver, creating more abstract interpolants.
+Constraints could then be combined from these interpolants' predicates, just like predicate abstraction does.
+In contrast to the latter, symbolic execution would do this for assumptions, only.
+This way, more abstract but uniform constraints states would be created, resulting in a higher hit rate for termination checks.
+
+A third possibility for increasing the performance of CEGAR would be to introduce adjustable block-encoding \cite{Beyer2010}
+to the \constraintsCPA, only performing abstraction at loop-headers, for example.
+This way, usage of a merge operator other than $merge^{sep}$ would be possible inside of blocks for the \constraintsCPA.
+
+Symbolic execution's performance in general could be increased by applying the idea of concolic testing to symbolic execution in the context of software verification.
+When handling an assume edge in the \constraintsCPA, an assignment of symbolic identifiers to concrete values satisfying the current constraints could be stored in the constraints state and used for further checks.
+Only if the assignments do not fulfill a new constraint, a new SAT check is performed, computing a new satisfying assignment additionally, if one exists.
+This should hold potential to speeding up the handling of assume edges in the \constraintsCPA.
+
+Search heuristics could also be used to guide analysis to target locations faster.
+Some heuristics already exist in \cpaChecker, for example different traversal strategies and the possibility to handle more abstract abstract states of the \valueAnalysisCPA, first.
+These heuristics could be evaluated and new could be added, taking inspiration from heuristics proposed in \cite{Burnim2008} and \cite{Cadar2008}.
+
+A characteristic important for test generation and general usability is the correct creation and output of counterexamples.
+This is not supported by the \symbolicExecutionCPA's refinement procedure, yet.
+A peculiarity of counterexample creation with symbolic execution is denoting and handling symbolic identifiers in the counterexample.
+For each symbolic identifier, a concrete value satisfying the counterexample could be computed and delivered as part or along of the counterexample.
+Alternatively, for each symbolic identifier the range of satisfying values could be computed, also more costly.

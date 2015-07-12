@@ -1,6 +1,6 @@
-\subsection{A different merge operator for \constraintsCPA}
+\section{Alternative Merge Operator for \ConstraintsCPA}
 \label{sec:newMerge}
-For every operation $\assume(p)$ at a location $l$ that transfers the control flow to a location $l'$ there exists another operation $\assume(\neg p)$ at the same location transfering the control flow to a location $l'' \neq l'$.
+For every operation $\assume(p)$ at a location $l$ that transfers the control flow to a location $l'$ there exists another operation $\assume(\neg p)$ at the same location transferring the control flow to a location $l'' \neq l'$.
 In most programs it is probable that the two different program branches starting at $l'$ and $l''$ meet again, that means that for a later program location $l'''$ two abstract states $a, a'$ of the \constraintsCPA\ (in the following  called \emph{constraints states}) exist with $a$ containing $p$ and $a'$ containing $\neg p$.
 
 If a constraint $p$ is part of an abstract state $a$, $p$ is true in all concrete states represented by $a$ (just like a predicate in an abstract state of the \predicateCPA\ \cite{Beyer2008}).
@@ -18,3 +18,5 @@ It is not necessary that $a' \setminus \neg Q = a \setminus Q$.
 If $a' \setminus \neg Q$ represents a super set of the concrete states represented by $a \setminus Q$, that is $a \setminus Q \lesserEqual a' \setminus \neg Q$, then the above condition is true, and $a \lesserEqual a \setminus Q$.
 
 This condition is automatically checked by the $\mergeAgree$ operator, so we can simply use $\cpaMerge(a, a', \pi) = a' \setminus \neg Q$.
+Unfortunately, we can't use this merge operator for the \constraintsCPA\ in combination with CEGAR, as our design of CEGAR does not consider merges.
+Only $\cpaMerge^{sep}$ is possible.

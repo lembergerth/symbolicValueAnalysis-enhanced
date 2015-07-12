@@ -1,0 +1,188 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -predicateAnalysis-bitprecise -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-consumption/ALL.prp ../svcomp15/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--net--ethernet--3com--3c59x.ko-main.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_1076870348_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 6554: Function pointer *(ops->alloc) with type void * (*)(struct device *, size_t , dma_addr_t *, gfp_t , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 6601: Function pointer *(ops->free) with type void (*)(struct device *, size_t , void *, dma_addr_t , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 6312-6313: Function pointer *(ops->map_page) with type dma_addr_t  (*)(struct device *, struct page *, unsigned long, size_t , enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 6402: Function pointer *(ops->sync_single_for_cpu) with type void (*)(struct device *, dma_addr_t , size_t , enum dma_data_direction ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 6446: Function pointer *(ops->sync_single_for_device) with type void (*)(struct device *, dma_addr_t , size_t , enum dma_data_direction ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 6358: Function pointer *(ops->unmap_page) with type void (*)(struct device *, dma_addr_t , size_t , enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker
+ cpa.value.symbolic.handlePointers 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+lines 6312-6313: Ignoring function call through function pointer *(ops->map_page): addr = (*(ops->map_page))(dev, 18446719884453740544UL + (tmp___2 >> 12), ((unsigned long)ptr) & 4095UL, size, dir, attrs); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 6358: Ignoring function call through function pointer *(ops->unmap_page): (*(ops->unmap_page))(dev, addr, size, dir, attrs); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 6402: Ignoring function call through function pointer *(ops->sync_single_for_cpu): (*(ops->sync_single_for_cpu))(dev, addr, size, dir); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 6446: Ignoring function call through function pointer *(ops->sync_single_for_device): (*(ops->sync_single_for_device))(dev, addr, size, dir); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+Warning: Analysis stopped (The CPU-time limit of 900s has elapsed.) (ShutdownNotifier.shutdownIfNecessary, WARNING)
+
+Shutdown requested (The CPU-time limit of 900s has elapsed.), waiting for termination. (ForceTerminationOnShutdown$1.shutdownRequested, WARNING)
+
+PredicateCPA statistics
+-----------------------
+Number of abstractions:            102340 (2% of all post computations)
+  Times abstraction was reused:    0
+  Because of function entry/exit:  0 (0%)
+  Because of loop head:            102340 (100%)
+  Because of join nodes:           0 (0%)
+  Because of threshold:            0 (0%)
+  Times precision was empty:       102340 (100%)
+  Times precision was {false}:     0 (0%)
+  Times result was cached:         0 (0%)
+  Times cartesian abs was used:    0 (0%)
+  Times boolean abs was used:      0 (0%)
+  Times result was 'false':        0 (0%)
+Number of strengthen sat checks:   0
+Number of coverage checks:         694883
+  BDD entailment checks:           59857
+Number of SMT sat checks:          0
+  trivial:                         0
+  cached:                          0
+
+Max ABE block size:                       686
+Number of predicates discovered:          0
+
+Number of path formula cache hits:   2025619 (44%)
+
+Time for post operator:                381.301s
+  Time for path formula creation:      373.842s
+    Actual computation:                327.087s
+Time for strengthen operator:            5.180s
+Time for prec operator:                 24.881s
+  Time for abstraction:                 19.440s (Max:     0.877s, Count: 102340)
+    Solving time:                        0.000s (Max:     0.000s)
+    Model enumeration time:              0.000s
+    Time for BDD construction:           0.000s (Max:     0.000s)
+Time for merge operator:               223.107s
+Time for coverage check:                 0.796s
+  Time for BDD entailment checks:        0.203s
+Total time for SMT solver (w/o itp):     0.000s
+
+Number of BDD nodes:                               202
+Size of BDD node table:                            466043
+Size of BDD cache:                                 46619
+Size of BDD node cleanup queue:                           0 (count: 162198, min: 0, max: 0, avg: 0.00)
+Time for BDD node cleanup:                             0.117s
+Time for BDD garbage collection:                       0.000s (in 0 runs)
+
+PrecisionBootstrap statistics
+-----------------------------
+Init. function predicates:                         0
+Init. global predicates:                           0
+Init. location predicates:                         0
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                 22.721s
+  Time for transition matches:                         9.556s
+  Time for transition assertions:                      0.000s
+  Time for transition actions:                         0.000s
+Automaton transfers with branching:                0
+Automaton transfer successors:                      5817106 (count: 5817106, min: 1, max: 1, avg: 1.00) [1 x 5817106]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            4056345
+Max size of waitlist:            31880
+Average size of waitlist:        14860
+Number of computed successors:   4455503
+Max successors for one state:    2
+Number of times merged:          317513
+Number of times stopped:         377370
+Number of times breaked:         0
+
+Total time for CPA algorithm:       792.048s (Max:   792.048s)
+  Time for choose from waitlist:      4.021s
+  Time for precision adjustment:     72.985s
+  Time for transfer relation:       443.410s
+  Time for merge operator:          227.651s
+  Time for stop operator:             8.792s
+  Time for adding to reached set:    11.516s
+
+Predicate-Abstraction Refiner statistics
+----------------------------------------
+  Predicate creation:                                  0.000s
+  Precision update:                                    0.000s
+  ARG update:                                          0.000s
+
+Length of refined path (in blocks):                       0 (count: 0, min: 0, max: 0, avg: 0.00)
+Number of affected states:                                0 (count: 0, min: 0, max: 0, avg: 0.00)
+Length (states) of path with itp 'true':                  0 (count: 0, min: 0, max: 0, avg: 0.00)
+Length (states) of path with itp non-trivial itp:         0 (count: 0, min: 0, max: 0, avg: 0.00)
+Length (states) of path with itp 'false':                 0 (count: 0, min: 0, max: 0, avg: 0.00)
+Different non-trivial interpolants along paths:           0 (count: 0, min: 0, max: 0, avg: 0.00)
+Equal non-trivial interpolants along paths:               0 (count: 0, min: 0, max: 0, avg: 0.00)
+Different precisions along paths:                         0 (count: 0, min: 0, max: 0, avg: 0.00)
+Equal precisions along paths:                             0 (count: 0, min: 0, max: 0, avg: 0.00)
+Number of refs with location-based cutoff:                0
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                0
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.521
+  Visited lines:          8852
+  Total lines:            11016
+  Line coverage:          0.804
+  Visited conditions:     822
+  Total conditions:       1610
+  Condition coverage:     0.511
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     4254
+Number of CFA edges:             5864
+Number of relevant variables:    1280
+Number of functions:             167
+Number of loops:                 41
+Size of reached set:             4078134
+  Size of final wait list        21789
+
+Time for analysis setup:          5.483s
+  Time for loading CPAs:          0.569s
+  Time for loading parser:        0.525s
+  Time for CFA construction:      4.323s
+    Time for parsing file(s):     1.296s
+    Time for AST to CFA:          1.605s
+    Time for CFA sanity check:    0.158s
+    Time for post-processing:     1.045s
+      Time for var class.:        0.000s
+Time for Analysis:              792.048s
+CPU time for analysis:          892.060s
+Total time for CPAchecker:      797.536s
+Total CPU time for CPAchecker:  902.180s
+
+Time for Garbage Collector:      90.127s (in 54 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               5289MB (  5044 MiB) max;   2901MB (  2766 MiB) avg;   6940MB (  6619 MiB) peak
+Used non-heap memory:             25MB (    24 MiB) max;     23MB (    22 MiB) avg;     25MB (    24 MiB) peak
+Used in PS Old Gen pool:        2784MB (  2655 MiB) max;   1383MB (  1319 MiB) avg;   3036MB (  2895 MiB) peak
+Allocated heap memory:          6815MB (  6499 MiB) max;   5291MB (  5046 MiB) avg
+Allocated non-heap memory:        47MB (    45 MiB) max;     38MB (    36 MiB) avg
+Total process virtual memory:  13613MB ( 12982 MiB) max;  13601MB ( 12971 MiB) avg
+
+Verification result: UNKNOWN, incomplete analysis.
+More details about the verification run can be found in the directory "./output".

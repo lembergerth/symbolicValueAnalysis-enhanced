@@ -1,5 +1,5 @@
-\subsection{Basic CEGAR and its algorithm}
-\subsubsection{CEGAR and interpolation in general}
+\section{CEGAR}
+\subsection{CEGAR and interpolation in general}
 \begin{figure}[t]
 \includegraphics[width=\linewidth]{theoreticalBackground/CegarPrinciple}
 \caption{The general idea of CEGAR}
@@ -16,33 +16,11 @@ If the error path is infeasible it was only found because the abstraction is too
 After this, the analysis starts again, using the new abstraction.
 
 Since the problem of finding the coarsest possible refinement of an abstraction based on an error path is NP-hard, \cite{Clarke2003}\ good heuristics have to be used to find good refinements.
-Interpolation \cite{Henzinger2004}\ is one such technique in a boolean context that is used for refinement of both the \predicateCPA\ and \valueAnalysisCPA.
+Interpolation \cite{Henzinger2004}\ is one such technique originally proposed for model checking.
+As such stemming from a boolean context, we use interpolation for refinement of both the \predicateCPA\ and \valueAnalysisCPA.
 
-\subsubsection{CEGAR and interpolation in the context of configurable software verification}
+\subsection{CEGAR and interpolation in the context of configurable software verification}
 \label{sec:cegarBasics}
-To apply CEGAR and interpolation to configurable software verification, a simple modification has to be made to the CPA algorithm.
-Instead of passing it an initial state $e_0$ and an initial precision $\pi_0$, we use an initial reached set $R_0$ and initial waitlist $W_0$ (Alg. \ref{alg:cpaPlus}).
-This way we can control at which point the analysis continues after a refinement was performed.
-
-\begin{algorithm}[t]
-\caption{$CPA(\cpaPlus, R_0, W_0)$, adapted from \cite{Beyer2013}}
-\label{alg:cpaPlus}
-\begin{algorithmic}[1]
-
-\Input a CPA $\cpaPlus = (D, \Pi, \transfer, \cpaMerge, \cpaStop, \cpaPrec)$,
-	    a set $R_0 \subseteq (E \times \Pi)$ of initial states with their precision and
-	    a subset $W_0 \subseteq R_0$ of frontier abstract states with their precision,
-	    with $E$ being the set of elements of $D$
-\Output a set of abstract states reachable from $R_0$ with their precision and
-	   a subset of frontier abstract states with their precision
-\Variables \reachedSet\ and \waitlistSet , both subsets of $E \times \Pi$
-\State $\reachedSet \assign R_0$
-\State $\waitlistSet \assign W_0$
-\While{$\waitlistSet \neq \varnothing$} \Comment from here on the same as before
-\State ...
-\EndWhile
-\end{algorithmic}
-\end{algorithm}
 
 \begin{algorithm}[t]
 \caption{$CEGAR(\cpaPlus, e_0, \pi_0)$, adapted from \cite{Beyer2013}}
@@ -77,8 +55,7 @@ This way we can control at which point the analysis continues after a refinement
 \end{algorithmic}
 \end{algorithm}
 
-Now that the CPA algorithm is able to use precisions created in a refinement procedure, we use it as a part of our complete CEGAR algorithm.
-Algorithm \ref{alg:cegar} uses a CPA using dynamic precision adjustment $\cpaPlus$,
+The CEGAR algorithm displayed in Alg.~\ref{alg:cegar} uses a CPA using dynamic precision adjustment $\cpaPlus$,
 an initial state $e_0$
 and an initial precision $\pi_0$
 to compute whether a property violation exists.
@@ -104,9 +81,9 @@ A boolean formula $\craigItp$ is a Craig interpolant \cite{Craig1957}\ for two b
 \item $\craigItp$ contradicts the suffix, that means $\craigItp \logicAnd \suffix$ is contradicting.
 \item $\craigItp$ only contains variables occurring in \emph{both} prefix and suffix.
 \end{enumerate}
-It is proven that such an interpolant always exists in the domain of abstract variable assignments \cite{Beyer2013} as well as in the theory of linear arithmetics \cite{Craig1957}.
+It is proven that such an interpolant always exists in the domain of abstract variable assignments \cite{Beyer2013} as well as in the theory of linear arithmetic \cite{Craig1957}.
 
-%\subsubsection{Refinement for the domain of abstract variable assignments}
+\subsubsection*{Refinement for explicit-state model checking}
 \label{sec:assignmentRefinement}
 Our work is strongly based on the refinement technique for abstract variable assignments.
 The strongest-post operator $\strongestPostOp_{op}$ describes the semantics of an operation $op \in Ops$.
@@ -116,6 +93,7 @@ The semantics of a path $\sigma = \langle (l_1, op_1), ..., (l_n, op_n) \rangle$
 $\strongestPostOp_{\gamma_\sigma}(v) = \strongestPostOp_{op_n}(\strongestPostOp_{op_{n-1}} (...\ \strongestPostOp_{op_1}(v) ... ))$.
 We use strongest-post operators during interpolation and refinement to evaluate paths.
 
+\paragraph*{Strongest-post Operator}
 The strongest-post operator $\strongestPostOpExplicit_{op}$ is defined in the following way:
 %\begin{enumerate}[label=\alph*)]
 %\item
@@ -131,6 +109,7 @@ For an assume operation $\assume(p)$,
 	with $p_\using{v}$ as defined in Section \ref{sec:valueAnalysis}.
 %\end{enumerate}
 
+\paragraph*{Interpolation}
 %\subsubsection{Interpolation for abstract variable assignments}
 \begin{algorithm}[t]
 \caption{$\interpolateExplicit(\prefix, \suffix)$, adapted from \cite{Beyer2013}}
@@ -161,6 +140,7 @@ If it is not, it can be removed from $v$.
 After all variable assignments are checked, $v$ only contains variable assignments that are necessary to prove that $\suffix$ is contradicting.
 From these, the interpolant is built (Lines \ref{alg:interpolateExplicit:itpStart} - \ref{alg:interpolateExplicit:itpFinish}).
 
+\paragraph*{Refinement}
 \begin{algorithm}[t]
 \caption{$\refineExplicit{\sigma}$, adapted from \cite{Beyer2015}}
 \label{alg:refinementExplicit}
@@ -180,7 +160,7 @@ From these, the interpolant is built (Lines \ref{alg:interpolateExplicit:itpStar
 \end{algorithm}
 
 The interpolants produced are used in the refinement of the precision (Alg. \ref{alg:refinementExplicit}).
-We use a location-specific precision $\pi : L \rightarrow 2^X$ that returns for a program location $l \in L$ all program variables of $X$ which are relevant for the analysis at this location. This approach realizes the lazy abstraction technique \cite{Henzinger2002}.
+We use a location-specific precision $\pi : L \rightarrow 2^X$ that returns for a program location $l \in L$ all program variables of $X$ which are relevant for the analysis at this location. 
 The algorithm starts with an initial, empty interpolant $\Gamma$ and empty precision $\pi$ with $\pi(l) = \varnothing$ for all $l \in L$.
 For each location $(l_i, op_i)$ on the error path, the suffix $\suffix$ of this location are set and the interpolant is computed inductively from the existing interpolant in conjunction with the current operation $op_i$ and the suffix (Line \ref{alg:refinementExplicit:interpolation}).
 A precision for the current program location is then extracted from the interpolant.
@@ -190,8 +170,79 @@ It is not only sufficient, but also required to use $\Gamma \logicAnd \langle op
 
 This refinement procedure can be used in CEGAR (Alg. \ref{alg:cegar}) in combination with a CPA with precision adjustment that expects these precision types, like the \valueAnalysisCPA\ in combination with refinement for abstract variable assignments.
 
-%\subsubsection{Refinement for the domain of linear arithmetics}
-Refinement in the domain of linear arithmetics, as used for the \predicateCPA, uses a standard approach to refinement based on lazy abstraction and Craig interpolation.
+\paragraph*{Lazy Abstraction}
+Resetting the reached set and waitlist to their initial values after every refinement results in the CPA algorithm starting at the first state, always.
+Most of the time, this is not actually necessary though, because precision only changed for a few program locations.
+Because of this, lazy abstraction \cite{Henzinger2002} resumes analysis not at the beginning of the CFA, but at the first location that has to be revisited with its new precision so that the current error path is computed as infeasible.
+This location is the one before the first pair $(op_i, l_i)$ whose corresponding interpolant is not the empty constraint sequence (i.e. the location before the first location with a new precision).
+We realize lazy abstraction by not resetting the waitlist and reached set in the CEGAR algorithm after each refinement procedure to $(e_0, \pi_0)$.
+Instead, only abstract states for locations whose precision has changed and all their children are removed from the reached set and added to the waitlist.
+This way redundant computations without any finer precision are avoided.
+
+\paragraph*{Path Prefix Selection}
+When computing the interpolant for a prefix and a suffix, the resulting interpolant is random if more than one possible interpolant exist. But some interpolants are better suited for creating a precision reaching a fast termination of analysis than others.
+The enhanced refinement procedure proposed by \cite{Beyer2015} allows to guide the interpolation process based on arbitrary criteria.
+A sliced path prefix is a path in an error path $\sigma$ resulting from omitting pairs of operations and locations from the end and replacing assume operations by no-op operations. If a sliced prefix of $\sigma$ is infeasible, $\sigma$ is infeasible.\cite{Beyer2015}
+
+\begin{algorithm}[t]
+\caption{$\refinePlus{\sigma}$, taken from \cite{Beyer2015}}
+\label{alg:refinementPlus}
+\begin{algorithmic}
+\Input an infeasible error path $\sigma = \langle (op_1, l_1), ..., (op_n, l_n) \rangle$
+\Output a precision $\pi \in L \rightarrow 2^\Pi$
+\Variables a set $\Sigma$ of infeasible sliced prefixes of $\sigma$,
+           a mapping $\tau$ from infeasible sliced prefixes and program locations to precisions, and
+           a sliced path prefix $\phi_{selected}$
+\State $\Sigma \assign \extractSlicedPrefixes{\sigma}$
+\Comment compute precisions for each infeasible sliced prefix
+\ForAll{$\phi_j \in \Sigma$}
+  \State $\tau(\phi_j) \assign \refineExplicit{\phi_j}$ \Comment Alg.~\ref{alg:refinementExplicit}
+\EndFor
+\Comment select suitable sliced prefix based on the prefix and its precision
+\State $\phi_{selected} \assign \selectSlicedPrefix(\tau)$
+\Comment return precision for CEGAR based on selected sliced prefix
+\Return $\tau(\phi_{selected})$
+\end{algorithmic}
+\end{algorithm}
+
+Algorithm~\ref{alg:refinementPlus} shows the enhanced refinement procedure.
+For a given error path $\sigma$, all infeasible sliced prefixes are extracted using $\extractSlicedPrefixesFunc$.
+For each such sliced prefix, refinement as described above is performed to derive a precision sufficient to prove $\sigma$ infeasible.
+After this, one such precision is selected based on the prefix and its precision and returned to be used with CEGAR.
+
+\begin{algorithm}[t]
+\caption{$\extractSlicedPrefixes{\sigma}$, taken from \cite{Beyer2015}}
+\label{alg:extractPrefixes}
+\begin{algorithmic}
+\Input infeasible path $\sigma = \langle (op_1, l_1), ..., (op_n, l_n) \rangle$
+\Output non-empty set $\Sigma = \{\sigma_1, ..., \sigma_m \}$ of infeasible sliced prefixes of $\sigma$
+\Variables a path $\sigma_f$ that is always feasible
+\State $\Sigma \assign \varnothing$
+\State $\sigma_f \assign \langle \rangle$
+\ForAll{$(op, l) \in \sigma$}
+  \If{$\strongestPostOp_{\sigma_f \logicAnd (op, l)}(\varnothing) = \bot$}
+    \Comment $\sigma_f \logicAnd (op, l)$ is an infeasible sliced prefix
+    \State $\Sigma \assign \Sigma \cup \{ \sigma_f \logicAnd (op, l) \}$
+    \State $\sigma_f \assign \sigma_f \logicAnd ([true], l)$ \Comment append no-op to be able to continue
+  \Else
+    \State $\sigma_f \assign \sigma_f \logicAnd (op, l)$ \Comment append original pair
+  \EndIf
+\EndFor
+\Return $\Sigma$
+\end{algorithmic}
+\end{algorithm}
+
+The algorithm for extracting all infeasible prefixes is shown in Alg.~\ref{alg:extractPrefixes}.
+For each operation $(op, l)$ on a given infeasible path $\sigma$, it is checked whether it is contradicting with the already computed path $\sigma_f$, which is always feasible.
+If it is contradicting, the path $\sigma_f \logicAnd (op, l)$ is added to the set of infeasible sliced prefixes
+and the operation doing nothing (no-op), $[true], l)$ is appended to $\sigma_f$ so that it stays feasible and new infeasible prefixes can be found using it.
+If it is not contradicting, $\sigma_f$ is just extended by $(op, l)$.
+After this, the next operand-location pair on the path is examined.
+
+This enhanced refinement procedure allows to enhance CEGAR by selecting precisions best fit for analysis.
+
+\subsubsection*{Refinement for the domain of linear arithmetic}
+Refinement in the domain of linear arithmetic, as used for the \predicateCPA, uses a standard approach to refinement based on lazy abstraction and Craig interpolation.
 The task of interpolation is delegated to an off-the-shelf SMT solver.
 
 %\subsubsection{\ValueAnalysisCPA\ with precision adjustment}
@@ -206,4 +257,4 @@ The task of interpolation is delegated to an off-the-shelf SMT solver.
 %\item The precision adjustment $\cpaPrec_\valCPAPlus$. Given an abstract state $v$ and a precision $\pi$, all abstract assignments of variables that do not occur in $\pi$ are removed from %$v$. This is done by restricting the partial function: $\cpaPrec_\valCPAPlus(v, \pi) = (v_\restrictedTo{\pi}, \pi)$. The given precision is returned as it is.
 %\end{enumerate}
 
-In this chapter, we gave an overview of all theoretical concepts that are necessary to describe our own work. We introduced the concept of configurable software verification and configurable program analyses (CPAs), a very versatile approach to automated software verification. We introduced different CPAs we use in this work and CEGAR with precision refinement for both linear arithmetics and abstract variable assignments, which we will use when applying CEGAR to the \symbolicExecutionCPA.
+In this chapter, we gave an overview of all theoretical concepts that are necessary to describe our own work. We introduced the concept of configurable software verification and configurable program analyses (CPAs), a very versatile approach to automated software verification. We introduced different CPAs we use in this work and CEGAR with precision refinement for both linear arithmetic and abstract variable assignments, which we will use when applying CEGAR to the \symbolicExecutionCPA.

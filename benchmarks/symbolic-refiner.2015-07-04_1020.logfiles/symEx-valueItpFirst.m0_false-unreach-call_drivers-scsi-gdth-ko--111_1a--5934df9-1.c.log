@@ -1,0 +1,180 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic-refiner -setprop cpa.value.symbolic.refinement.strategy=VALUES_FIRST -setprop cpa.constraints.lessOrEqualType=SUBSET -setprop cpa.value.refinement.pathSlicing=false -setprop cpa.value.refinement.prefixPreference=NONE -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-commit-tester/ALL.prp ../svcomp15/ldv-commit-tester/m0_false-unreach-call_drivers-scsi-gdth-ko--111_1a--5934df9-1.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_-751735218_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 6773: Function pointer *(ops->alloc_coherent) with type void * (*)(struct device *, size_t , dma_addr_t *, gfp_t ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 6821: Function pointer *(ops->free_coherent) with type void (*)(struct device *, size_t , void *, dma_addr_t ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 6623: Function pointer *(ops->map_page) with type dma_addr_t  (*)(struct device *, struct page *, unsigned long, size_t , enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 6534: Function pointer *(ops->map_sg) with type int (*)(struct device *, struct scatterlist *, int, enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 6665: Function pointer *(ops->unmap_page) with type void (*)(struct device *, dma_addr_t , size_t , enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 6579: Function pointer *(ops->unmap_sg) with type void (*)(struct device *, struct scatterlist *, int, enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 6467: Function pointer *(ops->unmap_page) with type void (*)(struct device *, dma_addr_t , size_t , enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 5983-5985: Function pointer *((void (*)(void *, unsigned long, const void *, size_t , size_t , gfp_t ))it_func) with type void (*)(void *, unsigned long, const void *, size_t , size_t , gfp_t ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+Skipping recursive function call from gdth_pci_remove_one to gdth_remove_one (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from __gdth_interrupt to gdth_next (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from gdth_next to gdth_scsi_done (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from gdth_wait to __gdth_interrupt (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from __gdth_queuecommand to gdth_next (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from gdth_next to gdth_wait (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from gdth_scsi_done to gdth_pci_remove_one (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from gdth_execute to __gdth_execute (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                   2318 (count: 901293, min: 0, max: 8, avg: 0.00)
+Number of global variables:                               0 (count: 901293, min: 0, max: 0, avg: 0.00)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                 1005629
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                4.907s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     5.841s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 1
+Most constraints before refinement in state: 1
+Constraints after refinement in state: 18
+Constraints before refinement in state: 109
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 4243ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                 27.663s
+  Time for transition matches:                        11.131s
+  Time for transition assertions:                      0.000s
+  Time for transition actions:                         0.001s
+Automaton transfers with branching:                0
+Automaton transfer successors:                      1506997 (count: 1506997, min: 1, max: 1, avg: 1.00) [1 x 1506997]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            902529
+Max size of waitlist:            79
+Average size of waitlist:        48
+Number of computed successors:   1005629
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         103038
+Number of times breaked:         35
+
+Total time for CPA algorithm:       117.176s (Max:   101.753s)
+  Time for choose from waitlist:      3.827s
+  Time for precision adjustment:     22.324s
+  Time for transfer relation:        61.415s
+  Time for stop operator:             4.686s
+  Time for adding to reached set:     5.062s
+
+SymbolicValueAnalysisRefiner statistics
+---------------------------------------
+Total number of refinements:             35
+Total number of targets found:           35
+Time for completing refinement:          60.220s
+  Time for interpolation:                             56.904s
+  Number of interpolations:                              34
+  Number of interpolation queries:                     1967 (count: 4214, min: 0, max: 9, avg: 0.47)
+  Size of interpolant:                                  210 (count: 4214, min: 0, max: 2, avg: 0.05)
+  Number of sliced prefixes:                              0 (count: 0, min: 0, max: 0, avg: 0.00)
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                35
+Number of successful refinements:     34
+Number of failed refinements:         0
+Max. size of reached set before ref.: 901293
+Max. size of reached set after ref.:  900853
+Avg. size of reached set before ref.: 855298.26
+Avg. size of reached set after ref.:  853907.26
+
+Total time for CEGAR algorithm:     191.136s
+Time for refinements:                62.276s
+Average time for refinement:          1.779s
+Max time for refinement:             11.211s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.836
+  Visited lines:          10724
+  Total lines:            12471
+  Line coverage:          0.860
+  Visited conditions:     1468
+  Total conditions:       1904
+  Condition coverage:     0.771
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     4892
+Number of CFA edges:             6990
+Number of relevant variables:    1506
+Number of functions:             171
+Number of loops:                 83
+Size of reached set:             901293
+  Number of reached locations:   3863 (79%)
+    Avg states per location:     233
+    Max states per location:     18102 (at node N7784)
+  Number of reached functions:   143 (84%)
+  Number of partitions:          901202
+    Avg size of partitions:      1
+    Max size of partitions:      4 (with key [N6557 (before line 15890), Function ioc_general called from node N7121, stack depth 4 [7f2fbedc], stack [main, gdth_unlocked_ioctl, gdth_ioctl, ioc_general], Init])
+  Number of target states:       1
+  Size of final wait list        25
+
+Time for analysis setup:          6.877s
+  Time for loading CPAs:          0.664s
+  Time for loading parser:        0.610s
+  Time for CFA construction:      5.488s
+    Time for parsing file(s):     1.632s
+    Time for AST to CFA:          2.135s
+    Time for CFA sanity check:    0.237s
+    Time for post-processing:     1.268s
+      Time for var class.:        0.000s
+Time for Analysis:              191.136s
+CPU time for analysis:          208.120s
+Total time for CPAchecker:      198.020s
+Total CPU time for CPAchecker:  220.830s
+
+Time for Garbage Collector:       4.938s (in 7 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               3524MB (  3361 MiB) max;   1548MB (  1476 MiB) avg;   3663MB (  3493 MiB) peak
+Used non-heap memory:             25MB (    24 MiB) max;     24MB (    22 MiB) avg;     25MB (    24 MiB) peak
+Used in PS Old Gen pool:         671MB (   640 MiB) max;    424MB (   404 MiB) avg;    671MB (   640 MiB) peak
+Allocated heap memory:          4411MB (  4207 MiB) max;   3582MB (  3416 MiB) avg
+Allocated non-heap memory:        27MB (    26 MiB) max;     26MB (    25 MiB) avg
+Total process virtual memory:  13597MB ( 12967 MiB) max;  13596MB ( 12966 MiB) avg
+
+Verification result: FALSE. Property violation (__VERIFIER_error(); called in line 17771) found by chosen configuration.
+More details about the verification run can be found in the directory "./output".

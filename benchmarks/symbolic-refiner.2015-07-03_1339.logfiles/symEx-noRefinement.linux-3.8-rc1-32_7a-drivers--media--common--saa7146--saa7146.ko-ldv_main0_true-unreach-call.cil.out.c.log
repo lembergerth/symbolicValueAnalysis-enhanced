@@ -1,0 +1,137 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic -setprop cpa.constraints.lessOrEqualType=SUBSET -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-consumption/ALL.prp ../svcomp15/ldv-consumption/linux-3.8-rc1-32_7a-drivers--media--common--saa7146--saa7146.ko-ldv_main0_true-unreach-call.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_-1573816679_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 7726: Function pointer *(ops->alloc) with type void * (*)(struct device *, size_t , dma_addr_t *, gfp_t , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 7774: Function pointer *(ops->free) with type void (*)(struct device *, size_t , void *, dma_addr_t , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 7578: Function pointer *(ops->map_sg) with type int (*)(struct device *, struct scatterlist *, int, enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 7623: Function pointer *(ops->unmap_sg) with type void (*)(struct device *, struct scatterlist *, int, enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 8615: Function pointer *(dev->vv_callback) with type void (*)(struct saa7146_dev *, unsigned long) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 8600: Function pointer *(dev->vv_callback) with type void (*)(struct saa7146_dev *, unsigned long) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 8555: Function pointer *(dev->ext->irq_func) with type void (*)(struct saa7146_dev *, u32 *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+Shutdown requested (The CPU-time limit of 900s has elapsed.), waiting for termination. (ForceTerminationOnShutdown$1.shutdownRequested, WARNING)
+
+Warning: Analysis stopped (The CPU-time limit of 900s has elapsed.) (ShutdownNotifier.shutdownIfNecessary, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                9825771 (count: 23913, min: 0, max: 418, avg: 410.90)
+Number of global variables:                         7005923 (count: 23913, min: 0, max: 293, avg: 292.98)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                   23921
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                2.324s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:    43.518s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 5
+Most constraints before refinement in state: 5
+Constraints after refinement in state: 118611
+Constraints before refinement in state: 118611
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 528ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  0.229s
+Automaton transfers with branching:                0
+Automaton transfer successors:                        36299 (count: 36299, min: 1, max: 1, avg: 1.00) [1 x 36299]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            22150
+Max size of waitlist:            1763
+Average size of waitlist:        864
+Number of computed successors:   23921
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         9
+Number of times breaked:         0
+
+Total time for CPA algorithm:       882.411s (Max:   882.411s)
+  Time for choose from waitlist:      0.070s
+  Time for precision adjustment:      3.186s
+  Time for transfer relation:        60.831s
+  Time for stop operator:           817.660s
+  Time for adding to reached set:     0.251s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.198
+  Visited lines:          4917
+  Total lines:            6469
+  Line coverage:          0.760
+  Visited conditions:     51
+  Total conditions:       518
+  Condition coverage:     0.098
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     1768
+Number of CFA edges:             2359
+Number of relevant variables:    555
+Number of functions:             126
+Number of loops:                 22
+Size of reached set:             23913
+  Number of reached locations:   254 (14%)
+    Avg states per location:     94
+    Max states per location:     586 (at node N6)
+  Number of reached functions:   25 (20%)
+  Number of partitions:          15665
+    Avg size of partitions:      1
+    Max size of partitions:      585 (with key [N406 (before line 6105), Function saa7146_i2c_writeout called from node N709, stack depth 4 [326df1c4], stack [main, saa7146_i2c_xfer, saa7146_i2c_transfer, saa7146_i2c_writeout], Init])
+  Number of target states:       0
+  Size of final wait list        1763
+
+Time for analysis setup:          3.736s
+  Time for loading CPAs:          0.491s
+  Time for loading parser:        0.592s
+  Time for CFA construction:      2.615s
+    Time for parsing file(s):     0.981s
+    Time for AST to CFA:          0.886s
+    Time for CFA sanity check:    0.109s
+    Time for post-processing:     0.490s
+      Time for var class.:        0.000s
+Time for Analysis:              882.412s
+CPU time for analysis:          893.560s
+Total time for CPAchecker:      886.153s
+Total CPU time for CPAchecker:  900.110s
+
+Time for Garbage Collector:       5.905s (in 68 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               3468MB (  3307 MiB) max;   1098MB (  1047 MiB) avg;   3784MB (  3609 MiB) peak
+Used non-heap memory:             22MB (    21 MiB) max;     21MB (    20 MiB) avg;     22MB (    21 MiB) peak
+Used in PS Old Gen pool:         333MB (   317 MiB) max;    172MB (   164 MiB) avg;    333MB (   317 MiB) peak
+Allocated heap memory:          4863MB (  4638 MiB) max;   3222MB (  3073 MiB) avg
+Allocated non-heap memory:        25MB (    24 MiB) max;     25MB (    23 MiB) avg
+Total process virtual memory:  13598MB ( 12968 MiB) max;  13597MB ( 12967 MiB) avg
+
+Verification result: UNKNOWN, incomplete analysis.
+More details about the verification run can be found in the directory "./output".

@@ -1,0 +1,299 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -predicateAnalysis-bitprecise -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-linux-3.16-rc1/ALL.prp ../svcomp15/ldv-linux-3.16-rc1/43_2a_consumption_linux-3.16-rc1.tar.xz-43_2a-drivers--staging--media--solo6x10--solo6x10.ko-entry_point_true-unreach-call.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_-1939223163_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 18269: Function pointer *(ops->alloc) with type void * (*)(struct device *, size_t , dma_addr_t *, gfp_t , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 18316: Function pointer *(ops->free) with type void (*)(struct device *, size_t , void *, dma_addr_t , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 18121: Function pointer *(ops->map_sg) with type int (*)(struct device *, struct scatterlist *, int, enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 10547-10548: Function pointer *(ops->map_page) with type dma_addr_t  (*)(struct device *, struct page *, unsigned long, size_t , enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 18166: Function pointer *(ops->unmap_sg) with type void (*)(struct device *, struct scatterlist *, int, enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 10594: Function pointer *(ops->unmap_page) with type void (*)(struct device *, dma_addr_t , size_t , enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker
+ cpa.value.symbolic.handlePointers 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+lines 10547-10548: Ignoring function call through function pointer *(ops->map_page): addr = (*(ops->map_page))(dev, ((struct page *)-24189255811072L) + (tmp___2 >> 12), ((unsigned long)ptr) & 4095UL, size, dir, attrs); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 10622: Ignoring function call through function pointer *(ops->mapping_error): tmp___0 = (*(ops->mapping_error))(dev, dma_addr); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 10594: Ignoring function call through function pointer *(ops->unmap_page): (*(ops->unmap_page))(dev, addr, size, dir, attrs); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 18316: Ignoring function call through function pointer *(ops->free): (*(ops->free))(dev, size, vaddr, bus, attrs); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+The void * pointer snd_solo_pcm_copy::dst to a deferred allocation escaped form tracking! Allocating array void[4]. (in the following line(s):
+ lines 22960-22961:	N9586 -{copy_to_user(dst + ((unsigned long)(i * 48)), __CPAchecker_TMP_2, 48UL)}-> N9323) (PredicateCPA:DynamicMemoryHandler.handleDeferredAllocationPointerEscape, WARNING)
+
+Ignoring cast from signed char to void. (PredicateCPA:CtoFormulaConverter.makeCast, WARNING)
+
+line 22507: Return type of function __builtin_object_size is void, but result is used as type int: tmp = __builtin_object_size(from, 0); (PredicateCPA:CtoFormulaConverter.getReturnType, WARNING)
+
+Cannot get declaration of function __builtin_object_size, ignoring calls to it. (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 18269: Ignoring function call through function pointer *(ops->alloc): memory = (*(ops->alloc))(dev, size, dma_handle, tmp___1, attrs); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+Destroying the void * pointer  ldv_main_exported_3::tmp produces garbage! (in the following line(s):
+ line 9102:	N1283 -{ldv_main_exported_3();}-> N1285) (PredicateCPA:DynamicMemoryHandler.handleDeferredAllocationPointerRemoval, WARNING)
+
+Destroying the void * pointer  ldv_main_exported_3::tmp___4 produces garbage! (in the following line(s):
+ line 9102:	N1283 -{ldv_main_exported_3();}-> N1285) (PredicateCPA:DynamicMemoryHandler.handleDeferredAllocationPointerRemoval, WARNING)
+
+Destroying the void * pointer  ldv_main_exported_11::tmp produces garbage! (in the following line(s):
+ line 9092:	N1276 -{ldv_main_exported_11();}-> N1278) (PredicateCPA:DynamicMemoryHandler.handleDeferredAllocationPointerRemoval, WARNING)
+
+Destroying the void * pointer  ldv_main_exported_11::tmp___1 produces garbage! (in the following line(s):
+ line 9092:	N1276 -{ldv_main_exported_11();}-> N1278) (PredicateCPA:DynamicMemoryHandler.handleDeferredAllocationPointerRemoval, WARNING)
+
+Destroying the void * pointer  ldv_main_exported_11::tmp___10 produces garbage! (in the following line(s):
+ line 9092:	N1276 -{ldv_main_exported_11();}-> N1278) (PredicateCPA:DynamicMemoryHandler.handleDeferredAllocationPointerRemoval, WARNING)
+
+Destroying the void * pointer  ldv_main_exported_11::tmp___11 produces garbage! (in the following line(s):
+ line 9092:	N1276 -{ldv_main_exported_11();}-> N1278) (PredicateCPA:DynamicMemoryHandler.handleDeferredAllocationPointerRemoval, WARNING)
+
+Destroying the void * pointer  ldv_main_exported_11::tmp___12 produces garbage! (in the following line(s):
+ line 9092:	N1276 -{ldv_main_exported_11();}-> N1278) (PredicateCPA:DynamicMemoryHandler.handleDeferredAllocationPointerRemoval, WARNING)
+
+Destroying the void * pointer  ldv_main_exported_11::tmp___13 produces garbage! (in the following line(s):
+ line 9092:	N1276 -{ldv_main_exported_11();}-> N1278) (PredicateCPA:DynamicMemoryHandler.handleDeferredAllocationPointerRemoval, WARNING)
+
+Destroying the void * pointer  ldv_main_exported_11::tmp___14 produces garbage! (in the following line(s):
+ line 9092:	N1276 -{ldv_main_exported_11();}-> N1278) (PredicateCPA:DynamicMemoryHandler.handleDeferredAllocationPointerRemoval, WARNING)
+
+Destroying the void * pointer  ldv_main_exported_11::tmp___16 produces garbage! (in the following line(s):
+ line 9092:	N1276 -{ldv_main_exported_11();}-> N1278) (PredicateCPA:DynamicMemoryHandler.handleDeferredAllocationPointerRemoval, WARNING)
+
+Destroying the void * pointer  ldv_main_exported_11::tmp___17 produces garbage! (in the following line(s):
+ line 9092:	N1276 -{ldv_main_exported_11();}-> N1278) (PredicateCPA:DynamicMemoryHandler.handleDeferredAllocationPointerRemoval, WARNING)
+
+Destroying the void * pointer  ldv_main_exported_11::tmp___2 produces garbage! (in the following line(s):
+ line 9092:	N1276 -{ldv_main_exported_11();}-> N1278) (PredicateCPA:DynamicMemoryHandler.handleDeferredAllocationPointerRemoval, WARNING)
+
+Destroying the void * pointer  ldv_main_exported_11::tmp___20 produces garbage! (in the following line(s):
+ line 9092:	N1276 -{ldv_main_exported_11();}-> N1278) (PredicateCPA:DynamicMemoryHandler.handleDeferredAllocationPointerRemoval, WARNING)
+
+Destroying the void * pointer  ldv_main_exported_11::tmp___21 produces garbage! (in the following line(s):
+ line 9092:	N1276 -{ldv_main_exported_11();}-> N1278) (PredicateCPA:DynamicMemoryHandler.handleDeferredAllocationPointerRemoval, WARNING)
+
+Destroying the void * pointer  ldv_main_exported_11::tmp___4 produces garbage! (in the following line(s):
+ line 9092:	N1276 -{ldv_main_exported_11();}-> N1278) (PredicateCPA:DynamicMemoryHandler.handleDeferredAllocationPointerRemoval, WARNING)
+
+Destroying the void * pointer  ldv_main_exported_11::tmp___5 produces garbage! (in the following line(s):
+ line 9092:	N1276 -{ldv_main_exported_11();}-> N1278) (PredicateCPA:DynamicMemoryHandler.handleDeferredAllocationPointerRemoval, WARNING)
+
+Destroying the void * pointer  ldv_main_exported_11::tmp___7 produces garbage! (in the following line(s):
+ line 9092:	N1276 -{ldv_main_exported_11();}-> N1278) (PredicateCPA:DynamicMemoryHandler.handleDeferredAllocationPointerRemoval, WARNING)
+
+Destroying the void * pointer  ldv_main_exported_11::tmp___8 produces garbage! (in the following line(s):
+ line 9092:	N1276 -{ldv_main_exported_11();}-> N1278) (PredicateCPA:DynamicMemoryHandler.handleDeferredAllocationPointerRemoval, WARNING)
+
+Destroying the void * pointer  ldv_main_exported_11::tmp___9 produces garbage! (in the following line(s):
+ line 9092:	N1276 -{ldv_main_exported_11();}-> N1278) (PredicateCPA:DynamicMemoryHandler.handleDeferredAllocationPointerRemoval, WARNING)
+
+Shutdown requested (The CPU-time limit of 900s has elapsed.), waiting for termination. (ForceTerminationOnShutdown$1.shutdownRequested, WARNING)
+
+Warning: Analysis stopped (The CPU-time limit of 900s has elapsed.) (ShutdownNotifier.shutdownIfNecessary, WARNING)
+
+PredicateCPA statistics
+-----------------------
+Number of abstractions:            227 (1% of all post computations)
+  Times abstraction was reused:    0
+  Because of function entry/exit:  0 (0%)
+  Because of loop head:            227 (100%)
+  Because of join nodes:           0 (0%)
+  Because of threshold:            0 (0%)
+  Times precision was empty:       2 (1%)
+  Times precision was {false}:     0 (0%)
+  Times result was cached:         42 (19%)
+  Times cartesian abs was used:    0 (0%)
+  Times boolean abs was used:      183 (81%)
+  Times result was 'false':        30 (13%)
+Number of strengthen sat checks:   12
+  Times result was 'false':        11 (92%)
+Number of coverage checks:         3252
+  BDD entailment checks:           104
+Number of SMT sat checks:          12
+  trivial:                         0
+  cached:                          1
+
+Max ABE block size:                       485
+Number of predicates discovered:          3
+Number of abstraction locations:          0
+Max number of predicates per location:    0
+Avg number of predicates per location:    0
+Total predicates per abstraction:         183
+Max number of predicates per abstraction: 1
+Avg number of predicates per abstraction: 1.00
+Number of irrelevant predicates:          0 (0%)
+Number of preds handled by boolean abs:   183 (100%)
+  Total number of models for allsat:      152
+  Max number of models for allsat:        1
+  Avg number of models for allsat:        0.83
+
+Number of path formula cache hits:   1924 (5%)
+
+Time for post operator:                 24.645s
+  Time for path formula creation:       24.436s
+    Actual computation:                 23.463s
+Time for strengthen operator:            0.472s
+  Time for satisfiability checks:        0.407s
+Time for prec operator:                840.213s
+  Time for abstraction:                840.158s (Max:   184.057s, Count: 227)
+    Boolean abstraction:               801.493s
+    Solving time:                      797.558s (Max:   180.571s)
+    Model enumeration time:              4.912s
+    Time for BDD construction:           0.015s (Max:     0.009s)
+Time for merge operator:                 5.264s
+Time for coverage check:                 0.004s
+  Time for BDD entailment checks:        0.001s
+Total time for SMT solver (w/o itp):   802.877s
+
+Number of BDD nodes:                               202
+Size of BDD node table:                            466043
+Size of BDD cache:                                 46619
+Size of BDD node cleanup queue:                         118 (count: 841, min: 0, max: 50, avg: 0.14)
+Time for BDD node cleanup:                             0.002s
+Time for BDD garbage collection:                       0.000s (in 0 runs)
+
+PrecisionBootstrap statistics
+-----------------------------
+Init. function predicates:                         0
+Init. global predicates:                           0
+Init. location predicates:                         0
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  0.306s
+Automaton transfers with branching:                0
+Automaton transfer successors:                        53972 (count: 53972, min: 1, max: 1, avg: 1.00) [1 x 53972]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            35840
+Max size of waitlist:            100
+Average size of waitlist:        49
+Number of computed successors:   37664
+Max successors for one state:    2
+Number of times merged:          1574
+Number of times stopped:         1678
+Number of times breaked:         1
+
+Total time for CPA algorithm:       872.868s (Max:   871.011s)
+  Time for choose from waitlist:      0.082s
+  Time for precision adjustment:    840.430s
+  Time for transfer relation:        26.200s
+  Time for merge operator:            5.386s
+  Time for stop operator:             0.106s
+  Time for adding to reached set:     0.204s
+
+Predicate-Abstraction Refiner statistics
+----------------------------------------
+Avg. length of target path (in blocks):                   3 (count: 1, min: 3, max: 3, avg: 3.00)
+Number of infeasible sliced prefixes:                     0 (count: 0, min: 0, max: 0, avg: 0.00)
+
+Time for refinement:                                   0.268s
+  Counterexample analysis:                0.244s (Max:     0.244s, Calls: 1)
+    Refinement sat check:                 0.212s
+    Interpolant computation:              0.000s
+  Error path post-processing:                          0.000s
+  Path-formulas extraction:                            0.000s
+  Building the counterexample trace:                   0.244s
+  Extracting precise counterexample:                   0.000s
+  Extracting infeasible sliced prefixes:               0.000s
+  Selecting infeasible sliced prefixes:                0.000s
+  Predicate creation:                                  0.000s
+  Precision update:                                    0.000s
+  ARG update:                                          0.000s
+
+Length of refined path (in blocks):                       0 (count: 0, min: 0, max: 0, avg: 0.00)
+Number of affected states:                                0 (count: 0, min: 0, max: 0, avg: 0.00)
+Length (states) of path with itp 'true':                  0 (count: 0, min: 0, max: 0, avg: 0.00)
+Length (states) of path with itp non-trivial itp:         0 (count: 0, min: 0, max: 0, avg: 0.00)
+Length (states) of path with itp 'false':                 0 (count: 0, min: 0, max: 0, avg: 0.00)
+Different non-trivial interpolants along paths:           0 (count: 0, min: 0, max: 0, avg: 0.00)
+Equal non-trivial interpolants along paths:               0 (count: 0, min: 0, max: 0, avg: 0.00)
+Different precisions along paths:                         0 (count: 0, min: 0, max: 0, avg: 0.00)
+Equal precisions along paths:                             0 (count: 0, min: 0, max: 0, avg: 0.00)
+Number of refs with location-based cutoff:                0
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                1
+Number of successful refinements:     1
+Number of failed refinements:         0
+Max. size of reached set before ref.: 1133
+Max. size of reached set after ref.:  1
+Avg. size of reached set before ref.: 1133.00
+Avg. size of reached set after ref.:  1.00
+
+Total time for CEGAR algorithm:     873.150s
+Time for refinements:                 0.282s
+Average time for refinement:          0.282s
+Max time for refinement:              0.282s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.677
+  Visited lines:          12623
+  Total lines:            14948
+  Line coverage:          0.844
+  Visited conditions:     1327
+  Total conditions:       2038
+  Condition coverage:     0.651
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     6329
+Number of CFA edges:             9003
+Number of relevant variables:    2393
+Number of functions:             362
+Number of loops:                 78
+Size of reached set:             34824
+  Number of reached locations:   4105 (65%)
+    Avg states per location:     8
+    Max states per location:     646 (at node N10168)
+  Number of reached functions:   245 (68%)
+  Number of partitions:          34824
+    Avg size of partitions:      1
+    Max size of partitions:      1
+  Number of target states:       0
+  Size of final wait list        81
+
+Time for analysis setup:          9.237s
+  Time for loading CPAs:          0.681s
+  Time for loading parser:        0.726s
+  Time for CFA construction:      7.763s
+    Time for parsing file(s):     2.014s
+    Time for AST to CFA:          2.438s
+    Time for CFA sanity check:    0.848s
+    Time for post-processing:     2.251s
+      Time for var class.:        0.000s
+Time for Analysis:              873.151s
+CPU time for analysis:          883.490s
+Total time for CPAchecker:      882.393s
+Total CPU time for CPAchecker:  901.030s
+
+Time for Garbage Collector:       1.097s (in 7 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               1133MB (  1080 MiB) max;    583MB (   556 MiB) avg;   1197MB (  1141 MiB) peak
+Used non-heap memory:             26MB (    24 MiB) max;     25MB (    24 MiB) avg;     26MB (    25 MiB) peak
+Used in PS Old Gen pool:          70MB (    67 MiB) max;     24MB (    23 MiB) avg;     70MB (    67 MiB) peak
+Allocated heap memory:          2546MB (  2429 MiB) max;   2390MB (  2280 MiB) avg
+Allocated non-heap memory:        28MB (    26 MiB) max;     27MB (    26 MiB) avg
+Total process virtual memory:  17252MB ( 16453 MiB) max;  15960MB ( 15221 MiB) avg
+
+Verification result: UNKNOWN, incomplete analysis.
+More details about the verification run can be found in the directory "./output".

@@ -1,9 +1,9 @@
-\subsection{Evaluation setup}
-We performed each run of our benchmarks on a dedicated, unloaded server with a Intel Xeon E5-2650 vs2 with 2.60 GHz and four CPU cores, using the Linux operating system Ubuntu 14.04 for the x86\_64 architecture.
-The resource limits for each run were 15.00 GB (13.97 GiB) of memory (RAM), a Java heap limit of 10.49 GB (10000 MiB = 9.767 GiB),
+\section{Evaluation Setup}
+We performed each run of our benchmarks on a dedicated, unloaded server with an Intel Xeon E5-2650 v2 with 2.60 GHz and 32 CPU cores, using the Linux operating system Ubuntu 14.04 for the x86\_64 architecture.
+The resource limits for each run were 15.00 GB (13.97 GiB) of memory (RAM), a Java heap limit of 10.49 GB (10000~MiB = 9.767~GiB),
 a maximum use of two CPU cores,
-a CPU time limit of 900 seconds (which equals 15 minutes), after which \cpaChecker\ is supposed to shut down,
-and a hard time limit after which the run is killed of 1200 seconds (which equals 20 minutes).
+a CPU time limit of 900~seconds (which equals 15~minutes), after which \cpaChecker\ is supposed to shut down,
+and a hard time limit after which the run is killed of 1200~seconds (which equals 20~minutes).
 We chose a relatively big difference between the time limit in \cpaChecker\ and the hard time limit to give the analysis enough time to shut down in case of a long taking SAT check during analysis.
 As SAT checks are delegated to an SMT solver, \cpaChecker\ is unable to shut down during a check.
 
@@ -36,10 +36,10 @@ Such programs were transformed to pure C programs so they can be analyzed by \cp
 
 \end{enumerate}
 A simple memory model denotes that variables can only be modified using direct assignments or by using a pointer which was obtained by using $\&$ on the corresponding variable.
-A precise memory model denotes that all memory cells can be written to, even by dereferencing uninitialized pointers.\cite{CITATION-TO-http://sv-comp.sosy-lab.org/2015/rules.php-NEEDED, OR BETTER, "Software Verification and VErifiable Witnesses, Beyer 2015", if it mentions these two models}
+A precise memory model denotes that all memory cells can be written to, even by dereferencing uninitialized pointers.
 We told \cpaChecker\ whether to assume a 32-bit or 64-bit architecture with the command-line parameters \configOption{-32} (actually the default) and \configOption{-64}.
 
-The external method \objectName{\_\_VERIFIER\_nondet\_X()} is used to introduce non-deterministic values of type \objectName{X} in a program.
+The external method \objectName{\_\_VERIFIER\_nondet\_X()} is used to introduce non-\-de\-ter\-mi\-nis\-tic values of type \objectName{X} in a program.
 Although \cpaChecker\ is able to handle recursive function calls using block-abstraction memoization (BAM) \cite{Friedberger2015},
 we do not use this feature, but skip such calls to keep our analysis focused on the performance of the \symbolicExecutionCPA\ and its comparisons.
 To skip recursive function calls, we use the command-line parameter \configOption{-skipRecursion}.
@@ -69,3 +69,7 @@ The script rewards correctly found bugs with less points then proving that a spe
 In addition, the script does not check whether the error found by the analysis is an actual specification violation or just a lucky coincidence due to a too high level of abstraction, when a correct \resultFalse\ is returned.
 That means that simple analyses like the \valueAnalysisCPA, which don't track much information, can get points for finding a potential bug that not really is one in case another real bug exists.
 Keeping these points in mind, the resulting score for an analysis can give a fair general overview of its performance.
+
+All benchmarks were executed using the code of revision 17223 of the branch \emph{symbolic-cegar} in the
+\cpaChecker\ repository\footnote{\url{https://svn.sosy-lab.org/software/cpachecker/branches/symbolic-cegar}}.
+All benchmark results can be found on the supplementary web page at \url{http://leostrakosch.github.io/symbolicValueAnalysis-enhanced/}.

@@ -1,0 +1,143 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic -setprop cpa.constraints.lessOrEqualType=SUBSET -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-consumption/ALL.prp ../svcomp15/ldv-consumption/linux-3.8-rc1-32_7a-drivers--media--usb--em28xx--em28xx.ko-ldv_main0_true-unreach-call.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_1791278471_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 12798: Function pointer *(dev->em28xx_read_reg_req_len) with type int (*)(struct em28xx *, u8 , u16 , char *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 12810: Function pointer *(dev->em28xx_read_reg_req) with type int (*)(struct em28xx *, u8 , u16 ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 12746: Function pointer *(dev->em28xx_write_regs_req) with type int (*)(struct em28xx *, u8 , u16 , char *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 12767: Function pointer *(dev->em28xx_read_reg_req) with type int (*)(struct em28xx *, u8 , u16 ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 12460: Function pointer *(dev->em28xx_write_regs) with type int (*)(struct em28xx *, u16 , char *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 12520-12521: Function pointer *(dev->em28xx_read_reg_req_len) with type int (*)(struct em28xx *, u8 , u16 , char *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 12382-12383: Function pointer *(dev->em28xx_write_regs) with type int (*)(struct em28xx *, u16 , char *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 12670: Function pointer *(dev->em28xx_read_reg_req_len) with type int (*)(struct em28xx *, u8 , u16 , char *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 12590-12591: Function pointer *(dev->em28xx_write_regs_req) with type int (*)(struct em28xx *, u8 , u16 , char *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 18766: Function pointer *(dev->em28xx_read_reg_req_len) with type int (*)(struct em28xx *, u8 , u16 , char *, int) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+Shutdown requested (The CPU-time limit of 900s has elapsed.), waiting for termination. (ForceTerminationOnShutdown$1.shutdownRequested, WARNING)
+
+Warning: Analysis stopped (The CPU-time limit of 900s has elapsed.) (ShutdownNotifier.shutdownIfNecessary, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                9318807 (count: 6458, min: 0, max: 1450, avg: 1442.99)
+Number of global variables:                         9122328 (count: 6458, min: 0, max: 1413, avg: 1412.56)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                    6839
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                2.210s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     7.627s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 75
+Most constraints before refinement in state: 75
+Constraints after refinement in state: 172817
+Constraints before refinement in state: 172817
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 225ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  0.190s
+Automaton transfers with branching:                0
+Automaton transfer successors:                        13009 (count: 13009, min: 1, max: 1, avg: 1.00) [1 x 13009]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            5920
+Max size of waitlist:            539
+Average size of waitlist:        229
+Number of computed successors:   6839
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         382
+Number of times breaked:         0
+
+Total time for CPA algorithm:       878.844s (Max:   878.844s)
+  Time for choose from waitlist:      0.071s
+  Time for precision adjustment:      2.628s
+  Time for transfer relation:       147.575s
+  Time for stop operator:           728.118s
+  Time for adding to reached set:     0.189s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.038
+  Visited lines:          8404
+  Total lines:            14758
+  Line coverage:          0.569
+  Visited conditions:     231
+  Total conditions:       2372
+  Condition coverage:     0.097
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     6003
+Number of CFA edges:             8298
+Number of relevant variables:    1651
+Number of functions:             312
+Number of loops:                 94
+Size of reached set:             6458
+  Number of reached locations:   359 (6%)
+    Avg states per location:     17
+    Max states per location:     263 (at node N284)
+  Number of reached functions:   12 (4%)
+  Number of partitions:          2124
+    Avg size of partitions:      3
+    Max size of partitions:      263 (with key [N284 (before line 7573), Function em28xx_copy_video called from node N491, stack depth 5 [49ff4fc7], stack [main, vidioc_s_register, em28xx_urb_data_copy, process_frame_data_em28xx, em28xx_copy_video], Init])
+  Number of target states:       0
+  Size of final wait list        538
+
+Time for analysis setup:          7.452s
+  Time for loading CPAs:          0.608s
+  Time for loading parser:        0.649s
+  Time for CFA construction:      6.151s
+    Time for parsing file(s):     1.987s
+    Time for AST to CFA:          2.227s
+    Time for CFA sanity check:    0.241s
+    Time for post-processing:     1.443s
+      Time for var class.:        0.000s
+Time for Analysis:              878.844s
+CPU time for analysis:          886.160s
+Total time for CPAchecker:      886.302s
+Total CPU time for CPAchecker:  899.990s
+
+Time for Garbage Collector:       1.306s (in 73 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               1093MB (  1042 MiB) max;    345MB (   329 MiB) avg;   1148MB (  1095 MiB) peak
+Used non-heap memory:             23MB (    22 MiB) max;     23MB (    21 MiB) avg;     23MB (    22 MiB) peak
+Used in PS Old Gen pool:          52MB (    49 MiB) max;     43MB (    41 MiB) avg;     52MB (    49 MiB) peak
+Allocated heap memory:          2510MB (  2394 MiB) max;   2005MB (  1912 MiB) avg
+Allocated non-heap memory:        26MB (    24 MiB) max;     25MB (    24 MiB) avg
+Total process virtual memory:  13597MB ( 12967 MiB) max;  13596MB ( 12967 MiB) avg
+
+Verification result: UNKNOWN, incomplete analysis.
+More details about the verification run can be found in the directory "./output".

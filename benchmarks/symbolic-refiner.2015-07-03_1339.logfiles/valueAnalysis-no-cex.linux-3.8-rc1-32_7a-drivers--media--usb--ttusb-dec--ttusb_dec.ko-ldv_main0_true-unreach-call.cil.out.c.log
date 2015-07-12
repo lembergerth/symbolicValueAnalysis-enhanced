@@ -1,0 +1,153 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis -setprop analysis.checkCounterexamples=false -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-consumption/ALL.prp ../svcomp15/ldv-consumption/linux-3.8-rc1-32_7a-drivers--media--usb--ttusb-dec--ttusb_dec.ko-ldv_main0_true-unreach-call.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_1235597193_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 7469: Function pointer *(ops->alloc) with type void * (*)(struct device *, size_t , dma_addr_t *, gfp_t , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 7517: Function pointer *(ops->free) with type void (*)(struct device *, size_t , void *, dma_addr_t , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 8188-8189: Function pointer *(dec->audio_filter->feed->cb.ts) with type int (*)(u8 *, size_t , u8 *, size_t , struct dmx_ts_feed *, enum dmx_success ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 8535-8536: Function pointer *(filter->feed->cb.sec) with type int (*)(u8 *, size_t , u8 *, size_t , struct dmx_section_filter *, enum dmx_success ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 8458-8460: Function pointer *(dec->audio_filter->feed->cb.ts) with type int (*)(u8 *, size_t , u8 *, size_t , struct dmx_ts_feed *, enum dmx_success ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 8361-8363: Function pointer *(dec->video_filter->feed->cb.ts) with type int (*)(u8 *, size_t , u8 *, size_t , struct dmx_ts_feed *, enum dmx_success ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 8203-8204: Function pointer *(dec->video_filter->feed->cb.ts) with type int (*)(u8 *, size_t , u8 *, size_t , struct dmx_ts_feed *, enum dmx_success ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker
+ counterexample.checker.config 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                  17334 (count: 4090, min: 0, max: 5, avg: 4.24)
+Number of global variables:                           16340 (count: 4090, min: 0, max: 4, avg: 4.00)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                   18639
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                0.175s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     0.000s
+Replaced symbolic expressions: 0
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  0.306s
+Automaton transfers with branching:                0
+Automaton transfer successors:                        27065 (count: 27065, min: 1, max: 1, avg: 1.00) [1 x 27065]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            16377
+Max size of waitlist:            35
+Average size of waitlist:        13
+Number of computed successors:   18639
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         2206
+Number of times breaked:         13
+
+Total time for CPA algorithm:         2.293s (Max:     0.714s)
+  Time for choose from waitlist:      0.119s
+  Time for precision adjustment:      0.451s
+  Time for transfer relation:         1.127s
+  Time for stop operator:             0.130s
+  Time for adding to reached set:     0.203s
+
+ValueAnalysisRefiner statistics
+-------------------------------
+Total number of refinements:             13
+Total number of targets found:           13
+Time for completing refinement:           1.051s
+  Time for interpolation:                              0.000s
+  Number of interpolations:                               0
+  Number of interpolation queries:                        0 (count: 0, min: 0, max: 0, avg: 0.00)
+  Size of interpolant:                                    0 (count: 0, min: 0, max: 0, avg: 0.00)
+  Number of infeasible sliced prefixes:                   0 (count: 0, min: 0, max: 0, avg: 0.00)
+  Extracting infeasible sliced prefixes:               0.000s
+  Selecting infeasible sliced prefixes:                0.000s
+Total number of root relocations:         0
+Total number of similar, repeated refinements:         0
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                13
+Number of successful refinements:     13
+Number of failed refinements:         0
+Max. size of reached set before ref.: 4885
+Max. size of reached set after ref.:  4064
+Avg. size of reached set before ref.: 2496.00
+Avg. size of reached set after ref.:  1546.46
+
+Total time for CEGAR algorithm:       4.552s
+Time for refinements:                 2.239s
+Average time for refinement:          0.172s
+Max time for refinement:              0.334s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.742
+  Visited lines:          8227
+  Total lines:            8425
+  Line coverage:          0.976
+  Visited conditions:     566
+  Total conditions:       658
+  Condition coverage:     0.860
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     1914
+Number of CFA edges:             2510
+Number of relevant variables:    446
+Number of functions:             120
+Number of loops:                 22
+Size of reached set:             4090
+  Number of reached locations:   1629 (85%)
+    Avg states per location:     2
+    Max states per location:     36 (at node N2814)
+  Number of reached functions:   89 (74%)
+  Number of partitions:          4026
+    Avg size of partitions:      1
+    Max size of partitions:      2 (with key [N2731 (exit of function ldv_mutex_lock_interruptible_usb_mutex_of_ttusb_dec in lines 11939-11964), Function ldv_mutex_lock_interruptible_usb_mutex_of_ttusb_dec called from node N2384, stack depth 8 [11a9912], stack [main, ttusb_dec_disconnect, ttusb_dec_exit_dvb, ttusb_dec_stop_feed, ttusb_dec_stop_sec_feed, ttusb_dec_send_command, ldv_mutex_lock_interruptible_6, ldv_mutex_lock_interruptible_usb_mutex_of_ttusb_dec], Init])
+  Number of target states:       0
+
+Time for analysis setup:          4.083s
+  Time for loading CPAs:          0.539s
+  Time for loading parser:        0.535s
+  Time for CFA construction:      2.941s
+    Time for parsing file(s):     1.180s
+    Time for AST to CFA:          0.943s
+    Time for CFA sanity check:    0.117s
+    Time for post-processing:     0.544s
+      Time for var class.:        0.000s
+Time for Analysis:                4.552s
+CPU time for analysis:            8.480s
+Total time for CPAchecker:        8.641s
+Total CPU time for CPAchecker:   15.560s
+
+Time for Garbage Collector:       0.156s (in 1 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:                512MB (   488 MiB) max;    223MB (   213 MiB) avg;    563MB (   537 MiB) peak
+Used non-heap memory:             23MB (    22 MiB) max;     18MB (    17 MiB) avg;     23MB (    22 MiB) peak
+Used in PS Old Gen pool:           0MB (     0 MiB) max;      0MB (     0 MiB) avg;      0MB (     0 MiB) peak
+Allocated heap memory:          2024MB (  1930 MiB) max;   2024MB (  1930 MiB) avg
+Allocated non-heap memory:        25MB (    24 MiB) max;     24MB (    23 MiB) avg
+Total process virtual memory:  13581MB ( 12952 MiB) max;  13579MB ( 12950 MiB) avg
+
+Verification result: TRUE. No property violation found by chosen configuration.
+More details about the verification run can be found in the directory "./output".

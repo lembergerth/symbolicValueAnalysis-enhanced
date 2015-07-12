@@ -1,0 +1,151 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic-refiner -setprop cpa.value.symbolic.refinement.strategy=CONSTRAINTS_FIRST -setprop cpa.constraints.lessOrEqualType=IMPLICATION -setprop cpa.value.refinement.pathSlicing=false -setprop cpa.value.refinement.prefixPreference=NONE -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-linux-3.4-simple/ALL.prp ../svcomp15/ldv-linux-3.4-simple/32_7_cilled_false-unreach-call_const_ok_linux-32_1-drivers--gpu--drm--vmwgfx--vmwgfx.ko-ldv_main3_sequence_infinite_withcheck_stateful.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_1496838202_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+line 73609: Ignoring call via function pointer vmw_event_fence_fpriv_gone::__cil_tmp36 for which no suitable target was found in line: (*__cil_tmp36)(event); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 69034: Ignoring call via function pointer vmw_fence_obj_destroy_locked::__cil_tmp25 for which no suitable target was found in line: (*__cil_tmp25)(fence); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from vmw_fence_obj_destroy_locked to vmw_sync_obj_unref (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                   1863 (count: 758, min: 0, max: 6, avg: 2.46)
+Number of global variables:                             756 (count: 758, min: 0, max: 1, avg: 1.00)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                    2993
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                0.094s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:   158.424s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 0
+Most constraints before refinement in state: 1
+Constraints after refinement in state: 0
+Constraints before refinement in state: 10
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 15ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  0.118s
+Automaton transfers with branching:                0
+Automaton transfer successors:                        10438 (count: 10438, min: 1, max: 1, avg: 1.00) [1 x 10438]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            2501
+Max size of waitlist:            104
+Average size of waitlist:        59
+Number of computed successors:   2993
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         90
+Number of times breaked:         5
+
+Total time for CPA algorithm:         1.116s (Max:     0.479s)
+  Time for choose from waitlist:      0.015s
+  Time for precision adjustment:      0.210s
+  Time for transfer relation:         0.773s
+  Time for stop operator:             0.025s
+  Time for adding to reached set:     0.044s
+
+SymbolicValueAnalysisRefiner statistics
+---------------------------------------
+Total number of refinements:              5
+Total number of targets found:            5
+Time for completing refinement:         274.140s
+  Time for interpolation:                            271.746s
+  Number of interpolations:                               4
+  Number of interpolation queries:                      940 (count: 1397, min: 0, max: 428, avg: 0.67)
+  Size of interpolant:                                  316 (count: 1397, min: 0, max: 1, avg: 0.23)
+  Number of sliced prefixes:                              0 (count: 0, min: 0, max: 0, avg: 0.00)
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                5
+Number of successful refinements:     4
+Number of failed refinements:         0
+Max. size of reached set before ref.: 758
+Max. size of reached set after ref.:  665
+Avg. size of reached set before ref.: 718.60
+Avg. size of reached set after ref.:  172.25
+
+Total time for CEGAR algorithm:     275.821s
+Time for refinements:               274.704s
+Average time for refinement:         54.940s
+Max time for refinement:            257.793s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.089
+  Visited lines:          8062
+  Total lines:            53282
+  Line coverage:          0.151
+  Visited conditions:     277
+  Total conditions:       3712
+  Condition coverage:     0.075
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     12228
+Number of CFA edges:             17962
+Number of relevant variables:    16394
+Number of functions:             429
+Number of loops:                 101
+Size of reached set:             758
+  Number of reached locations:   583 (5%)
+    Avg states per location:     1
+    Max states per location:     11 (at node N4427)
+  Number of reached functions:   38 (9%)
+  Number of partitions:          751
+    Avg size of partitions:      1
+    Max size of partitions:      2 (with key [N17562 (before line 37309), Function vmwgfx_init called from node N17606, stack depth 2 [6226d987], stack [main, vmwgfx_init], Init])
+  Number of target states:       1
+  Size of final wait list        102
+
+Time for analysis setup:         15.725s
+  Time for loading CPAs:          0.839s
+  Time for loading parser:        0.512s
+  Time for CFA construction:     14.303s
+    Time for parsing file(s):     3.427s
+    Time for AST to CFA:          3.887s
+    Time for CFA sanity check:    0.357s
+    Time for post-processing:     6.329s
+      Time for var class.:        0.000s
+Time for Analysis:              275.821s
+CPU time for analysis:          283.060s
+Total time for CPAchecker:      291.551s
+Total CPU time for CPAchecker:  309.880s
+
+Time for Garbage Collector:       1.987s (in 95 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               3404MB (  3246 MiB) max;    933MB (   889 MiB) avg;   3495MB (  3333 MiB) peak
+Used non-heap memory:             25MB (    24 MiB) max;     24MB (    23 MiB) avg;     25MB (    24 MiB) peak
+Used in PS Old Gen pool:          99MB (    95 MiB) max;     84MB (    80 MiB) avg;     99MB (    95 MiB) peak
+Allocated heap memory:          4809MB (  4587 MiB) max;   3085MB (  2942 MiB) avg
+Allocated non-heap memory:        27MB (    26 MiB) max;     27MB (    25 MiB) avg
+Total process virtual memory:  13602MB ( 12972 MiB) max;  13597MB ( 12967 MiB) avg
+
+Verification result: FALSE. Property violation (__VERIFIER_error(); called in line 14602) found by chosen configuration.
+More details about the verification run can be found in the directory "./output".

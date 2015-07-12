@@ -1,17 +1,16 @@
-\section{Introduction}
+\chapter{Introduction}
 %\subsubsection{Why Software Verification is important/needed}
-Software systems are prone to error due to multiple factors: The developers skills, humans' limited understanding of software principles, communication problems in development, missing or sparse documentation and unforeseen interdependencies between software components are just some of them.
+Software systems are prone to error due to multiple factors: The developers skills, humans' limited understanding of software principles, communication problems in development, missing or sparse documentation and unforeseen inter-dependencies between software components are just some of them.
 
-Because of this testing has been an integral part of software development for quite some time, often claiming about 50\% of development effort and more than 50\% of the budget.
+Because of this testing has been an integral part of software development for quite some time, often claiming about 50\% of development effort and more than 50\% of the budget.\cite{Myers2011}
 \emph{Software testing} describes the execution of a program with the intention of finding errors.
 The tester, either a person or another program, uses different inputs and checks that the proper output is produced.
 The nature of this approach determines that only a finite amount of inputs is possible in finite time.
-As a result, it is impossible to ensure the errorless execution of a program with arbitrary input.
-Additionally, human testing is a technique only shortly touched in most software engineering educations, resembling art more than science.\cite{Myers2011}
+As a result, it is impossible to ensure the error-less execution of a program with arbitrary input.
 
-Along with these points, the rise of ubiquitious computing and reactive systems complicates the process of reliable verification by testing even more.
-Always running systems that gather, evaluate and adapt their behaviour to information of their environment pose an immense amount of possible inputs and interactions due to these.
-This makes it almost impossible to predict the behaviour of such systems through testing.
+%Along with these points, the rise of ubiquitous computing and reactive systems complicates the process of reliable testing even more.
+%Always running systems that gather, evaluate and adapt their behaviour to information of their environment pose an immense amount of possible inputs and interactions due to these.
+%This makes it almost impossible to predict the behaviour of such systems through testing.
 
 An alternative to testing is formal verification, which tries to produce formal statements that are true for all possible behaviours of a system, using mathematical methods.
 These statements are then used for proving that a specific specification is met.
@@ -21,8 +20,8 @@ One area of formal verification is \emph{automated software verification}. It tr
 Three such CPAs are the \valueAnalysisCPA, which uses concrete variable assignments, the \predicateCPA, which creates predicates for describing properties of program paths,
 and the \symbolicExecutionCPA, which uses an extension of the \valueAnalysisCPA\ tracking non-deterministic values as symbolic ones in combination with the \constraintsCPA, which tracks constraints to symbolic values on program paths.
 While the \valueAnalysisCPA\ has high efficiency due to her simplicity, it can't handle complex program characteristics like pointers or non-deterministic values.
-The \predicateCPA, in constrast, is very expressive, but has low efficiency since SAT checks are necessary for computing the feasibility of a program path.
-The \symbolicExecutionCPA\ poses something in between those two, not being able to handle some complex program characteristics as it is partly based on the \valueAnalysisCPA, but being able to handle non-deterministic values.
+The \predicateCPA, in contrast, is very expressive, but has low efficiency since SAT checks are necessary for computing the feasibility of a program path.
+The \symbolicExecutionCPA\ based on the concepts of symbolic execution \cite{King1976} poses something in between these two, not being able to handle some complex program characteristics as it is partly based on the \valueAnalysisCPA, but being able to handle non-deterministic values.
 On the other hand, it uses SAT checks, too, though less often and over smaller formulas.
 
 \begin{figure}[t]
@@ -49,23 +48,22 @@ On the other hand, it uses SAT checks, too, though less often and over smaller f
   \coordinate[below = 0.5cm of 8] (e8);
 
   \path
-    (0) edge node [right] {\textbf{a = \_\_nondet\_int()}} (1)
-    (1) edge node [left, pos=0.5] {$\mathbf{![a \geq 0]}$} (2)
+    (0) edge node [left] {\footnotesize{\textbf{a $\assign$ \_\_VERIFIER\_nondet\_int()}}} (1)
+    (1) edge node [left, pos=0.5] {$\mathbf{[!(a \geq 0)]}$} (2)
     (1) edge node [right, pos=0.5] {$\mathbf{[a \geq 0]}$} (4)
-    (2) edge node [left] {\textbf{b = a + 1}} (3)
-    (4) edge node [right] {\textbf{b = a}} (5)
+    (2) edge node [left] {\textbf{b $\assign$ a + 1}} (3)
+    (4) edge node [left] {\textbf{b $\assign$ a}} (5)
     (3) edge (6)
     (5) edge (6)
-    (6) edge node [left, pos=0.5] {$\mathbf{![b < a]}$} (7)
-    (6) edge node [right, pos=0.5] {$\mathbf{[b < a]}$} (8)
+    (6) edge node [left, pos=0.5] {$\mathbf{[!(b < a)]}$} (7)
+    (6) edge node [left, pos=0.5] {$\mathbf{[b < a]}$} (8)
     (7) edge node [left] {\textbf{return 0}} (e7)
-    (8) edge node [right] {\textbf{return -1}} (e8)
   ;
 \end{tikzpicture}
 %\label{fig:ex1ValueGraph}
 %\caption{Analysis of the program to the left by the \valueAnalysisCPA.}
 \end{subfigure}
-\caption{Simple program and its execution by the \valueAnalysisCPA.}
+\caption{Simple program and its execution by the \valueAnalysisCPA}
 \label{fig:ex1}
 \end{figure}
 
@@ -82,52 +80,54 @@ On the other hand, it uses SAT checks, too, though less often and over smaller f
 %  \node[mynode] (6) [below = 0.8cm of 3, text width=1.45cm] {$(\{a \rightarrow s1$, $b \rightarrow s1+1\}$, $\{s1 < 0\})$};
  % \node[mynode] (6n) [below = 0.8cm of 5, text width=1.45cm] {$(\{a \rightarrow s1$, $b \rightarrow s1 \}$, $\{s1 \geq 0\})$};
   \node[mynode] (7) [below left = 1cm of 3, text width=1.8cm] {$(\{a \rightarrow s1$, $b \rightarrow s1+1\}$, $\{s1 < 0$, $s1+1 \geq s1\})$};
-  \node[mynode] (8) [below right = 1cm of 3, draw=red, fill=gray, very thick, text width=1.3cm]{$(false$, $\{s1 < 0\})$};
-  \node[mynode] (8n) [below left = 1cm of 5, draw=red, fill=gray, very thick, text width=1.3cm]{$(false$, $\{s1 \geq 0\})$};
+  \node[mynode] (8) [below right = 1cm of 3, draw=red, dashed, very thick, text width=1.3cm]{$(false$, $\{s1 < 0\})$};
+  \node[mynode] (8n) [below left = 1cm of 5, draw=red, dashed, very thick, text width=1.3cm]{$(false$, $\{s1 \geq 0\})$};
   \node[mynode] (7n) [below right = 1cm of 5, text width=1.3cm] {$(\{a \rightarrow s1$, $b \rightarrow s1\}$, $\{s1 < 0$, $s1 \geq s1\})$};
   \coordinate[below = 1cm of 7] (e7);
   \coordinate[below = 1cm of 7n] (e7n);
 
   \path
-    (0) edge node [right] {\textbf{a = \_\_nondet\_int()}} (1)
-    (1) edge node [left, pos=0.5] {$\mathbf{![a \geq 0]}$} (2)
+    (0) edge node [right] {\textbf{a $\assign$ \_\_VERIFIER\_nondet\_int()}} (1)
+    (1) edge node [left, pos=0.5] {$\mathbf{[!(a \geq 0)]}$} (2)
     (1) edge node [right, pos=0.5] {$\mathbf{[a \geq 0]}$} (4)
-    (2) edge node [left] {\textbf{b = a + 1}} (3)
-    (4) edge node [right] {\textbf{b = a}} (5)
+    (2) edge node [left] {\textbf{b $\assign$ a + 1}} (3)
+    (4) edge node [right] {\textbf{b $\assign$ a}} (5)
 %    (3) edge (6)
 %    (5) edge (6n)
-    (3) edge node [left, pos=0.2] {$\mathbf{![b < a]}$} (7)
-    (3) edge node [right, pos=0.2] {$\mathbf{[b < a]}$} (8)
-    (5) edge node [left, pos=0.2] {$\mathbf{[b < a]}$} (8n)
-    (5) edge node [right, pos=0.2] {$\mathbf{![b < a]}$} (7n)
+    (3) edge node [left, pos=0.2] {$\mathbf{[!(b < a)]}$} (7)
+    (3) edge [dashed] node [right, pos=0.2] {$\mathbf{[b < a]}$} (8)
+    (5) edge [dashed] node [left, pos=0.2] {$\mathbf{[b < a]}$} (8n)
+    (5) edge node [right, pos=0.2] {$\mathbf{[!(b < a)]}$} (7n)
     (7) edge node [left] {\textbf{return 0}} (e7)
     (7n) edge node [right] {\textbf{return 0}} (e7n)
   ;
 \end{tikzpicture}
-\caption{Analysis of the program in Listing \ref{lst:exProg} by the \symbolicExecutionCPA.}
+\caption{Analysis of the program in Listing \ref{lst:exProg} by the \symbolicExecutionCPA}
 \label{fig:ex1SymExGraph}
 \end{figure}
 
 %\subsubsection{Basic Value Analysis can't deal with non-deterministic values (+ Example)}
 Figure \ref{fig:ex1} displays an example program that uses non-deterministic values and its analysis using the classic \valueAnalysisCPA.
+Each node in the graph represents one abstract state of analysis, with the edges denoting its children. Highlighted nodes are abstract states at target locations.
+
 Since the CPA does not store any information about non-deterministic assignments, no information about the relation between \textbf{a}\ and \textbf{b}\ exists and the property violation is reachable according to the analysis. This produces a \emph{false alarm}.
-In constrast to this, the \symbolicExecutionCPA\ is able to handle the non-deterministic assignment to \textbf{a}\ a and its later usage. It returns that the program is safe, correctly.
-Figure \ref{fig:ex1SymExGraph} shows this analysis. 
+In contrast to this, the \symbolicExecutionCPA\ based on symbolic execution \cite{King1976} tracks non-deterministic values. It can handle the assignment to \textbf{a}\ and its later usage. It returns that the program is safe, correctly.
+Figure \ref{fig:ex1SymExGraph} shows this analysis, with abstract states computed as infeasible dashed out. 
 
 \SymbolicExecutionCPA's ability to track non-deterministic values is able to reduce the number of false alarms to a great extent, as we already showed in \cite{Lemberger2015}.
 %\subsubsection{But symbolic value analysis pretty slow, as previous evaluation has shown (illustrate path explosion, sat checks)}
 Runtime wise, it performs poorly, though, when compared to the \valueAnalysisCPA.
-Since it considers all variable assignments, both deterministic and non-deterministic, and all occurring assumptions, its state space is exponential to the amount of occuring assumptions.
+Since it considers all variable assignments, both deterministic and non-deterministic, and all occurring assumptions, its state space is exponential to the amount of occurring assumptions.
 If a infinite loop occurs, the state space is infinite, too.
-This problem is called \emph{path explosion}.\cite{Anand2008}
+This problem is called \emph{path explosion} and characteristic to symbolic execution.\cite{Anand2008}
 Obviously, an exponential amount of states does not scale to large programs.
-In addition, the cost for SAT checks, which are performed at every assumption, are exponential to the amount of non-deterministic values occuring in all encountered assumptions on the currently considered program path.
+In addition, the cost for SAT checks, which are performed at every assumption, are exponential to the amount of non-deterministic values occurring in all encountered assumptions on the currently considered program path.
 Evaluation in \cite{Lemberger2015} showed that the \symbolicExecutionCPA\ spends up to 95\% of its runtime for SAT checks.
 
 %\subsubsection{Goal: Try to speed up}
 In this work we design, implement and evaluate different approaches to increasing the performance of the \symbolicExecutionCPA.
 Our main contribution is, along with variations to the existing merge and less-or-equal operators of the CPA,
-the application of CEGAR \cite{Clarke2003} to the composition of the two strongly intertwined CPAs \valueAnalysisCPA\ and \constraintsCPA\ with precision refinement for both CPAs
+the application of CEGAR \cite{Clarke2003} to the composition of the two strongly intertwined CPAs \symbolicValueAnalysisCPA\ and \constraintsCPA\ with precision refinement for both CPAs
 with two different precision types.
 
 This work is divided into four parts: Theoretical background and contributions, their implementation, their evaluation, and future work and a conclusion.

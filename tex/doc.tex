@@ -1,22 +1,287 @@
-\documentclass[a4paper,11pt]{article}
-\usepackage[hidelinks]{hyperref}
-\usepackage{listings} % for code
+\documentclass[abstracton,bibliography=totoc,version=last,fontsize=12pt,BCOR=5mm,footinclude=false,a4paper,final,ngerman]{scrreprt}
+\usepackage[listings=false]{scrhack}
+\usepackage[utf8]{inputenc}
+\usepackage{wrapfig}
+\usepackage{multicol}
+\usepackage{dcolumn}
+\usepackage{rotating}
+\newcolumntype{d}[1]{D{.}{.}{#1}}
+
+%%%%%%%%%%%%%% USEFUL PACKAGES
+
+% more flexible enumerate environments
+\usepackage{enumerate}
+\usepackage{multirow}
+\usepackage{rotating}
+% commands for changing line-height
+\usepackage{setspace}
+
+
+%%%%%%%%%%%%%% FONT
+
+% better font-encoding and hyphenation for german text
+\usepackage[T1]{fontenc}
+
+% Palatino is a nice font
+\usepackage{palatino}
+
+% mathpazo provides good math support if you use Palatino
+\usepackage{mathpazo}
+
+% AMS Euler is also a nice math font together with Palatino
+%\usepackage{eulervm}
+
+% By default, Palatino is combined with Helvetica for headings.
+% Optima would be perhaps nicer for headings, but
+% you need to download and install it from
+% http://www.ctan.org/tex-archive/fonts/urw/classico/
+% If you have it, enable it with
+%\renewcommand{\sfdefault}{uop}
+
+% If you want a more classical font, use Latin Modern
+%\usepackage{lmodern}
+
+
+%%%%%%%%%%%%%% PAGE LAYOUT
+
+% For the definition of custom page layouts and margins
+% (use only if you have strict requirements)
+% Disable \KOMAoptions{DIV=default} below!
+%\usepackage{geometry}
+
+% more space between lines
+\onehalfspacing
+
+% re-compute page layout for the current font and spacing
+% disable if you use the geometry package
+\KOMAoptions{DIV=default}
+
+
+%%%%%%%%%%%%%% LANGUAGE
+
+% support english and german language
+\usepackage[english,ngerman]{babel}
+
+
+%%%%%%%%%%%%%% MATH
+
+% The basic math packages from AMS
+\usepackage{amsmath,amssymb}
+
+% some further symbols (e.g. \lbracket)
+% for more see the "Comprehensive LaTeX symbol list" (symbols-a4.pdf)
+\usepackage{stmaryrd}
+
+% a package for writing algorithms in a nice way
+%\usepackage[algo2e]{algorithm2e}
+\usepackage{setspace}
+
+% |x| (abs function)
+\newcommand{\abs}[1]{\left| #1 \right|}
+
+% shortcuts for the set of natural numbers, complex numbers etc.
+% \NN* are the natural numbers without 0
+\makeatletter
+\newcommand{\NN}{\@ifstar{{\mathbb{N}\setminus\{0\}}}{{\mathbb{N}}}}
+\makeatother
+\newcommand{\BB}{\mathbb{B}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\DD}{\mathbb{D}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\RR}{\mathbb{R}}
+\DeclareMathOperator{\mergeop}{\mathsf{merge}}
+\DeclareMathOperator{\reached}{\mathsf{reached}}
+\DeclareMathOperator{\waitlist}{\mathsf{waitlist}}
+\DeclareMathOperator{\mergejoin}{\mergeop^{join}}
+\DeclareMathOperator{\mergesep}{\mergeop^{sep}}
+\DeclareMathOperator{\stopop}{\mathsf{stop}}
+\DeclareMathOperator{\stopsep}{\stopop^{sep}}
+\DeclareMathOperator{\transabs}{\leadsto}
+\DeclareMathOperator{\absop}{\mathsf{abs}}
+\DeclareMathOperator{\abssbe}{\absop^{\mathsf{SBE}}}
+\DeclareMathOperator{\abslbe}{\absop^{\mathsf{LBE}}}
+\DeclareMathOperator{\sizeop}{\mathsf{size}}
+\DeclareMathOperator{\SP}{\mathsf{SP}}
+\DeclareMathOperator{\precop}{\mathsf{prec}}
+\newcommand{\sem}[1]{\left\llbracket #1 \right\rrbracket}
+\newcommand{\calE}{\mathcal{E}}
+\newcommand{\preds}{\mathcal{P}}
+\newcommand{\Ops}{Ops}
+\newcommand{\op}{{op}}
+\newcommand{\formulas}{\mathcal{F}}
+\newcommand{\concrStates}{\mathcal{C}}
+%\newcommand{\semilat}{\mathcal{V}}
+\newcommand{\cartAbs}{\phi_\mathbb{C}^\pi}
+\newcommand{\boolAbs}{\phi_\mathbb{B}^\pi}
+\newcommand{\precision}{\Pi}
+
+\newcommand{\CPAchecker}{\textsc{CPAchecker}}
+\newcommand{\SLAM}{\textsc{Slam}}
+\newcommand{\BLAST}{\textsc{Blast}}
+\newcommand{\SatAbs}{\textsc{SatAbs}}
+\newcommand{\CBMC}{\textsc{CBMC}}
+\newcommand{\CIL}{\textsc{CIL}}
+\newcommand{\CSIsat}{\textsc{CSIsat}}
+\newcommand{\MathSAT}{\textsc{MathSAT}}
+
+% nicer phi
+%\renewcommand\phi\varphi % we use both \phi and \varphi, so do not do this
+
+% If you want german numbers (comma as decimal separators),
+% load this package so that no space is inserted after commas.
+% You really should insert spaces in places where like (x, y) thou.
+%\usepackage{icomma}
+
+
+%%%%%%%%%%%%%% GRAPHICS
+
+% basic package for including external graphics
 \usepackage{graphicx}
+
+% Colored  tables
+\usepackage{colortbl}
+\definecolor{LightGreen}{rgb}{0.4,1,0.4}
+\definecolor{LightRed}{rgb}{1,0.6,0.6}
+
+% only use PDF files if no extension is specified,
+% we strongly prefer vector images
+%\DeclareGraphicsExtensions{.pdf}
+
+% color support
+\usepackage{color}
+
+% for pictures in TeX
 \usepackage{tikz}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{shadows}
+\usepackage{pgfplots}
+
+% for trees with tikz
+% (get package from http://www.ctan.org/tex-archive/help/Catalogue/entries/tikz-qtree.html)
+%\usepackage{tikz-qtree}
+
+% for graphs with tikz
+% (get package from http://altermundus.com/pages/tkz/graph/index.html)
+\usepackage{tkz-graph}
+
+
+%%%%%%%%%%%%%% TABLES
+
+% for table rows with alignment of numbers at the decimal separator
+\usepackage{dcolumn}
+
+% cells that span several rows or columns
+\usepackage{multicol}
+
+
+%%%%%%%%%%%%%% CODE & ALGORITHMS
+
+%\usepackage{program}
+%\usepackage{algorithm2e}
+
+
+% for writing algorithms in pseudo-code
+%\usepackage[noend]{algorithmic} % we use algorithmicx
+
+% float environment for algorithms
+\usepackage{algorithm}
+
+\newcommand\theHalgorithm{\Alph{algorithm}}
+
+% for code with syntax highlighting
+\usepackage{listings}
+% a basic formatting style for C programs
+\definecolor{javared}{rgb}{0.6,0,0} % for strings
+\definecolor{javagreen}{rgb}{0.25,0.5,0.35} % comments
+\definecolor{javapurple}{rgb}{0.5,0,0.35} % keywords
+\definecolor{javadocblue}{rgb}{0.25,0.35,0.75} % javadoc
+\lstdefinestyle{JAVA}{
+    basicstyle=\ttfamily,
+    keywordstyle=\color{javapurple}\bfseries,
+    stringstyle=\color{javared},
+    commentstyle=\color{javagreen},
+    morecomment=[s][\color{javadocblue}]{/**}{*/},
+    numberblanklines=false,
+    flexiblecolumns=true,
+    lineskip=1pt,
+    numbers=left,
+    numberstyle=\tiny,
+    numberfirstline=true,
+    firstnumber=1,
+}
+
+\lstdefinestyle{C}{
+    basicstyle=\ttfamily,
+    keywordstyle=\color{javapurple}\bfseries,
+    stringstyle=\color{javared},
+    commentstyle=\color{javagreen},
+    morecomment=[s][\color{javadocblue}]{/**}{*/},
+    numberblanklines=false,
+    flexiblecolumns=true,
+    lineskip=1pt,
+    numbers=left,
+    numberstyle=\tiny,
+    numberfirstline=true,
+    firstnumber=1,
+}
+
+% use our new style by default
+\lstset{style=C}
+
+
+\providecommand{\frontmatter}{}
+\providecommand{\mainmatter}{}
+\providecommand{\backmatter}{}
+
+\usepackage{microtype}
+
+\usepackage[overlay]{textpos}
+\setlength\TPHorizModule{1cm}
+\setlength\TPVertModule{1cm}
+
+
+\usepackage[format=hang]{caption}
+
+\usepackage{sidecap}
+\sidecaptionvpos{figure}{t}
+\captionsetup[SCfigure]{format=default}
+
+\usepackage{subcaption} % has to be loaded after caption
+\captionsetup[subfigure]{format=default}
+
+\usepackage[above,below]{placeins}
+\usepackage{hyperref}
+\hypersetup{colorlinks=false, pdfborder=0 0 0, pdftitle=Efficient Symbolic Execution using CEGAR over Two Abstract Domains, pdfauthor=Thomas Lemberger, pdfsubject=Bachelors Thesis in Computer Science, pdfkeywords=,breaklinks}
+
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000
+%\hfuzz=0.2pt
+\tolerance=400
+%\emergencystretch=5pt
+%\vbadness=2000
+
+\renewcommand{\topfraction}{0.90}
+\renewcommand{\textfraction}{0.1}
+
+\addtocounter{tocdepth}{-1}
+
+
+\deffootnote[1em]{1em}{1em}{\textsuperscript{\thefootnotemark}\ }
+
+
+\bibliographystyle{my-alpha}
+%\setcounter{tocdepth}{2}
+
 \usetikzlibrary{positioning}
 \usetikzlibrary{decorations.pathreplacing}
 \usetikzlibrary{calc}
-\usepackage{subcaption}
-\usepackage{wrapfig}
 \usepackage{enumitem}
-\usepackage{algorithm}
 \usepackage{algorithmicx}
 \usepackage{algpseudocode}
 
-\usepackage{amssymb}
 \usepackage[mathscr]{euscript}
 \usepackage{mathtools}
-\usepackage{amsmath}
 
 %% Start of own commands
 \algnewcommand\algorithmicinput{\textbf{Input:}}
@@ -25,6 +290,7 @@
 \algnewcommand\Output{\item[\algorithmicoutput]}
 \algnewcommand\algorithmicvariables{\textbf{Variables:}}
 \algnewcommand\Variables{\item[\algorithmicvariables]}
+\algrenewcommand\algorithmicforall{\textbf{for each}}
 \algtext*{EndWhile}
 \algtext*{EndIf}
 \algtext*{EndFor}
@@ -45,8 +311,8 @@
 \newcommand{\CompositeCPA}{Composite CPA}
 \newcommand{\locationCPA}{location CPA}
 \newcommand{\LocationCPA}{Location CPA}
-\newcommand{\cpaChecker}{CPAChecker}
-\newcommand{\CpaChecker}{CPAChecker}
+\newcommand{\cpaChecker}{\CPAchecker}
+\newcommand{\CpaChecker}{\CPAchecker}
 
 \newcommand{\predCPA}{\mathbb{P}}
 \newcommand{\valCPA}{\mathbb{C}}
@@ -60,12 +326,12 @@
 %% Commands specific to specification of CPAs
 \newcommand{\cpa}{\mathbb{D}}
 \newcommand{\cpaPlus}{\cpa}
-\newcommand{\cpaMerge}{\texttt{merge}}
-\newcommand{\mergeAgree}{{\cpaMerge^{agree}}}
-\newcommand{\cpaStop}{\texttt{stop}}
-\newcommand{\cpaPrec}{\texttt{prec}}
-\newcommand{\singletonPrec}{\widetilde{\texttt{prec}}}
-\newcommand{\auxiliaryPrec}{\text{prec}}
+\DeclareMathOperator{\cpaMerge}{\mergeop}
+\DeclareMathOperator{\mergeAgree}{{\cpaMerge^{agree}}}
+\DeclareMathOperator{\cpaStop}{\stopop}
+\DeclareMathOperator{\cpaPrec}{\precop}
+\DeclareMathOperator{\singletonPrec}{\widetilde{\cpaPrec}}
+\DeclareMathOperator{\auxiliaryPrec}{\text{prec}}
 \newcommand{\singletonPrecision}{{\widetilde{\pi}}}
 \newcommand{\singletonPi}{{\widetilde{\Pi}}}
 \newcommand{\reachedSet}{\texttt{reached}}
@@ -75,22 +341,28 @@
 \newcommand{\isTargetState}[1]{\isTargetStateFunc(#1)}
 \newcommand{\extractErrorPathFunc}{\texttt{extractErrorPath}}
 \newcommand{\extractErrorPath}[1]{\extractErrorPathFunc(#1)}
+\newcommand{\extractSlicedPrefixesFunc}{\texttt{extractSlicedPrefixes}}
+\newcommand{\extractSlicedPrefixes}[1]{\extractSlicedPrefixesFunc(#1)}
+\newcommand{\selectSlicedPrefixFunc}{\texttt{selectSlicedPrefix}}
+\newcommand{\selectSlicedPrefix}[1]{\selectSlicedPrefixFunc(#1)}
 \newcommand{\isFeasibleFunc}{\texttt{isFeasible}}
 \newcommand{\isFeasible}[1]{\isFeasibleFunc(#1)}
 \newcommand{\refineFunc}{\texttt{refine}}
 \newcommand{\refine}[1]{\refineFunc(#1)}
 \newcommand{\refineExplicitFunc}{\refineFunc}
 \newcommand{\refineExplicit}[1]{\refineExplicitFunc(#1)}
+\newcommand{\refinePlusFunc}{{\refineFunc^{+}}}
+\newcommand{\refinePlus}[1]{\refinePlusFunc(#1)}
 \newcommand{\refinePredFunc}{\refineFunc_\predCPA}
 \newcommand{\refinePred}[1]{\refinePredFunc(#1)}
 \newcommand{\refineSymbolicFunc}{\refineFunc_\symExCPA}
 \newcommand{\refineSymbolic}[1]{\refineSymbolicFunc(#1)}
 \newcommand{\refineSymbolicPredFunc}{\refineFunc'_\symExCPA}
 \newcommand{\refineSymbolicPred}[1]{\refineSymbolicPredFunc(#1)}
-\newcommand{\strongestPostOp}{\text{SP}}
+\DeclareMathOperator{\strongestPostOp}{\SP}
 %\newcommand{\strongestPostOpBool}{\text{SP}^\booleanset} % We don't need this one
-\newcommand{\strongestPostOpExplicit}{\strongestPostOp}
-\newcommand{\strongestPostOpSym}{\strongestPostOp^\symExCPA}
+\DeclareMathOperator{\strongestPostOpExplicit}{\strongestPostOp}
+\DeclareMathOperator{\strongestPostOpSym}{\strongestPostOp^\symExCPA}
 
 \newcommand{\interpolate}{\texttt{interpolate}}
 \newcommand{\interpolateExplicit}{\interpolate}
@@ -113,8 +385,8 @@
 \newcommand{\strengthenOp}[2]{\strengthen_{{#1}, {#2}}}
 \newcommand{\compare}{\preceq}
 
-\newcommand{\llbracket}{[\![}
-\newcommand{\rrbracket}{]\!]}
+%\newcommand{\llbracket}{[\![} % Defined by stmaryrd
+%\newcommand{\rrbracket}{]\!]} % Defined by stmaryrd
 \newcommand{\concretization}{\llbracket \cdot \rrbracket}
 \newcommand{\lesserEqual}{\sqsubseteq}
 \newcommand{\lesserEqualSub}{{\lesserEqual_{sub}}}
@@ -135,9 +407,9 @@
 \newcommand{\partialFunc}{\ooalign{\hfil $\circ$\hfil \cr $\to$\cr}}
 
 \newcommand{\valueset}{\mathscr{Z}}
-\newcommand{\integerset}{\mathbb{Z}}
-\newcommand{\booleanset}{\mathbb{B}}
-\newcommand{\symvalset}{{\mathscr{Z}_\symValCPA}}
+\newcommand{\integerset}{\ZZ}
+\newcommand{\booleanset}{\BB}
+\newcommand{\symvalset}{{\valueset_\symValCPA}}
 \newcommand{\constraintsset}{\gamma}
 \newcommand{\goodconstraintsset}{{\gamma^+}}
 
@@ -173,7 +445,7 @@
 \newcommand{\unsafe}{{$unsafe$}}
 
 % Commands for describing implementation
-\newcommand{\configOption}[1]{\mbox{\texttt{#1}}}
+\newcommand{\configOption}[1]{\texttt{#1}}
 \newcommand{\configParam}[1]{\mbox{\texttt{#1}}}
 \newcommand{\objectName}[1]{\texttt{#1}}
 \newcommand{\typeParam}[1]{\textbf{#1}}
@@ -183,15 +455,57 @@
 \newcommand{\resultFalse}{FALSE}
 \newcommand{\resultUnknown}{UNKNOWN}
 
-\begin{document}
 
-\title{Effective Symbolic Execution in CPAChecker with compositional CEGAR}
+\begin{document}
+\hyphenation{Value-Analysis-Trans-fer-Re-lation}
+\hyphenation{de-ter-mi-nis-tic}
+% language for the main part of the document
+% (change to "ngerman" for a german document)
+\selectlanguage{english}
+
+\frontmatter
+
+\titlehead{
+\centering
+\includegraphics[width=5cm]{unilogo}
+}
+
+\subject{Bachelor's Thesis\\in Computer Science}
+\title{Efficient Symbolic Execution using CEGAR over Two Abstract Domains}
+\author{{\LARGE Thomas Lemberger}\\\mbox{}\\Supervisor:\\Prof. Dr. Dirk Beyer\\}
+\publishers{\today}
+\date{}
+
 \maketitle
+
+\begin{abstract}
+\begin{addmargin}{1.5cm}
+Symbolic execution is a powerful approach to automatic software verification we already applied to the domain of configurable software verification in previous work.
+Unfortunately, it suffers from bad runtime performance, mainly due to path explosion caused by its high precision.
+%Different approaches have already been developed for making symbolic execution faster so that it is applicable to more complex programs.
+%Search heuristics for finding a feasible error path more efficiently and
+%abstracting states by using interpolation are among the most examined.
+To mitigate this problem, we apply counterexample-guided abstraction refinement (CEGAR), an abstraction technique mostly used in model checking,
+to our configurable program analysis (CPA) for symbolic execution.
+We design two different refinement procedures for its compositional domain, considering two strongly intertwined domains at the same time.
+First, applying CEGAR to multiple domains is a novel approach compared to the existing single or combined refinement procedures, which only handle one domain at a time.
+Second, often seen as two opposites, we are, to our knowledge, the first to apply CEGAR to symbolic execution.
+Both refinement procedures were implemented in the verification framework \cpaChecker\ and evaluated with different configurations and optimizations to find the one yielding the best results.
+We are able to show a significant boost in runtime performance compared to symbolic execution without CEGAR for most programs.
+%We are also able to surpass the explicit state analysis implemented in \cpaChecker, which uses CEGAR, in overall effectiveness, in exchange for a small speed decrease.
+This concludes CEGAR as a valid mean to improve the runtime performance of symbolic execution and shows a valid way to apply CEGAR to multiple domains.
+
+\end{addmargin}
+\end{abstract}
+
 \setcounter{tocdepth}{5}
 \setcounter{secnumdepth}{5}
 \tableofcontents
-\begin{abstract}
-\end{abstract}
+\listofalgorithms
+\listoffigures
+\listoftables
+
+\mainmatter
 \input{introduction/doc}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \input{relatedWork/doc}
@@ -212,7 +526,29 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \input{conclusion/doc}
 
-\bibliographystyle{acm}
+\backmatter
+\appendix
 \bibliography{softwareVerification}
+
+\selectlanguage{ngerman}
+\chapter*{Eidesstattliche Erkl\"{a}rung}
+\thispagestyle{empty}
+Hiermit versichere ich, dass ich diese Bachelorarbeit selbstst\"{a}ndig und ohne
+Benutzung anderer als der angegebenen Quellen und Hilfsmittel angefertigt habe
+und alle Ausf\"{u}hrungen, die w\"{o}rtlich oder sinngem\"{a}\ss{} \"{u}bernommen wurden, als
+solche gekennzeichnet sind, sowie dass ich die Bachelorarbeit in gleicher oder
+\"{a}hnlicher Form noch keiner anderen Pr\"{u}fungsbeh\"{o}rde vorgelegt habe.
+
+\bigskip
+
+\noindent Passau, den \today
+
+\bigskip\bigskip\bigskip
+\noindent \begin{tabular}{c}
+\hspace*{0.5\linewidth}\\
+\hline
+Thomas Lemberger
+\end{tabular}
+
 
 \end{document}

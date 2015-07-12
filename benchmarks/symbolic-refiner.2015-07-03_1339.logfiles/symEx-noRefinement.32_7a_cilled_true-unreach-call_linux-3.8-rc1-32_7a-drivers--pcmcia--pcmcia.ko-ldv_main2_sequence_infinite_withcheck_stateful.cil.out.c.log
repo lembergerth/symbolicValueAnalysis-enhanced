@@ -1,0 +1,123 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic -setprop cpa.constraints.lessOrEqualType=SUBSET -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-consumption/ALL.prp ../svcomp15/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--pcmcia--pcmcia.ko-ldv_main2_sequence_infinite_withcheck_stateful.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_-1681678043_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+lines 11735-11736: Function pointer *(s->resource_ops->find_io) with type int (*)(struct pcmcia_socket *, unsigned int, unsigned int *, unsigned int, unsigned int, struct resource **) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 11503: Function pointer *(s->resource_ops->find_mem) with type struct resource * (*)(unsigned long, unsigned long, unsigned long, int, struct pcmcia_socket *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                  85701 (count: 412, min: 0, max: 278, avg: 208.01)
+Number of global variables:                           65600 (count: 412, min: 0, max: 160, avg: 159.22)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                     421
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                0.103s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     0.052s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 8
+Most constraints before refinement in state: 8
+Constraints after refinement in state: 1797
+Constraints before refinement in state: 1797
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 11ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  0.040s
+Automaton transfers with branching:                0
+Automaton transfer successors:                         1958 (count: 1958, min: 1, max: 1, avg: 1.00) [1 x 1958]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            372
+Max size of waitlist:            40
+Average size of waitlist:        18
+Number of computed successors:   421
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         10
+Number of times breaked:         1
+
+Total time for CPA algorithm:         1.122s (Max:     1.122s)
+  Time for choose from waitlist:      0.005s
+  Time for precision adjustment:      0.138s
+  Time for transfer relation:         0.810s
+  Time for stop operator:             0.128s
+  Time for adding to reached set:     0.026s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.102
+  Visited lines:          5682
+  Total lines:            11413
+  Line coverage:          0.498
+  Visited conditions:     109
+  Total conditions:       1914
+  Condition coverage:     0.057
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     5212
+Number of CFA edges:             7350
+Number of relevant variables:    1424
+Number of functions:             323
+Number of loops:                 63
+Size of reached set:             412
+  Number of reached locations:   327 (6%)
+    Avg states per location:     1
+    Max states per location:     5 (at node N6655)
+  Number of reached functions:   33 (10%)
+  Number of partitions:          362
+    Avg size of partitions:      1
+    Max size of partitions:      5 (with key [N6720 (before line 17996), Function main called from node N6685, stack depth 1 [1dad5dd8], stack [main], Init])
+  Number of target states:       1
+  Size of final wait list        40
+
+Time for analysis setup:          6.342s
+  Time for loading CPAs:          0.547s
+  Time for loading parser:        0.543s
+  Time for CFA construction:      5.214s
+    Time for parsing file(s):     1.634s
+    Time for AST to CFA:          1.719s
+    Time for CFA sanity check:    0.173s
+    Time for post-processing:     1.421s
+      Time for var class.:        0.000s
+Time for Analysis:                1.122s
+CPU time for analysis:            1.700s
+Total time for CPAchecker:        7.469s
+Total CPU time for CPAchecker:   13.530s
+
+Time for Garbage Collector:       0.000s (in 0 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:                339MB (   323 MiB) max;    203MB (   193 MiB) avg;    350MB (   334 MiB) peak
+Used non-heap memory:             21MB (    20 MiB) max;     15MB (    14 MiB) avg;     22MB (    21 MiB) peak
+Used in PS Old Gen pool:           0MB (     0 MiB) max;      0MB (     0 MiB) avg;      0MB (     0 MiB) peak
+Allocated heap memory:          2024MB (  1930 MiB) max;   2024MB (  1930 MiB) avg
+Allocated non-heap memory:        25MB (    24 MiB) max;     24MB (    23 MiB) avg
+Total process virtual memory:  13597MB ( 12967 MiB) max;  13582MB ( 12953 MiB) avg
+
+Verification result: FALSE. Property violation (__VERIFIER_error(); called in line 19184) found by chosen configuration.
+More details about the verification run can be found in the directory "./output".

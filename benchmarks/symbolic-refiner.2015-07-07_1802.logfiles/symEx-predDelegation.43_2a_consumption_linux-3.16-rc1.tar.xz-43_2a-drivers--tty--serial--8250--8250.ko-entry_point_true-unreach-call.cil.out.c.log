@@ -1,0 +1,362 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic-refiner-pred -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-linux-3.16-rc1/ALL.prp ../svcomp15/ldv-linux-3.16-rc1/43_2a_consumption_linux-3.16-rc1.tar.xz-43_2a-drivers--tty--serial--8250--8250.ko-entry_point_true-unreach-call.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_-515402534_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 13940: Function pointer *(ops->alloc) with type void * (*)(struct device *, size_t , dma_addr_t *, gfp_t , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 13987: Function pointer *(ops->free) with type void (*)(struct device *, size_t , void *, dma_addr_t , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 13670-13671: Function pointer *(ops->map_page) with type dma_addr_t  (*)(struct device *, struct page *, unsigned long, size_t , enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 13762: Function pointer *(ops->sync_single_for_cpu) with type void (*)(struct device *, dma_addr_t , size_t , enum dma_data_direction ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 13807: Function pointer *(ops->sync_single_for_device) with type void (*)(struct device *, dma_addr_t , size_t , enum dma_data_direction ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 13717: Function pointer *(ops->unmap_page) with type void (*)(struct device *, dma_addr_t , size_t , enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 14007: Function pointer *(chan->device->device_control) with type int (*)(struct dma_chan *, enum dma_ctrl_cmd , unsigned long) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 14047: Function pointer *(chan->device->device_prep_slave_sg) with type struct dma_async_tx_descriptor * (*)(struct dma_chan *, struct scatterlist *, unsigned int, enum dma_transfer_direction , unsigned long, void *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 14084: Function pointer *(chan->device->device_tx_status) with type enum dma_status  (*)(struct dma_chan *, dma_cookie_t , struct dma_tx_state *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 10149: Function pointer *serial8250_isa_config with type void (*)(int, struct uart_port *, unsigned short *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 10827: Function pointer *serial8250_isa_config with type void (*)(int, struct uart_port *, unsigned short *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 4947: Function pointer *(pv_cpu_ops.io_delay) with type void (*)() is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+line 5510: Ignoring function call through function pointer *(up___0->serial_in): tmp = (*(up___0->serial_in))(up___0, offset); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 14084: Ignoring function call through function pointer *(chan->device->device_tx_status): tmp = (*(chan->device->device_tx_status))(chan, cookie, state); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 14047: Ignoring function call through function pointer *(chan->device->device_prep_slave_sg): tmp = (*(chan->device->device_prep_slave_sg))(chan, &sg, 1U, dir, flags, (void *)0); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 14096: Ignoring function call through function pointer *(desc->tx_submit): tmp = (*(desc->tx_submit))(desc); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+Skipping recursive function call from serial8250_tx_empty to serial_port_in (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 10827: Ignoring call via function pointer serial8250_isa_config for which no suitable target was found in line: (*serial8250_isa_config)(0, &(uart->port), &(uart->capabilities)); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 10827: Ignoring function call through function pointer *serial8250_isa_config: (*serial8250_isa_config)(0, &(uart->port), &(uart->capabilities)); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 5522: Ignoring function call through function pointer *(up___0->serial_out): (*(up___0->serial_out))(up___0, offset, value); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 5660: Ignoring function call through function pointer *(up___0->port.serial_out): (*(up___0->port.serial_out))(&(up___0->port), offset, value); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+Skipping recursive function call from serial_out to serial8250_pm (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from serial_out to serial8250_do_pm (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 9551: Ignoring function call through function pointer *(port->pm): (*(port->pm))(port, state, oldstate); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+Skipping recursive function call from serial8250_pm to serial8250_pm (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from serial8250_pm to serial8250_do_pm (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 5648: Ignoring function call through function pointer *(up___0->port.serial_in): tmp = (*(up___0->port.serial_in))(&(up___0->port), offset); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 5648: Return type of function serial8250_rx_dma is int, but result is used as type unsigned int: tmp = serial8250_rx_dma(&(up___0->port), offset); (PredicateCPA:CtoFormulaConverter.getReturnType, WARNING)
+
+Skipping recursive function call from serial_in to serial8250_rx_dma (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from serial8250_handle_irq to serial_port_in (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from serial8250_handle_irq to serial8250_rx_dma (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from serial8250_rx_chars to serial_in (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 5599: Ignoring function call through function pointer *(port->handle_break): (*(port->handle_break))(port); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+Skipping recursive function call from serial8250_set_sleep to serial_out (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from serial8250_tx_chars to serial_port_in (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 13762: Ignoring function call through function pointer *(ops->sync_single_for_cpu): (*(ops->sync_single_for_cpu))(dev, addr, size, dir); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+Skipping recursive function call from serial8250_tx_dma to dmaengine_submit (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 13807: Ignoring function call through function pointer *(ops->sync_single_for_device): (*(ops->sync_single_for_device))(dev, addr, size, dir); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 14132: Ignoring function call through function pointer *(chan->device->device_issue_pending): (*(chan->device->device_issue_pending))(chan); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+Skipping recursive function call from dma_async_issue_pending to __dma_tx_complete (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from serial8250_start_tx to serial8250_tx_dma (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from serial8250_start_tx to serial_in (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 13987: Ignoring function call through function pointer *(ops->free): (*(ops->free))(dev, size, vaddr, bus, attrs); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 13717: Ignoring function call through function pointer *(ops->unmap_page): (*(ops->unmap_page))(dev, addr, size, dir, attrs); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+Skipping recursive function call from serial8250_shutdown to serial_port_in (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from disable_rsa to serial_in (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from serial8250_backup_timeout to serial_in (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 8198: Ignoring function call through function pointer *(up___0->port.handle_irq): (*(up___0->port.handle_irq))(&(up___0->port)); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+Skipping recursive function call from serial8250_timeout to serial8250_resume (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from serial8250_modem_status to serial_in (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from serial8250_timeout to serial8250_tx_dma (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from __enable_rsa to serial_in (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from serial8250_startup to serial_port_in (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from serial8250_startup to serial_in (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from wait_for_xmitr to serial_in (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 6008: Ignoring function call through function pointer *(p->serial_out): (*(p->serial_out))(p, offset, value); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 6001: Ignoring function call through function pointer *(p->serial_out): (*(p->serial_out))(p, offset, value); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 6003: Ignoring function call through function pointer *(p->serial_in): (*(p->serial_in))(p, 3); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+line 6003: Return type of function serial8250_rx_dma is int, but result is used as type unsigned int: serial8250_rx_dma(p, 3); (PredicateCPA:CtoFormulaConverter.getReturnType, WARNING)
+
+Skipping recursive function call from serial_port_out_sync to serial8250_rx_dma (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 6003: Return type of function serial8250_handle_irq is int, but result is used as type unsigned int: serial8250_handle_irq(p, 3); (PredicateCPA:CtoFormulaConverter.getReturnType, WARNING)
+
+Skipping recursive function call from serial_port_out_sync to serial8250_handle_irq (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 11063: Ignoring function call through function pointer *(timer->function): (*(timer->function))(timer->data); (PredicateCPA:ExpressionToFormulaVisitor.visit, WARNING)
+
+Skipping recursive function call from uart_handle_break to serial8250_tx_chars (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from dma_async_issue_pending to serial8250_tx_chars (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from serial8250_start_tx to serial8250_tx_chars (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from serial8250_backup_timeout to serial8250_tx_chars (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Error: Refinement using predicate refinement failed.Try using cpa.value.symbolic.refiner.SymbolicValueAnalysisRefiner (SymbolicPrecisionRefinementStrategy.performRefinement, SEVERE)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                  60933 (count: 60935, min: 0, max: 1, avg: 1.00)
+Number of global variables:                           60933 (count: 60935, min: 0, max: 1, avg: 1.00)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                  210815
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                0.665s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     0.421s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 0
+Most constraints before refinement in state: 0
+Constraints after refinement in state: 0
+Constraints before refinement in state: 0
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 256ms
+
+PredicateCPA statistics
+-----------------------
+Number of abstractions:            210812 (100% of all post computations)
+  Times abstraction was reused:    0
+  Because of function entry/exit:  64013 (30%)
+  Because of loop head:            127 (0%)
+  Because of join nodes:           0 (0%)
+  Because of threshold:            0 (0%)
+  Times precision was empty:       210812 (100%)
+  Times precision was {false}:     0 (0%)
+  Times result was cached:         0 (0%)
+  Times cartesian abs was used:    0 (0%)
+  Times boolean abs was used:      0 (0%)
+  Times result was 'false':        0 (0%)
+Number of strengthen sat checks:   3
+  Times result was 'false':        0 (0%)
+Number of coverage checks:         21580
+  BDD entailment checks:           21580
+Number of SMT sat checks:          3
+  trivial:                         3
+  cached:                          0
+
+Max ABE block size:                       1
+Number of predicates discovered:          3
+Number of abstraction locations:          0
+Max number of predicates per location:    0
+Avg number of predicates per location:    0
+
+Number of path formula cache hits:   278386 (75%)
+
+Time for post operator:                 17.371s
+  Time for path formula creation:       16.915s
+    Actual computation:                 12.354s
+Time for strengthen operator:            0.282s
+  Time for satisfiability checks:        0.000s
+Time for prec operator:                  8.167s
+  Time for abstraction:                  2.122s (Max:     0.017s, Count: 210812)
+    Solving time:                        0.000s (Max:     0.000s)
+    Model enumeration time:              0.000s
+    Time for BDD construction:           0.000s (Max:     0.000s)
+Time for merge operator:                 0.000s
+Time for coverage check:                 0.181s
+  Time for BDD entailment checks:        0.141s
+Total time for SMT solver (w/o itp):     0.000s
+
+Number of BDD nodes:                               202
+Size of BDD node table:                            466043
+Size of BDD cache:                                 46619
+Size of BDD node cleanup queue:                           0 (count: 232399, min: 0, max: 0, avg: 0.00)
+Time for BDD node cleanup:                             0.207s
+Time for BDD garbage collection:                       0.000s (in 0 runs)
+
+PrecisionBootstrap statistics
+-----------------------------
+Init. function predicates:                         0
+Init. global predicates:                           0
+Init. location predicates:                         0
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  1.314s
+  Time for transition matches:                         0.569s
+  Time for transition assertions:                      0.000s
+  Time for transition actions:                         0.000s
+Automaton transfers with branching:                0
+Automaton transfer successors:                       282691 (count: 282691, min: 1, max: 1, avg: 1.00) [1 x 282691]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            188957
+Max size of waitlist:            113
+Average size of waitlist:        96
+Number of computed successors:   210815
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         21580
+Number of times breaked:         3
+
+Total time for CPA algorithm:        38.849s (Max:    19.849s)
+  Time for choose from waitlist:      0.306s
+  Time for precision adjustment:     10.529s
+  Time for transfer relation:        24.878s
+  Time for merge operator:            0.077s
+  Time for stop operator:             0.740s
+  Time for adding to reached set:     0.738s
+
+Predicate-Abstraction Refiner statistics
+----------------------------------------
+Avg. length of target path (in blocks):                1301 (count: 3, min: 419, max: 441, avg: 433.67)
+Number of infeasible sliced prefixes:                     0 (count: 0, min: 0, max: 0, avg: 0.00)
+
+Time for refinement:                                   2.840s
+  Counterexample analysis:                1.489s (Max:     0.506s, Calls: 3)
+    Refinement sat check:                 1.019s
+    Interpolant computation:              0.000s
+  Error path post-processing:                          0.000s
+  Path-formulas extraction:                            0.000s
+  Building the counterexample trace:                   1.489s
+  Extracting precise counterexample:                   0.000s
+  Extracting infeasible sliced prefixes:               0.000s
+  Selecting infeasible sliced prefixes:                0.000s
+  Predicate creation:                                  0.003s
+  Precision update:                                    0.004s
+  ARG update:                                          0.000s
+
+Length of refined path (in blocks):                     481 (count: 2, min: 61, max: 420, avg: 240.50)
+Number of affected states:                               14 (count: 2, min: 5, max: 9, avg: 7.00)
+Length (states) of path with itp 'true':                465 (count: 2, min: 51, max: 414, avg: 232.50)
+Length (states) of path with itp non-trivial itp:        14 (count: 2, min: 5, max: 9, avg: 7.00)
+Length (states) of path with itp 'false':                 2 (count: 2, min: 1, max: 1, avg: 1.00)
+Different non-trivial interpolants along paths:           0 (count: 2, min: 0, max: 0, avg: 0.00)
+Equal non-trivial interpolants along paths:              12 (count: 2, min: 4, max: 8, avg: 6.00)
+Different precisions along paths:                         0 (count: 0, min: 0, max: 0, avg: 0.00)
+Equal precisions along paths:                             0 (count: 0, min: 0, max: 0, avg: 0.00)
+Number of refs with location-based cutoff:                0
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                3
+Number of successful refinements:     2
+Number of failed refinements:         0
+Max. size of reached set before ref.: 67368
+Max. size of reached set after ref.:  1
+Avg. size of reached set before ref.: 63079.33
+Avg. size of reached set after ref.:  1.00
+
+Total time for CEGAR algorithm:      41.528s
+Time for refinements:                 2.679s
+Average time for refinement:          0.893s
+Max time for refinement:              1.327s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.520
+  Visited lines:          7013
+  Total lines:            9174
+  Line coverage:          0.764
+  Visited conditions:     713
+  Total conditions:       1604
+  Condition coverage:     0.445
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     4114
+Number of CFA edges:             6292
+Number of relevant variables:    1223
+Number of functions:             225
+Number of loops:                 24
+Size of reached set:             60935
+  Number of reached locations:   1734 (42%)
+    Avg states per location:     35
+    Max states per location:     2608 (at node N105)
+  Number of reached functions:   117 (52%)
+  Number of partitions:          60935
+    Avg size of partitions:      1
+    Max size of partitions:      1
+  Number of target states:       1
+  Size of final wait list        93
+
+Time for analysis setup:          5.698s
+  Time for loading CPAs:          0.728s
+  Time for loading parser:        0.569s
+  Time for CFA construction:      4.325s
+    Time for parsing file(s):     1.194s
+    Time for AST to CFA:          1.581s
+    Time for CFA sanity check:    0.164s
+    Time for post-processing:     1.157s
+      Time for var class.:        0.000s
+Time for Analysis:               41.528s
+CPU time for analysis:           55.400s
+Total time for CPAchecker:       47.231s
+Total CPU time for CPAchecker:   66.020s
+
+Time for Garbage Collector:       0.951s (in 4 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               1507MB (  1437 MiB) max;    558MB (   532 MiB) avg;   1606MB (  1532 MiB) peak
+Used non-heap memory:             27MB (    25 MiB) max;     24MB (    23 MiB) avg;     27MB (    26 MiB) peak
+Used in PS Old Gen pool:          76MB (    73 MiB) max;     19MB (    18 MiB) avg;     76MB (    73 MiB) peak
+Allocated heap memory:          3611MB (  3444 MiB) max;   2595MB (  2475 MiB) avg
+Allocated non-heap memory:        28MB (    27 MiB) max;     27MB (    25 MiB) avg
+Total process virtual memory:  13683MB ( 13050 MiB) max;  13625MB ( 12994 MiB) avg
+
+Verification result: UNKNOWN, incomplete analysis.
+More details about the verification run can be found in the directory "./output".

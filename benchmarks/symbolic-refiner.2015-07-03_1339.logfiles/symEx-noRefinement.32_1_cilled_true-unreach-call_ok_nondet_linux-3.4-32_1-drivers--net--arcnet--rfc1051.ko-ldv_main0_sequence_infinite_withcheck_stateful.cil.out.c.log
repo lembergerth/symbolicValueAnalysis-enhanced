@@ -1,0 +1,136 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic -setprop cpa.constraints.lessOrEqualType=SUBSET -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-linux-3.4-simple/ALL.prp ../svcomp15/ldv-linux-3.4-simple/32_1_cilled_true-unreach-call_ok_nondet_linux-3.4-32_1-drivers--net--arcnet--rfc1051.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_-350906903_tempdir
+line 6819: Function pointer *__cil_tmp52 with type void (*)(struct net_device *dev, int bufnum, int offset, void *buf, int count) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 6838: Function pointer *__cil_tmp57 with type void (*)(struct net_device *dev, int bufnum, int offset, void *buf, int count) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 6349: Function pointer *__cil_tmp52 with type void (*)(struct net_device *dev, int bufnum, int offset, void *buf, int count) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+line 6819: Ignoring call via function pointer prepare_tx::__cil_tmp52 for which no suitable target was found in line: (*__cil_tmp52)(dev, bufnum, 0, __cil_tmp53, 4); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 6838: Ignoring call via function pointer prepare_tx::__cil_tmp57 for which no suitable target was found in line: (*__cil_tmp57)(dev, bufnum, ofs, __cil_tmp61, length); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 6349: Ignoring call via function pointer rx::__cil_tmp52 for which no suitable target was found in line: (*__cil_tmp52)(dev, bufnum, __cil_tmp55, __cil_tmp63, __cil_tmp66); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Shutdown requested (The CPU-time limit of 900s has elapsed.), waiting for termination. (ForceTerminationOnShutdown$1.shutdownRequested, WARNING)
+
+Warning: Analysis stopped (The CPU-time limit of 900s has elapsed.) (ShutdownNotifier.shutdownIfNecessary, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                9387295 (count: 138535, min: 0, max: 127, avg: 67.76)
+Number of global variables:                         1523863 (count: 138535, min: 0, max: 11, avg: 11.00)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                  138535
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                2.977s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:    29.708s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 17
+Most constraints before refinement in state: 17
+Constraints after refinement in state: 1355336
+Constraints before refinement in state: 1355336
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 1222ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  2.043s
+  Time for transition matches:                         0.853s
+  Time for transition assertions:                      0.000s
+  Time for transition actions:                         0.000s
+Automaton transfers with branching:                0
+Automaton transfer successors:                       447564 (count: 447564, min: 1, max: 1, avg: 1.00) [1 x 447564]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            127850
+Max size of waitlist:            10685
+Average size of waitlist:        5463
+Number of computed successors:   138535
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         1
+Number of times breaked:         0
+
+Total time for CPA algorithm:       879.399s (Max:   879.399s)
+  Time for choose from waitlist:      0.251s
+  Time for precision adjustment:      5.179s
+  Time for transfer relation:       333.822s
+  Time for stop operator:           538.510s
+  Time for adding to reached set:     0.665s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.429
+  Visited lines:          5146
+  Total lines:            5210
+  Line coverage:          0.988
+  Visited conditions:     48
+  Total conditions:       74
+  Condition coverage:     0.649
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     282
+Number of CFA edges:             338
+Number of relevant variables:    262
+Number of functions:             21
+Number of loops:                 1
+Size of reached set:             138535
+  Number of reached locations:   180 (64%)
+    Avg states per location:     769
+    Max states per location:     10671 (at node N786)
+  Number of reached functions:   9 (43%)
+  Number of partitions:          58028
+    Avg size of partitions:      2
+    Max size of partitions:      10671 (with key [N786 (before line 6963), Function main called from node N721, stack depth 1 [71ec7a35], stack [main], Init])
+  Number of target states:       0
+  Size of final wait list        10685
+
+Time for analysis setup:          2.888s
+  Time for loading CPAs:          0.457s
+  Time for loading parser:        0.557s
+  Time for CFA construction:      1.833s
+    Time for parsing file(s):     0.737s
+    Time for AST to CFA:          0.516s
+    Time for CFA sanity check:    0.043s
+    Time for post-processing:     0.217s
+      Time for var class.:        0.000s
+Time for Analysis:              879.399s
+CPU time for analysis:          895.020s
+Total time for CPAchecker:      882.292s
+Total CPU time for CPAchecker:  900.030s
+
+Time for Garbage Collector:       7.342s (in 91 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               3481MB (  3319 MiB) max;   1198MB (  1143 MiB) avg;   3725MB (  3552 MiB) peak
+Used non-heap memory:             23MB (    22 MiB) max;     22MB (    21 MiB) avg;     23MB (    22 MiB) peak
+Used in PS Old Gen pool:         294MB (   280 MiB) max;    178MB (   170 MiB) avg;    294MB (   280 MiB) peak
+Allocated heap memory:          4848MB (  4623 MiB) max;   3418MB (  3260 MiB) avg
+Allocated non-heap memory:        26MB (    25 MiB) max;     26MB (    24 MiB) avg
+Total process virtual memory:  13603MB ( 12973 MiB) max;  13598MB ( 12968 MiB) avg
+
+Verification result: UNKNOWN, incomplete analysis.
+More details about the verification run can be found in the directory "./output".

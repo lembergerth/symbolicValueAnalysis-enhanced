@@ -1,0 +1,153 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic-refiner -setprop cpa.value.symbolic.refinement.strategy=CONSTRAINTS_FIRST -setprop cpa.constraints.lessOrEqualType=SUBSET -setprop cegar.refiner=cpa.value.symbolic.refiner.delegation.SymbolicDelegatingRefiner -setprop cpa.value.refinement.pathSlicing=false -setprop cpa.value.refinement.prefixPreference=NONE -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-consumption/ALL.prp ../svcomp15/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-net--batman-adv--batman-adv.ko-ldv_main10_sequence_infinite_withcheck_stateful.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_217136790_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+Skipping recursive function call from batadv_send_outstanding_bat_ogm_packet to batadv_send_outstanding_bat_ogm_packet (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from batadv_schedule_bat_ogm to batadv_send_outstanding_bat_ogm_packet (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 17038: Ignoring call via function pointer __batadv_dat_purge::to_purge for which no suitable target was found in line: tmp = (*to_purge)(dat_entry); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                 424974 (count: 106264, min: 0, max: 4, avg: 4.00)
+Number of global variables:                          318777 (count: 106264, min: 0, max: 3, avg: 3.00)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                  589834
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                1.474s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     1.116s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 0
+Most constraints before refinement in state: 1
+Constraints after refinement in state: 0
+Constraints before refinement in state: 18
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 695ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  3.560s
+  Time for transition matches:                         1.490s
+  Time for transition assertions:                      0.000s
+  Time for transition actions:                         0.000s
+Automaton transfers with branching:                0
+Automaton transfer successors:                       863696 (count: 863696, min: 1, max: 1, avg: 1.00) [1 x 863696]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            530461
+Max size of waitlist:            52
+Average size of waitlist:        26
+Number of computed successors:   589834
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         59368
+Number of times breaked:         4
+
+Total time for CPA algorithm:        32.069s (Max:     8.990s)
+  Time for choose from waitlist:      0.580s
+  Time for precision adjustment:      4.664s
+  Time for transfer relation:        20.738s
+  Time for stop operator:             1.514s
+  Time for adding to reached set:     1.404s
+
+SymbolicDelegatingRefiner statistics
+------------------------------------
+Explicit refinements: 4
+Successful explicit refinements: 4
+Symbolic refinements: 0
+Successful symbolic refinements: 0
+Overall explicit refinement time: 7113ms
+Average explicit refinement time: 1778ms
+Overall symbolic refinement time: 0ms
+Average symbolic refinement time: 0ms
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                4
+Number of successful refinements:     4
+Number of failed refinements:         0
+Max. size of reached set before ref.: 106254
+Max. size of reached set after ref.:  18
+Avg. size of reached set before ref.: 106059.00
+Avg. size of reached set after ref.:  8.25
+
+Total time for CEGAR algorithm:      39.182s
+Time for refinements:                 7.113s
+Average time for refinement:          1.778s
+Max time for refinement:              2.019s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.355
+  Visited lines:          12402
+  Total lines:            25054
+  Line coverage:          0.495
+  Visited conditions:     1730
+  Total conditions:       6050
+  Condition coverage:     0.286
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     16698
+Number of CFA edges:             25872
+Number of relevant variables:    5679
+Number of functions:             753
+Number of loops:                 198
+Size of reached set:             106264
+  Number of reached locations:   5122 (31%)
+    Avg states per location:     20
+    Max states per location:     802 (at node N62)
+  Number of reached functions:   267 (35%)
+  Number of partitions:          105494
+    Avg size of partitions:      1
+    Max size of partitions:      257 (with key [N11508 (before line 26176), Function batadv_recv_handler_init called from node N11205, stack depth 3 [14cd8e7e], stack [main, batadv_init, batadv_recv_handler_init], Init])
+  Number of target states:       0
+
+Time for analysis setup:         13.116s
+  Time for loading CPAs:          0.717s
+  Time for loading parser:        0.508s
+  Time for CFA construction:     11.792s
+    Time for parsing file(s):     2.399s
+    Time for AST to CFA:          3.925s
+    Time for CFA sanity check:    2.114s
+    Time for post-processing:     3.146s
+      Time for var class.:        0.000s
+Time for Analysis:               39.182s
+CPU time for analysis:           50.160s
+Total time for CPAchecker:       52.303s
+Total CPU time for CPAchecker:   75.300s
+
+Time for Garbage Collector:       2.310s (in 6 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               2477MB (  2362 MiB) max;    795MB (   758 MiB) avg;   2631MB (  2509 MiB) peak
+Used non-heap memory:             26MB (    25 MiB) max;     23MB (    22 MiB) avg;     26MB (    25 MiB) peak
+Used in PS Old Gen pool:         288MB (   275 MiB) max;    106MB (   101 MiB) avg;    288MB (   275 MiB) peak
+Allocated heap memory:          4586MB (  4374 MiB) max;   2914MB (  2779 MiB) avg
+Allocated non-heap memory:        28MB (    27 MiB) max;     27MB (    26 MiB) avg
+Total process virtual memory:  13609MB ( 12978 MiB) max;  13593MB ( 12964 MiB) avg
+
+Verification result: TRUE. No property violation found by chosen configuration.
+More details about the verification run can be found in the directory "./output".

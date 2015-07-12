@@ -1,0 +1,157 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic-refiner -setprop cpa.value.symbolic.refinement.strategy=VALUES_FIRST -setprop cpa.constraints.lessOrEqualType=SUBSET -setprop cpa.value.refinement.pathSlicing=false -setprop cpa.value.refinement.prefixPreference=NONE -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-consumption/ALL.prp ../svcomp15/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--md--dm-snapshot.ko-main.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_1576011419_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 10752: Function pointer *(type->ctr) with type int (*)(struct dm_exception_store *, unsigned int, char **) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 8706: Function pointer *fn with type int (*)(struct dm_target *, struct dm_dev *, sector_t , sector_t , void *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 8268: Function pointer *fn with type int (*)(struct dm_target *, struct dm_dev *, sector_t , sector_t , void *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 8274: Function pointer *fn with type int (*)(struct dm_target *, struct dm_dev *, sector_t , sector_t , void *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+Shutdown requested (The CPU-time limit of 900s has elapsed.), waiting for termination. (ForceTerminationOnShutdown$1.shutdownRequested, WARNING)
+
+Warning: Analysis stopped (The CPU-time limit of 900s has elapsed.) (ShutdownNotifier.shutdownIfNecessary, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                  10202 (count: 3756, min: 0, max: 5, avg: 2.72)
+Number of global variables:                            3840 (count: 3756, min: 0, max: 2, avg: 1.02)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                   37112
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                0.173s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     4.624s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 0
+Most constraints before refinement in state: 1
+Constraints after refinement in state: 0
+Constraints before refinement in state: 326
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 74ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  0.341s
+Automaton transfers with branching:                0
+Automaton transfer successors:                        56093 (count: 56093, min: 1, max: 1, avg: 1.00) [1 x 56093]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            35988
+Max size of waitlist:            40
+Average size of waitlist:        18
+Number of computed successors:   37112
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         1109
+Number of times breaked:         14
+
+Total time for CPA algorithm:         5.151s (Max:     1.010s)
+  Time for choose from waitlist:      0.071s
+  Time for precision adjustment:      0.558s
+  Time for transfer relation:         2.696s
+  Time for stop operator:             1.226s
+  Time for adding to reached set:     0.197s
+
+SymbolicValueAnalysisRefiner statistics
+---------------------------------------
+Total number of refinements:             14
+Total number of targets found:           14
+Time for completing refinement:         876.747s
+  Time for interpolation:                            875.355s
+  Number of interpolations:                              14
+  Number of interpolation queries:                      758 (count: 9563, min: 0, max: 12, avg: 0.08)
+  Size of interpolant:                                  308 (count: 9563, min: 0, max: 1, avg: 0.03)
+  Number of sliced prefixes:                              0 (count: 0, min: 0, max: 0, avg: 0.00)
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                14
+Number of successful refinements:     13
+Number of failed refinements:         0
+Max. size of reached set before ref.: 7396
+Max. size of reached set after ref.:  7191
+Avg. size of reached set before ref.: 4629.29
+Avg. size of reached set after ref.:  2215.85
+
+Total time for CEGAR algorithm:     882.507s
+Time for refinements:               877.321s
+Average time for refinement:         62.665s
+Max time for refinement:            870.717s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.124
+  Visited lines:          5122
+  Total lines:            8216
+  Line coverage:          0.623
+  Visited conditions:     99
+  Total conditions:       1208
+  Condition coverage:     0.082
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     3624
+Number of CFA edges:             5107
+Number of relevant variables:    1135
+Number of functions:             249
+Number of loops:                 32
+Size of reached set:             3756
+  Number of reached locations:   346 (10%)
+    Avg states per location:     10
+    Max states per location:     257 (at node N461)
+  Number of reached functions:   31 (12%)
+  Number of partitions:          2261
+    Avg size of partitions:      1
+    Max size of partitions:      257 (with key [N461 (before line 5265), Function init_origin_hash called from node N2579, stack depth 3 [3578bc72], stack [main, dm_snapshot_init, init_origin_hash], Init])
+  Number of target states:       1
+  Size of final wait list        19
+
+Time for analysis setup:          4.666s
+  Time for loading CPAs:          0.587s
+  Time for loading parser:        0.590s
+  Time for CFA construction:      3.414s
+    Time for parsing file(s):     0.977s
+    Time for AST to CFA:          1.118s
+    Time for CFA sanity check:    0.129s
+    Time for post-processing:     0.947s
+      Time for var class.:        0.000s
+Time for Analysis:              882.507s
+CPU time for analysis:          892.040s
+Total time for CPAchecker:      887.178s
+Total CPU time for CPAchecker:  900.390s
+
+Time for Garbage Collector:       0.946s (in 53 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               3439MB (  3280 MiB) max;    991MB (   945 MiB) avg;   3477MB (  3316 MiB) peak
+Used non-heap memory:             24MB (    23 MiB) max;     24MB (    23 MiB) avg;     25MB (    23 MiB) peak
+Used in PS Old Gen pool:          29MB (    27 MiB) max;     25MB (    24 MiB) avg;     29MB (    27 MiB) peak
+Allocated heap memory:          4858MB (  4633 MiB) max;   3309MB (  3156 MiB) avg
+Allocated non-heap memory:        27MB (    25 MiB) max;     26MB (    25 MiB) avg
+Total process virtual memory:  13773MB ( 13135 MiB) max;  13654MB ( 13021 MiB) avg
+
+Verification result: UNKNOWN, incomplete analysis.
+More details about the verification run can be found in the directory "./output".

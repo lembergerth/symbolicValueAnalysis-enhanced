@@ -1,0 +1,24 @@
+\section{New options/optimizations}
+\label{sec:newOptions}
+
+We extended strengthening of the \valueAnalysisCPA\ by the \constraintsCPA\ to simplify symbolic expressions, as long as they are independent.
+If none of the symbolic identifiers occuring in a symbolic expression are part of any constraint of the constraints state and no other program variable's assignment,
+its value can be any number, independently of all other variable assignments.
+In conclusion, any such expression can be replaced with a single symbolic identifier without losing any information.
+Such independence can be checked easily by traversing through all constraints' operands.
+By replacing potentially complex expressions by a simple single symbolic identifier, the occurrence of complex formulas that have to be solved in SAT checks are reduced to single variables.
+ 
+%\subsubsection{Different merge operators}
+By using configuration option \configOption{cpa.constraints.mergeType = SEP} or \configOption{JOIN}, either $\cpaMerge^{sep}$, as used in \cite{Lemberger2015}, or the new merge operator $\cpaMerge$ as defined in Section \ref{sec:newMerge} can be used in the \constraintsCPA.
+
+%\subsubsection{Different less-or-equal operators}
+%\paragraph{Subset operator}
+%\paragraph{Aliased subset operator}
+%\paragraph{Implication operator}
+For choosing the less-or-equal operator to use with the \constraintsCPA, the property \configOption{cpa.constraints.lessOrEqualType}
+with possible values \configOption{SUBSET}, \configOption{ALIASED\_SUBSET} and \configOption{IMPLICATION} exists.
+Each less-or-equal operator behaves as described in Section \ref{sec:leqOperators}.
+Keep in mind that \configOption{ALIASED\_SUBSET} can result in wrong behaviour.
+%\subsubsection{Location/Frequency of SAT checks}
+%\paragraph{Check after every assume edge}
+%\paragraph{Check at target location}

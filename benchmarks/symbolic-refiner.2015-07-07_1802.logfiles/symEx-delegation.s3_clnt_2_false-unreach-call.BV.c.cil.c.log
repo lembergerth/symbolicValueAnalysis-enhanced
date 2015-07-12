@@ -1,0 +1,146 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic-refiner -setprop cpa.value.symbolic.refinement.strategy=CONSTRAINTS_FIRST -setprop cpa.constraints.lessOrEqualType=SUBSET -setprop cegar.refiner=cpa.value.symbolic.refiner.delegation.SymbolicDelegatingRefiner -setprop cpa.value.refinement.pathSlicing=false -setprop cpa.value.refinement.prefixPreference=NONE -timelimit 900s -stats -spec ../svcomp15/bitvector/ALL.prp ../svcomp15/bitvector/s3_clnt_2_false-unreach-call.BV.c.cil.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_-1800347831_tempdir
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                 227323 (count: 75823, min: 0, max: 3, avg: 3.00)
+Number of global variables:                               0 (count: 75823, min: 0, max: 0, avg: 0.00)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                  174353
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                0.556s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     1.079s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 0
+Most constraints before refinement in state: 1
+Constraints after refinement in state: 0
+Constraints before refinement in state: 3574
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 311ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  1.243s
+  Time for transition matches:                         0.490s
+  Time for transition assertions:                      0.000s
+  Time for transition actions:                         0.000s
+Automaton transfers with branching:                0
+Automaton transfer successors:                       238843 (count: 238843, min: 1, max: 1, avg: 1.00) [1 x 238843]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            145699
+Max size of waitlist:            3432
+Average size of waitlist:        1810
+Number of computed successors:   174353
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         21902
+Number of times breaked:         4
+
+Total time for CPA algorithm:        69.125s (Max:    34.432s)
+  Time for choose from waitlist:      0.250s
+  Time for precision adjustment:      1.872s
+  Time for transfer relation:        14.913s
+  Time for stop operator:            50.191s
+  Time for adding to reached set:     0.616s
+
+SymbolicDelegatingRefiner statistics
+------------------------------------
+Explicit refinements: 4
+Successful explicit refinements: 2
+Symbolic refinements: 2
+Successful symbolic refinements: 1
+Overall explicit refinement time: 586ms
+Average explicit refinement time: 146ms
+Overall symbolic refinement time: 49114ms
+Average symbolic refinement time: 24557ms
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                4
+Number of successful refinements:     3
+Number of failed refinements:         0
+Max. size of reached set before ref.: 75924
+Max. size of reached set after ref.:  57
+Avg. size of reached set before ref.: 38150.00
+Avg. size of reached set after ref.:  49.33
+
+Total time for CEGAR algorithm:     118.826s
+Time for refinements:                49.700s
+Average time for refinement:         12.425s
+Max time for refinement:             48.530s
+
+Code Coverage
+-----------------------------
+  Function coverage:      1.000
+  Visited lines:          583
+  Total lines:            592
+  Line coverage:          0.985
+  Visited conditions:     168
+  Total conditions:       170
+  Condition coverage:     0.988
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     340
+Number of CFA edges:             425
+Number of relevant variables:    32
+Number of functions:             2
+Number of loops:                 1
+Size of reached set:             75823
+  Number of reached locations:   332 (98%)
+    Avg states per location:     228
+    Max states per location:     2036 (at node N582)
+  Number of reached functions:   2 (100%)
+  Number of partitions:          332
+    Avg size of partitions:      228
+    Max size of partitions:      2036 (with key [N582 (before line 598), Function ssl3_connect called from node N598, stack depth 2 [ff8c7d0], stack [main, ssl3_connect], Init])
+  Number of target states:       1
+  Size of final wait list        3361
+
+Time for analysis setup:          1.837s
+  Time for loading CPAs:          0.362s
+  Time for loading parser:        0.626s
+  Time for CFA construction:      0.766s
+    Time for parsing file(s):     0.327s
+    Time for AST to CFA:          0.188s
+    Time for CFA sanity check:    0.038s
+    Time for post-processing:     0.153s
+      Time for var class.:        0.000s
+Time for Analysis:              118.826s
+CPU time for analysis:          129.210s
+Total time for CPAchecker:      120.669s
+Total CPU time for CPAchecker:  132.250s
+
+Time for Garbage Collector:       1.488s (in 9 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               3428MB (  3269 MiB) max;   1780MB (  1697 MiB) avg;   3460MB (  3300 MiB) peak
+Used non-heap memory:             22MB (    21 MiB) max;     21MB (    20 MiB) avg;     23MB (    21 MiB) peak
+Used in PS Old Gen pool:          84MB (    80 MiB) max;     21MB (    20 MiB) avg;     84MB (    80 MiB) peak
+Allocated heap memory:          4801MB (  4579 MiB) max;   4283MB (  4084 MiB) avg
+Allocated non-heap memory:        25MB (    24 MiB) max;     25MB (    24 MiB) avg
+Total process virtual memory:  13602MB ( 12972 MiB) max;  13600MB ( 12970 MiB) avg
+
+Verification result: FALSE. Property violation (__VERIFIER_error(); called in line 606) found by chosen configuration.
+More details about the verification run can be found in the directory "./output".

@@ -1,0 +1,2843 @@
+<!DOCTYPE HTML>
+
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<style type="text/css">
+  <!--
+  body {
+    margin: 0px;
+    font-family: arial, sans serif;
+  }
+  #header {
+    position: fixed;
+    width: 100%;
+    top: 0px;
+    left: 0px;
+    text-align: center;
+    padding: 0.2em;
+    color: white;
+    background-color: rgb(85, 85, 85);
+  }
+  #header .buttons a {
+    margin: 0px 2em;
+    white-space: nowrap;
+  }
+  #header a:hover {
+    background-color: white;
+    color: black;
+  }
+  #attribution {
+    float: right;
+    padding-right: 1em;
+    font-size: 85%;
+  }
+  #attribution a {
+    text-decoration: underline;
+  }
+  table {
+    outline:3px solid black;
+    border-spacing:0px;
+  }
+  table#dataTable {
+    margin: 6px; margin-top: 2em;
+  }
+  thead { text-align:center}
+  tbody { text-align:right; white-space: nowrap}
+  tfoot { text-align:center}
+  tr:hover { background-color:yellow}
+  td { border:1px solid black}
+  td:first-child { text-align:left; white-space:nowrap}
+  #dataTable tbody td:first-child { font-family: monospace; }
+  #options td:not(:first-child) {  text-align:left; font-size: x-small;
+                                   font-family: monospace; vertical-align: top; }
+  .columnTitles td:first-child { font-family: monospace; font-size: x-small; }
+  tbody tr:first-child td { border-top:3px solid black}
+  tfoot tr:first-child td { border-top:3px solid black}
+  .status { text-align: center; }
+  .status.correct { color:green}
+  .status.wrong { color:red; font-weight: bold; }
+  .status.unknown { color:orange; font-weight: bold; }
+  .status.error { color:magenta; font-weight: bold; }
+  .value { font-family: monospace }
+  .score { text-align:center; font-size:large; font-weight:bold; }
+  a { color: inherit; text-decoration: none; }
+  #dataTable a { display: block; }
+  a:hover, .clickable:hover { background: lime; cursor: pointer; }
+
+  #contentPaneBackground { height: 100%; width: 100%;
+           position:fixed; top:0px; left:0px;
+           background-color:green;
+           opacity:0.2; display:none }
+  #contentPane {
+    height:90%; width:90%;
+    position:fixed;
+    top:5%; left:5%;
+    border:solid 10px black; border-radius:15px;
+    background-color:white;
+    opacity:1;
+    display:none;
+    overflow:auto;
+  }
+
+  .scriptonly {
+    display: none; // only enabled via JavaScript
+  }
+@media print {
+  /* don't print tfoot on each page */
+  tfoot { display: table-row-group; }
+  #header { display: none!important; }
+  #dataTable { margin: 0px!important; }
+}
+
+@media (max-width: 850px) {
+  #attribution {
+    float: none;
+  }
+  #header .buttons a {
+    margin: 0px 1em;
+  }
+}
+
+  /* for showing content of links in extra panel */
+  #contentPane > pre#content {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+  }
+
+  /* table for selecting columns */
+  #tableViewTable { margin: auto; }
+  #tableViewTable td { padding-bottom: 5px; padding-top: 5px; }
+  #tableViewTable thead td:first-child { font-size:large; font-weight:bold; text-align:center }
+  #tableViewTableWrapper { height: 100%; overflow: auto; width: 100%; }
+  .hiddenCell { background: red; }
+  .visibleCell { background: green; }
+  .clickableCell:hover { opacity: 0.5; cursor: pointer; }
+
+  /* UI for filtering rows */
+  button:hover { cursor: pointer; }
+  #rowFilterButtons ul { list-style-type:none }
+  #rowFilterSelector   { position:absolute; top:20px; right:140px; width:100px; height:300px; }
+  #button-filter-reset { position:absolute; top:20px; right:20px; width:100px; height:30px; }
+  #button-filter-all   { position:absolute; top:60px; right:20px; width:100px; height:30px; }
+  #button-filter-none  { position:absolute; top:100px; right:20px; width:100px; height:30px; }
+  #button-filter-start { position:absolute; top:140px; right:20px; width:100px; height:30px; }
+
+  /* plots */
+  .jqplot-title { font-size:large; z-index:10 }
+  .jqplot-table-legend-swatch {width:20px; height:15px }
+  .jqplot-table-legend { border-style:none; outline:none }
+  .jqplot-table-legend tbody { border-style:none }
+  .jqplot-table-legend tbody tr td { border-top:none; cursor:pointer }
+  .jqplot-highlighter-tooltip { font-size:100%;
+           text-align: center;
+           border:solid 1px black; padding:2px;
+           border-radius:8px;
+           background-color:white; opacity:0.8; }
+  .jqplot-table-legend { text-align: left; }
+  table.jqplot-table-legend[style] { position:absolute; left:auto !important; right:0px !important; } /* overrides inner css-style */
+  #chart { height:100%; width:100%; overflow:hidden; }
+  #button-quantile { position:absolute; bottom:50px; }
+  #button-logScale { position:absolute; bottom:25px; }
+  #button-showCorrectOnly { position:absolute; bottom:0px; }
+  .plot-selector { width:30%; }
+  -->
+</style>
+
+<title>results.2015-07-08_1434 differences &ndash; BenchExec results</title>
+
+</head>
+
+<body>
+
+<div id="header">
+  <span class="scriptonly buttons">
+    <a href="javascript:createColumnToggleView()">Select Columns</a>
+    <a href="javascript:createRowFilterButtons()">Filter Rows</a>
+    <a href="javascript:createQuantilePlotView()">Quantile Plot</a>
+    <a href="javascript:createScatterPlotView()">Scatter Plot</a>
+  </span>
+  <span class="noscript">
+    Please enable JavaScript for advanced features.
+  </span>
+  <div id="attribution">
+    Generated with <a href="https://github.com/dbeyer/benchexec" target="_blank">BenchExec</a>
+  </div>
+</div>
+
+<div id="contentPaneBackground"></div>
+<div id="contentPane"></div>
+
+<table id="dataTable">
+<thead>
+<tr id="tool" class="tool">
+<td>Tool</td>
+<td colspan="9">CPAchecker 1.4-svn 17201M</td>
+<td colspan="9">CPAchecker 1.4-svn 17230M</td>
+<td colspan="9">CPAchecker 1.4-svn 17223M</td>
+<td colspan="9">CPAchecker 1.4-svn 17230M</td>
+</tr>
+<tr id="limits" class="limits">
+<td>Limits</td>
+<td colspan="36">timelimit: 900 s, memlimit: 15000 MB, CPU core limit: 2</td>
+</tr>
+<tr id="host" class="host">
+<td>Host</td>
+<td colspan="36">[zeus01; zeus02; zeus03; zeus04; zeus05; zeus06; zeus07; zeus08; zeus09; zeus10; zeus11; zeus12; zeus13; zeus14; zeus15; zeus16; zeus17; zeus18; zeus19; zeus20; zeus21; zeus22; zeus23; zeus24]</td>
+</tr>
+<tr id="os" class="os">
+<td>OS</td>
+<td colspan="9">Linux 3.13.0-55-generic</td>
+<td colspan="9">Linux 3.13.0-57-generic</td>
+<td colspan="18">Linux 3.13.0-55-generic</td>
+</tr>
+<tr id="system" class="system">
+<td>System</td>
+<td colspan="36">CPU: Intel Xeon E5-2650 v2 @ 2.60 GHz with 32 cores, frequency: 2.6 GHz; RAM: 135 GB</td>
+</tr>
+<tr id="date" class="date">
+<td>Date of execution</td>
+<td colspan="9">2015-07-04 10:20:39 CEST</td>
+<td colspan="9">2015-07-07 08:45:54 CEST</td>
+<td colspan="9">2015-07-06 08:37:57 CEST</td>
+<td colspan="9">2015-07-06 20:29:25 CEST</td>
+</tr>
+<tr id="run" class="run">
+<td>Run set</td>
+<td colspan="9">symEx-constraintsItpFirst</td>
+<td colspan="9">symEx-ref-locPrec</td>
+<td colspan="9">symEx-ref-leqImplication</td>
+<td colspan="9">symEx-ref-leqImplication-locPrec</td>
+</tr>
+<tr id="options" class="options">
+<td>Options</td>
+<td colspan="9"><span style="display:block"> -heap 10000M</span><span style="display:block"> -noout</span><span style="display:block"> -setprop log.consoleLevel=WARNING</span><span style="display:block"> -skipRecursion</span><span style="display:block"> -valueAnalysis-symbolic-refiner</span><span style="display:block"> -setprop cpa.value.symbolic.refinement.strategy=CONSTRAINTS_FIRST</span><span style="display:block"> -setprop cpa.constraints.lessOrEqualType=SUBSET</span><span style="display:block"> -setprop cpa.value.refinement.pathSlicing=false</span><span style="display:block"> -setprop cpa.value.refinement.prefixPreference=NONE</span></td>
+<td colspan="9"><span style="display:block"> -heap 10000M</span><span style="display:block"> -noout</span><span style="display:block"> -setprop log.consoleLevel=WARNING</span><span style="display:block"> -skipRecursion</span><span style="display:block"> -valueAnalysis-symbolic-refiner</span><span style="display:block"> -setprop cpa.value.symbolic.refinement.strategy=CONSTRAINTS_FIRST</span><span style="display:block"> -setprop cpa.constraints.lessOrEqualType=SUBSET</span><span style="display:block"> -setprop cpa.value.refinement.pathSlicing=false</span><span style="display:block"> -setprop cpa.value.refinement.prefixPreference=NONE</span><span style="display:block"> -setprop cpa.constraints.refinement.precisionType=LOCATION</span></td>
+<td colspan="9"><span style="display:block"> -heap 10000M</span><span style="display:block"> -noout</span><span style="display:block"> -setprop log.consoleLevel=WARNING</span><span style="display:block"> -skipRecursion</span><span style="display:block"> -valueAnalysis-symbolic-refiner</span><span style="display:block"> -setprop cpa.value.symbolic.refinement.strategy=CONSTRAINTS_FIRST</span><span style="display:block"> -setprop cpa.constraints.lessOrEqualType=IMPLICATION</span><span style="display:block"> -setprop cpa.value.refinement.pathSlicing=false</span><span style="display:block"> -setprop cpa.value.refinement.prefixPreference=NONE</span></td>
+<td colspan="9"><span style="display:block"> -heap 10000M</span><span style="display:block"> -noout</span><span style="display:block"> -setprop log.consoleLevel=WARNING</span><span style="display:block"> -skipRecursion</span><span style="display:block"> -valueAnalysis-symbolic-refiner</span><span style="display:block"> -setprop cpa.value.symbolic.refinement.strategy=CONSTRAINTS_FIRST</span><span style="display:block"> -setprop cpa.constraints.lessOrEqualType=IMPLICATION</span><span style="display:block"> -setprop cpa.value.refinement.pathSlicing=false</span><span style="display:block"> -setprop cpa.value.refinement.prefixPreference=NONE</span><span style="display:block"> -setprop cpa.constraints.refinement.precisionType=LOCATION</span></td>
+</tr>
+<tr id="columnTitles" class="columnTitles">
+<td>../svcomp15/</td>
+<td colspan="1">status</td>
+<td colspan="1">cputime</td>
+<td colspan="1">walltime</td>
+<td colspan="1">host</td>
+<td colspan="1">memUsage</td>
+<td colspan="1">total</td>
+<td colspan="1">reached</td>
+<td colspan="1">refiners</td>
+<td colspan="1">time_refiners</td>
+<td colspan="1">status</td>
+<td colspan="1">cputime</td>
+<td colspan="1">walltime</td>
+<td colspan="1">memUsage</td>
+<td colspan="1">host</td>
+<td colspan="1">total</td>
+<td colspan="1">reached</td>
+<td colspan="1">refiners</td>
+<td colspan="1">time_refiners</td>
+<td colspan="1">status</td>
+<td colspan="1">cputime</td>
+<td colspan="1">walltime</td>
+<td colspan="1">host</td>
+<td colspan="1">memUsage</td>
+<td colspan="1">total</td>
+<td colspan="1">reached</td>
+<td colspan="1">refiners</td>
+<td colspan="1">time_refiners</td>
+<td colspan="1">status</td>
+<td colspan="1">cputime</td>
+<td colspan="1">walltime</td>
+<td colspan="1">host</td>
+<td colspan="1">memUsage</td>
+<td colspan="1">total</td>
+<td colspan="1">reached</td>
+<td colspan="1">refiners</td>
+<td colspan="1">time_refiners</td>
+</tr>
+</thead>
+
+<tbody>
+<tr><td title="Click here to show source code"><a href="../svcomp15/bitvector/s3_clnt_3_true-unreach-call.BV.c.cil.c">bitvector/s3_clnt_3_true-unreach-call.BV.c.cil.c</a></td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-04_1020.logfiles/symEx-constraintsItpFirst.s3_clnt_3_true-unreach-call.BV.c.cil.c.log">true</a></td>
+<td class="correct value">58.514s</td>
+<td class="correct value">51.747s</td>
+<td class="correct value">zeus03</td>
+<td class="correct value">651788288</td>
+<td class="correct value">51.127s</td>
+<td class="correct value">0.118s</td>
+<td class="correct value">9</td>
+<td class="correct value">46.653s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-07_0845.logfiles/symEx-ref-locPrec.s3_clnt_3_true-unreach-call.BV.c.cil.c.log">timeout</a></td>
+<td class="error value">901.785s</td>
+<td class="error value">888.666s</td>
+<td class="error value">3774464000</td>
+<td class="error value">zeus09</td>
+<td class="error value">887.582s</td>
+<td class="error value">0.799s</td>
+<td class="error value">16</td>
+<td class="error value">699.027s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_0837.logfiles/symEx-ref-leqImplication.s3_clnt_3_true-unreach-call.BV.c.cil.c.log">true</a></td>
+<td class="correct value">70.090s</td>
+<td class="correct value">62.454s</td>
+<td class="correct value">zeus20</td>
+<td class="correct value">657162240</td>
+<td class="correct value">61.614s</td>
+<td class="correct value">0.132s</td>
+<td class="correct value">9</td>
+<td class="correct value">56.343s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_2029.logfiles/symEx-ref-leqImplication-locPrec.s3_clnt_3_true-unreach-call.BV.c.cil.c.log">timeout</a></td>
+<td class="error value">901.828s</td>
+<td class="error value">888.456s</td>
+<td class="error value">zeus24</td>
+<td class="error value">3782901760</td>
+<td class="error value">887.371s</td>
+<td class="error value">0.856s</td>
+<td class="error value">16</td>
+<td class="error value">700.978s</td>
+</tr>
+<tr><td title="Click here to show source code"><a href="../svcomp15/bitvector/s3_srvr_1_true-unreach-call.BV.c.cil.c">bitvector/s3_srvr_1_true-unreach-call.BV.c.cil.c</a></td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-04_1020.logfiles/symEx-constraintsItpFirst.s3_srvr_1_true-unreach-call.BV.c.cil.c.log">true</a></td>
+<td class="correct value">38.302s</td>
+<td class="correct value">32.239s</td>
+<td class="correct value">zeus11</td>
+<td class="correct value">627920896</td>
+<td class="correct value">31.581s</td>
+<td class="correct value">0.115s</td>
+<td class="correct value">5</td>
+<td class="correct value">27.790s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-07_0845.logfiles/symEx-ref-locPrec.s3_srvr_1_true-unreach-call.BV.c.cil.c.log">timeout</a></td>
+<td class="error value">901.219s</td>
+<td class="error value">889.154s</td>
+<td class="error value">2917376000</td>
+<td class="error value">zeus17</td>
+<td class="error value">888.272s</td>
+<td class="error value">0.497s</td>
+<td class="error value">28</td>
+<td class="error value">841.506s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_0837.logfiles/symEx-ref-leqImplication.s3_srvr_1_true-unreach-call.BV.c.cil.c.log">true</a></td>
+<td class="correct value">37.631s</td>
+<td class="correct value">31.471s</td>
+<td class="correct value">zeus19</td>
+<td class="correct value">626466816</td>
+<td class="correct value">30.803s</td>
+<td class="correct value">0.095s</td>
+<td class="correct value">5</td>
+<td class="correct value">27.009s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_2029.logfiles/symEx-ref-leqImplication-locPrec.s3_srvr_1_true-unreach-call.BV.c.cil.c.log">timeout</a></td>
+<td class="error value">901.446s</td>
+<td class="error value">888.170s</td>
+<td class="error value">zeus15</td>
+<td class="error value">3198038016</td>
+<td class="error value">887.176s</td>
+<td class="error value">0.672s</td>
+<td class="error value">27</td>
+<td class="error value">834.712s</td>
+</tr>
+<tr><td title="Click here to show source code"><a href="../svcomp15/bitvector/s3_srvr_3_alt_true-unreach-call.BV.c.cil.c">bitvector/s3_srvr_3_alt_true-unreach-call.BV.c.cil.c</a></td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-04_1020.logfiles/symEx-constraintsItpFirst.s3_srvr_3_alt_true-unreach-call.BV.c.cil.c.log">true</a></td>
+<td class="correct value">38.199s</td>
+<td class="correct value">32.051s</td>
+<td class="correct value">zeus07</td>
+<td class="correct value">625999872</td>
+<td class="correct value">31.371s</td>
+<td class="correct value">0.119s</td>
+<td class="correct value">5</td>
+<td class="correct value">27.607s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-07_0845.logfiles/symEx-ref-locPrec.s3_srvr_3_alt_true-unreach-call.BV.c.cil.c.log">timeout</a></td>
+<td class="error value">901.286s</td>
+<td class="error value">888.418s</td>
+<td class="error value">3716538368</td>
+<td class="error value">zeus15</td>
+<td class="error value">887.508s</td>
+<td class="error value">0.522s</td>
+<td class="error value">29</td>
+<td class="error value">839.506s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_0837.logfiles/symEx-ref-leqImplication.s3_srvr_3_alt_true-unreach-call.BV.c.cil.c.log">true</a></td>
+<td class="correct value">36.520s</td>
+<td class="correct value">30.498s</td>
+<td class="correct value">zeus17</td>
+<td class="correct value">626860032</td>
+<td class="correct value">29.863s</td>
+<td class="correct value">0.093s</td>
+<td class="correct value">5</td>
+<td class="correct value">26.154s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_2029.logfiles/symEx-ref-leqImplication-locPrec.s3_srvr_3_alt_true-unreach-call.BV.c.cil.c.log">timeout</a></td>
+<td class="error value">901.106s</td>
+<td class="error value">888.556s</td>
+<td class="error value">zeus13</td>
+<td class="error value">3718635520</td>
+<td class="error value">887.697s</td>
+<td class="error value">0.490s</td>
+<td class="error value">30</td>
+<td class="error value">840.883s</td>
+</tr>
+<tr><td title="Click here to show source code"><a href="../svcomp15/bitvector/s3_srvr_3_true-unreach-call.BV.c.cil.c">bitvector/s3_srvr_3_true-unreach-call.BV.c.cil.c</a></td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-04_1020.logfiles/symEx-constraintsItpFirst.s3_srvr_3_true-unreach-call.BV.c.cil.c.log">true</a></td>
+<td class="correct value">40.826s</td>
+<td class="correct value">34.424s</td>
+<td class="correct value">zeus06</td>
+<td class="correct value">625442816</td>
+<td class="correct value">33.746s</td>
+<td class="correct value">0.105s</td>
+<td class="correct value">5</td>
+<td class="correct value">29.806s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-07_0845.logfiles/symEx-ref-locPrec.s3_srvr_3_true-unreach-call.BV.c.cil.c.log">timeout</a></td>
+<td class="error value">901.204s</td>
+<td class="error value">888.689s</td>
+<td class="error value">3716734976</td>
+<td class="error value">zeus15</td>
+<td class="error value">887.782s</td>
+<td class="error value">0.563s</td>
+<td class="error value">30</td>
+<td class="error value">839.729s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_0837.logfiles/symEx-ref-leqImplication.s3_srvr_3_true-unreach-call.BV.c.cil.c.log">true</a></td>
+<td class="correct value">37.952s</td>
+<td class="correct value">31.752s</td>
+<td class="correct value">zeus19</td>
+<td class="correct value">629870592</td>
+<td class="correct value">31.064s</td>
+<td class="correct value">0.125s</td>
+<td class="correct value">5</td>
+<td class="correct value">27.334s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_2029.logfiles/symEx-ref-leqImplication-locPrec.s3_srvr_3_true-unreach-call.BV.c.cil.c.log">timeout</a></td>
+<td class="error value">901.210s</td>
+<td class="error value">888.972s</td>
+<td class="error value">zeus21</td>
+<td class="error value">3187863552</td>
+<td class="error value">888.096s</td>
+<td class="error value">0.522s</td>
+<td class="error value">29</td>
+<td class="error value">838.907s</td>
+</tr>
+<tr><td title="Click here to show source code"><a href="../svcomp15/floats-cdfpl/newton_2_6_false-unreach-call.i">floats-cdfpl/newton_2_6_false-unreach-call.i</a></td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-04_1020.logfiles/symEx-constraintsItpFirst.newton_2_6_false-unreach-call.i.log">timeout</a></td>
+<td class="error value">901.192s</td>
+<td class="error value">899.214s</td>
+<td class="error value">zeus07</td>
+<td class="error value">599285760</td>
+<td class="error value">898.538s</td>
+<td class="error value">0.003s</td>
+<td class="error value">2</td>
+<td class="error value">897.053s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-07_0845.logfiles/symEx-ref-locPrec.newton_2_6_false-unreach-call.i.log">timeout</a></td>
+<td class="error value">901.169s</td>
+<td class="error value">899.003s</td>
+<td class="error value">598257664</td>
+<td class="error value">zeus09</td>
+<td class="error value">898.370s</td>
+<td class="error value">0.003s</td>
+<td class="error value">2</td>
+<td class="error value">896.829s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_0837.logfiles/symEx-ref-leqImplication.newton_2_6_false-unreach-call.i.log">false(reach)</a></td>
+<td class="correct value">597.386s</td>
+<td class="correct value">595.476s</td>
+<td class="correct value">zeus21</td>
+<td class="correct value">470171648</td>
+<td class="correct value">594.857s</td>
+<td class="correct value">0.003s</td>
+<td class="correct value">2</td>
+<td class="correct value">593.372s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_2029.logfiles/symEx-ref-leqImplication-locPrec.newton_2_6_false-unreach-call.i.log">timeout</a></td>
+<td class="error value">901.195s</td>
+<td class="error value">899.206s</td>
+<td class="error value">zeus17</td>
+<td class="error value">597184512</td>
+<td class="error value">898.592s</td>
+<td class="error value">0.002s</td>
+<td class="error value">2</td>
+<td class="error value">897.117s</td>
+</tr>
+<tr><td title="Click here to show source code"><a href="../svcomp15/floats-cdfpl/newton_2_8_false-unreach-call.i">floats-cdfpl/newton_2_8_false-unreach-call.i</a></td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-04_1020.logfiles/symEx-constraintsItpFirst.newton_2_8_false-unreach-call.i.log">timeout</a></td>
+<td class="error value">901.171s</td>
+<td class="error value">899.203s</td>
+<td class="error value">zeus05</td>
+<td class="error value">598061056</td>
+<td class="error value">898.564s</td>
+<td class="error value">0.002s</td>
+<td class="error value">2</td>
+<td class="error value">897.057s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-07_0845.logfiles/symEx-ref-locPrec.newton_2_8_false-unreach-call.i.log">timeout</a></td>
+<td class="error value">901.220s</td>
+<td class="error value">899.026s</td>
+<td class="error value">594620416</td>
+<td class="error value">zeus12</td>
+<td class="error value">898.393s</td>
+<td class="error value">0.002s</td>
+<td class="error value">2</td>
+<td class="error value">896.893s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_0837.logfiles/symEx-ref-leqImplication.newton_2_8_false-unreach-call.i.log">timeout</a></td>
+<td class="error value">901.185s</td>
+<td class="error value">899.253s</td>
+<td class="error value">zeus09</td>
+<td class="error value">554266624</td>
+<td class="error value">898.616s</td>
+<td class="error value">0.002s</td>
+<td class="error value">2</td>
+<td class="error value">897.109s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_2029.logfiles/symEx-ref-leqImplication-locPrec.newton_2_8_false-unreach-call.i.log">false(reach)</a></td>
+<td class="correct value">890.345s</td>
+<td class="correct value">888.277s</td>
+<td class="correct value">zeus21</td>
+<td class="correct value">624967680</td>
+<td class="correct value">887.677s</td>
+<td class="correct value">0.004s</td>
+<td class="correct value">2</td>
+<td class="correct value">886.185s</td>
+</tr>
+<tr><td title="Click here to show source code"><a href="../svcomp15/float-benchs/sin_interpolated_index_true-unreach-call.c">float-benchs/sin_interpolated_index_true-unreach-call.c</a></td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-04_1020.logfiles/symEx-constraintsItpFirst.sin_interpolated_index_true-unreach-call.c.log">timeout</a></td>
+<td class="error value">900.975s</td>
+<td class="error value">897.910s</td>
+<td class="error value">zeus10</td>
+<td class="error value">377098240</td>
+<td class="error value">897.299s</td>
+<td class="error value">0.008s</td>
+<td class="error value">7</td>
+<td class="error value">852.264s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-07_0845.logfiles/symEx-ref-locPrec.sin_interpolated_index_true-unreach-call.c.log">timeout</a></td>
+<td class="error value">901.173s</td>
+<td class="error value">897.263s</td>
+<td class="error value">403116032</td>
+<td class="error value">zeus04</td>
+<td class="error value">896.623s</td>
+<td class="error value">0.009s</td>
+<td class="error value">6</td>
+<td class="error value">633.334s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_0837.logfiles/symEx-ref-leqImplication.sin_interpolated_index_true-unreach-call.c.log">timeout</a></td>
+<td class="error value">901.084s</td>
+<td class="error value">897.400s</td>
+<td class="error value">zeus13</td>
+<td class="error value">372756480</td>
+<td class="error value">896.772s</td>
+<td class="error value">0.008s</td>
+<td class="error value">6</td>
+<td class="error value">872.307s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_2029.logfiles/symEx-ref-leqImplication-locPrec.sin_interpolated_index_true-unreach-call.c.log">error</a></td>
+<td class="error value">518.687s</td>
+<td class="error value">515.415s</td>
+<td class="error value">zeus12</td>
+<td class="error value">351887360</td>
+<td class="error value">514.823s</td>
+<td class="error value">0.008s</td>
+<td class="error value">6</td>
+<td class="error value">486.095s</td>
+</tr>
+<tr><td title="Click here to show source code"><a href="../svcomp15/ssh-simplified/s3_srvr_3_true-unreach-call.cil.c">ssh-simplified/s3_srvr_3_true-unreach-call.cil.c</a></td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-04_1020.logfiles/symEx-constraintsItpFirst.s3_srvr_3_true-unreach-call.cil.c.log">true</a></td>
+<td class="correct value">44.470s</td>
+<td class="correct value">38.177s</td>
+<td class="correct value">zeus04</td>
+<td class="correct value">623906816</td>
+<td class="correct value">37.547s</td>
+<td class="correct value">0.091s</td>
+<td class="correct value">5</td>
+<td class="correct value">33.825s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-07_0845.logfiles/symEx-ref-locPrec.s3_srvr_3_true-unreach-call.cil.c.log">timeout</a></td>
+<td class="error value">901.333s</td>
+<td class="error value">888.707s</td>
+<td class="error value">3697254400</td>
+<td class="error value">zeus08</td>
+<td class="error value">887.844s</td>
+<td class="error value">0.481s</td>
+<td class="error value">29</td>
+<td class="error value">843.486s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_0837.logfiles/symEx-ref-leqImplication.s3_srvr_3_true-unreach-call.cil.c.log">true</a></td>
+<td class="correct value">42.350s</td>
+<td class="correct value">36.497s</td>
+<td class="correct value">zeus17</td>
+<td class="correct value">622387200</td>
+<td class="correct value">35.899s</td>
+<td class="correct value">0.115s</td>
+<td class="correct value">5</td>
+<td class="correct value">32.367s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_2029.logfiles/symEx-ref-leqImplication-locPrec.s3_srvr_3_true-unreach-call.cil.c.log">timeout</a></td>
+<td class="error value">901.186s</td>
+<td class="error value">888.960s</td>
+<td class="error value">zeus14</td>
+<td class="error value">2895310848</td>
+<td class="error value">888.094s</td>
+<td class="error value">0.504s</td>
+<td class="error value">28</td>
+<td class="error value">844.121s</td>
+</tr>
+<tr><td title="Click here to show source code"><a href="../svcomp15/ssh-simplified/s3_srvr_4_true-unreach-call.cil.c">ssh-simplified/s3_srvr_4_true-unreach-call.cil.c</a></td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-04_1020.logfiles/symEx-constraintsItpFirst.s3_srvr_4_true-unreach-call.cil.c.log">true</a></td>
+<td class="correct value">37.858s</td>
+<td class="correct value">32.022s</td>
+<td class="correct value">zeus13</td>
+<td class="correct value">624410624</td>
+<td class="correct value">31.424s</td>
+<td class="correct value">0.101s</td>
+<td class="correct value">5</td>
+<td class="correct value">27.985s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-07_0845.logfiles/symEx-ref-locPrec.s3_srvr_4_true-unreach-call.cil.c.log">timeout</a></td>
+<td class="error value">901.274s</td>
+<td class="error value">888.174s</td>
+<td class="error value">2896343040</td>
+<td class="error value">zeus08</td>
+<td class="error value">887.304s</td>
+<td class="error value">0.467s</td>
+<td class="error value">28</td>
+<td class="error value">843.100s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_0837.logfiles/symEx-ref-leqImplication.s3_srvr_4_true-unreach-call.cil.c.log">true</a></td>
+<td class="correct value">41.682s</td>
+<td class="correct value">35.537s</td>
+<td class="correct value">zeus03</td>
+<td class="correct value">622166016</td>
+<td class="correct value">34.780s</td>
+<td class="correct value">0.091s</td>
+<td class="correct value">5</td>
+<td class="correct value">30.876s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_2029.logfiles/symEx-ref-leqImplication-locPrec.s3_srvr_4_true-unreach-call.cil.c.log">timeout</a></td>
+<td class="error value">901.208s</td>
+<td class="error value">888.350s</td>
+<td class="error value">zeus17</td>
+<td class="error value">3701211136</td>
+<td class="error value">887.460s</td>
+<td class="error value">0.457s</td>
+<td class="error value">29</td>
+<td class="error value">845.290s</td>
+</tr>
+<tr><td title="Click here to show source code"><a href="../svcomp15/eca-rers2012/Problem10_label48_false-unreach-call.c">eca-rers2012/Problem10_label48_false-unreach-call.c</a></td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-04_1020.logfiles/symEx-constraintsItpFirst.Problem10_label48_false-unreach-call.c.log">false(reach)</a></td>
+<td class="correct value">379.135s</td>
+<td class="correct value">368.067s</td>
+<td class="correct value">zeus02</td>
+<td class="correct value">1316139008</td>
+<td class="correct value">366.892s</td>
+<td class="correct value">1.031s</td>
+<td class="correct value">31</td>
+<td class="correct value">28.674s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-07_0845.logfiles/symEx-ref-locPrec.Problem10_label48_false-unreach-call.c.log">timeout</a></td>
+<td class="error value">902.315s</td>
+<td class="error value">887.716s</td>
+<td class="error value">4023504896</td>
+<td class="error value">zeus04</td>
+<td class="error value">886.148s</td>
+<td class="error value">1.580s</td>
+<td class="error value">14</td>
+<td class="error value">61.624s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_0837.logfiles/symEx-ref-leqImplication.Problem10_label48_false-unreach-call.c.log">false(reach)</a></td>
+<td class="correct value">370.731s</td>
+<td class="correct value">360.110s</td>
+<td class="correct value">zeus08</td>
+<td class="correct value">2318626816</td>
+<td class="correct value">359.050s</td>
+<td class="correct value">0.957s</td>
+<td class="correct value">31</td>
+<td class="correct value">28.646s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_2029.logfiles/symEx-ref-leqImplication-locPrec.Problem10_label48_false-unreach-call.c.log">timeout</a></td>
+<td class="error value">902.047s</td>
+<td class="error value">889.021s</td>
+<td class="error value">zeus24</td>
+<td class="error value">4019036160</td>
+<td class="error value">887.562s</td>
+<td class="error value">2.348s</td>
+<td class="error value">14</td>
+<td class="error value">62.219s</td>
+</tr>
+<tr><td title="Click here to show source code"><a href="../svcomp15/eca-rers2012/Problem10_label50_false-unreach-call.c">eca-rers2012/Problem10_label50_false-unreach-call.c</a></td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-04_1020.logfiles/symEx-constraintsItpFirst.Problem10_label50_false-unreach-call.c.log">timeout</a></td>
+<td class="error value">901.212s</td>
+<td class="error value">890.119s</td>
+<td class="error value">zeus01</td>
+<td class="error value">766005248</td>
+<td class="error value">889.265s</td>
+<td class="error value">0.503s</td>
+<td class="error value">18</td>
+<td class="error value">4.001s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-07_0845.logfiles/symEx-ref-locPrec.Problem10_label50_false-unreach-call.c.log">false(reach)</a></td>
+<td class="correct value">36.454s</td>
+<td class="correct value">28.263s</td>
+<td class="correct value">858177536</td>
+<td class="correct value">zeus17</td>
+<td class="correct value">27.213s</td>
+<td class="correct value">0.335s</td>
+<td class="correct value">16</td>
+<td class="correct value">5.337s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_0837.logfiles/symEx-ref-leqImplication.Problem10_label50_false-unreach-call.c.log">timeout</a></td>
+<td class="error value">901.445s</td>
+<td class="error value">889.848s</td>
+<td class="error value">zeus20</td>
+<td class="error value">759664640</td>
+<td class="error value">888.829s</td>
+<td class="error value">0.371s</td>
+<td class="error value">18</td>
+<td class="error value">4.757s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_2029.logfiles/symEx-ref-leqImplication-locPrec.Problem10_label50_false-unreach-call.c.log">false(reach)</a></td>
+<td class="correct value">35.302s</td>
+<td class="correct value">27.203s</td>
+<td class="correct value">zeus19</td>
+<td class="correct value">850292736</td>
+<td class="correct value">26.167s</td>
+<td class="correct value">0.323s</td>
+<td class="correct value">16</td>
+<td class="correct value">5.260s</td>
+</tr>
+<tr><td title="Click here to show source code"><a href="../svcomp15/eca-rers2012/Problem14_label27_false-unreach-call.c">eca-rers2012/Problem14_label27_false-unreach-call.c</a></td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-04_1020.logfiles/symEx-constraintsItpFirst.Problem14_label27_false-unreach-call.c.log">timeout</a></td>
+<td class="error value">901.346s</td>
+<td class="error value">889.030s</td>
+<td class="error value">zeus16</td>
+<td class="error value">1273434112</td>
+<td class="error value">888.277s</td>
+<td class="error value">0.579s</td>
+<td class="error value">68</td>
+<td class="error value">42.716s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-07_0845.logfiles/symEx-ref-locPrec.Problem14_label27_false-unreach-call.c.log">false(reach)</a></td>
+<td class="correct value">220.878s</td>
+<td class="correct value">208.907s</td>
+<td class="correct value">1563201536</td>
+<td class="correct value">zeus21</td>
+<td class="correct value">207.661s</td>
+<td class="correct value">0.989s</td>
+<td class="correct value">32</td>
+<td class="correct value">22.500s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_0837.logfiles/symEx-ref-leqImplication.Problem14_label27_false-unreach-call.c.log">timeout</a></td>
+<td class="error value">901.462s</td>
+<td class="error value">889.438s</td>
+<td class="error value">zeus01</td>
+<td class="error value">1285189632</td>
+<td class="error value">888.655s</td>
+<td class="error value">0.472s</td>
+<td class="error value">65</td>
+<td class="error value">35.488s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_2029.logfiles/symEx-ref-leqImplication-locPrec.Problem14_label27_false-unreach-call.c.log">false(reach)</a></td>
+<td class="correct value">234.639s</td>
+<td class="correct value">222.404s</td>
+<td class="correct value">zeus10</td>
+<td class="correct value">1204756480</td>
+<td class="correct value">221.114s</td>
+<td class="correct value">0.994s</td>
+<td class="correct value">35</td>
+<td class="correct value">24.144s</td>
+</tr>
+<tr><td title="Click here to show source code"><a href="../svcomp15/eca-rers2012/Problem14_label37_false-unreach-call.c">eca-rers2012/Problem14_label37_false-unreach-call.c</a></td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-04_1020.logfiles/symEx-constraintsItpFirst.Problem14_label37_false-unreach-call.c.log">timeout</a></td>
+<td class="error value">901.407s</td>
+<td class="error value">888.773s</td>
+<td class="error value">zeus16</td>
+<td class="error value">1291583488</td>
+<td class="error value">888.024s</td>
+<td class="error value">0.464s</td>
+<td class="error value">69</td>
+<td class="error value">39.678s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-07_0845.logfiles/symEx-ref-locPrec.Problem14_label37_false-unreach-call.c.log">false(reach)</a></td>
+<td class="correct value">209.824s</td>
+<td class="correct value">197.800s</td>
+<td class="correct value">1539710976</td>
+<td class="correct value">zeus15</td>
+<td class="correct value">196.385s</td>
+<td class="correct value">1.048s</td>
+<td class="correct value">32</td>
+<td class="correct value">16.750s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_0837.logfiles/symEx-ref-leqImplication.Problem14_label37_false-unreach-call.c.log">timeout</a></td>
+<td class="error value">901.472s</td>
+<td class="error value">889.098s</td>
+<td class="error value">zeus13</td>
+<td class="error value">1235472384</td>
+<td class="error value">888.313s</td>
+<td class="error value">0.510s</td>
+<td class="error value">66</td>
+<td class="error value">33.500s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_2029.logfiles/symEx-ref-leqImplication-locPrec.Problem14_label37_false-unreach-call.c.log">false(reach)</a></td>
+<td class="correct value">254.700s</td>
+<td class="correct value">241.825s</td>
+<td class="correct value">zeus14</td>
+<td class="correct value">1571905536</td>
+<td class="correct value">240.520s</td>
+<td class="correct value">1.149s</td>
+<td class="correct value">35</td>
+<td class="correct value">19.747s</td>
+</tr>
+<tr><td title="Click here to show source code"><a href="../svcomp15/loop-new/gauss_sum_true-unreach-call.i">loop-new/gauss_sum_true-unreach-call.i</a></td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-04_1020.logfiles/symEx-constraintsItpFirst.gauss_sum_true-unreach-call.i.log">timeout</a></td>
+<td class="error value">901.119s</td>
+<td class="error value">886.702s</td>
+<td class="error value">zeus22</td>
+<td class="error value">1433751552</td>
+<td class="error value">885.903s</td>
+<td class="error value">0.202s</td>
+<td class="error value">3</td>
+<td class="error value">0.767s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-07_0845.logfiles/symEx-ref-locPrec.gauss_sum_true-unreach-call.i.log">true</a></td>
+<td class="correct value">124.234s</td>
+<td class="correct value">118.670s</td>
+<td class="correct value">1367023616</td>
+<td class="correct value">zeus06</td>
+<td class="correct value">117.947s</td>
+<td class="correct value">0.137s</td>
+<td class="correct value">3</td>
+<td class="correct value">0.870s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_0837.logfiles/symEx-ref-leqImplication.gauss_sum_true-unreach-call.i.log">timeout</a></td>
+<td class="error value">901.134s</td>
+<td class="error value">886.553s</td>
+<td class="error value">zeus09</td>
+<td class="error value">1401884672</td>
+<td class="error value">885.768s</td>
+<td class="error value">0.214s</td>
+<td class="error value">3</td>
+<td class="error value">0.774s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_2029.logfiles/symEx-ref-leqImplication-locPrec.gauss_sum_true-unreach-call.i.log">true</a></td>
+<td class="correct value">128.373s</td>
+<td class="correct value">122.780s</td>
+<td class="correct value">zeus03</td>
+<td class="correct value">2354040832</td>
+<td class="correct value">121.969s</td>
+<td class="correct value">0.178s</td>
+<td class="correct value">3</td>
+<td class="correct value">0.868s</td>
+</tr>
+<tr><td title="Click here to show source code"><a href="../svcomp15/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--staging--bcm--bcm_wimax.ko-ldv_main2_sequence_infinite_withcheck_stateful.cil.out.c">ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--staging--bcm--bcm_wimax.ko-ldv_main2_sequence_infinite_withcheck_stateful.cil.out.c</a></td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-04_1020.logfiles/symEx-constraintsItpFirst.32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--staging--bcm--bcm_wimax.ko-ldv_main2_sequence_infinite_withcheck_stateful.cil.out.c.log">true</a></td>
+<td class="correct value">641.986s</td>
+<td class="correct value">525.066s</td>
+<td class="correct value">zeus21</td>
+<td class="correct value">7119405056</td>
+<td class="correct value">520.495s</td>
+<td class="correct value">20.978s</td>
+<td class="correct value">3</td>
+<td class="correct value">37.941s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-07_0845.logfiles/symEx-ref-locPrec.32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--staging--bcm--bcm_wimax.ko-ldv_main2_sequence_infinite_withcheck_stateful.cil.out.c.log">true</a></td>
+<td class="correct value">773.655s</td>
+<td class="correct value">602.401s</td>
+<td class="correct value">7251509248</td>
+<td class="correct value">zeus02</td>
+<td class="correct value">598.892s</td>
+<td class="correct value">25.176s</td>
+<td class="correct value">3</td>
+<td class="correct value">45.125s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_0837.logfiles/symEx-ref-leqImplication.32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--staging--bcm--bcm_wimax.ko-ldv_main2_sequence_infinite_withcheck_stateful.cil.out.c.log">true</a></td>
+<td class="correct value">727.337s</td>
+<td class="correct value">586.496s</td>
+<td class="correct value">zeus14</td>
+<td class="correct value">7120715776</td>
+<td class="correct value">583.066s</td>
+<td class="correct value">24.982s</td>
+<td class="correct value">3</td>
+<td class="correct value">41.017s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_2029.logfiles/symEx-ref-leqImplication-locPrec.32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--staging--bcm--bcm_wimax.ko-ldv_main2_sequence_infinite_withcheck_stateful.cil.out.c.log">timeout</a></td>
+<td class="error value">903.793s</td>
+<td class="error value">775.495s</td>
+<td class="error value">zeus02</td>
+<td class="error value">7385968640</td>
+<td class="error value">772.593s</td>
+<td class="error value">47.093s</td>
+<td class="error value">3</td>
+<td class="error value">41.020s</td>
+</tr>
+<tr><td title="Click here to show source code"><a href="../svcomp15/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--scsi--aic7xxx_old.ko-main.cil.out.c">ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--scsi--aic7xxx_old.ko-main.cil.out.c</a></td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-04_1020.logfiles/symEx-constraintsItpFirst.32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--scsi--aic7xxx_old.ko-main.cil.out.c.log">true</a></td>
+<td class="correct value">515.899s</td>
+<td class="correct value">448.100s</td>
+<td class="correct value">zeus22</td>
+<td class="correct value">6170415104</td>
+<td class="correct value">444.690s</td>
+<td class="correct value">16.852s</td>
+<td class="correct value">4</td>
+<td class="correct value">20.749s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-07_0845.logfiles/symEx-ref-locPrec.32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--scsi--aic7xxx_old.ko-main.cil.out.c.log">true</a></td>
+<td class="correct value">582.700s</td>
+<td class="correct value">497.202s</td>
+<td class="correct value">6311579648</td>
+<td class="correct value">zeus20</td>
+<td class="correct value">492.491s</td>
+<td class="correct value">17.100s</td>
+<td class="correct value">4</td>
+<td class="correct value">21.424s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_0837.logfiles/symEx-ref-leqImplication.32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--scsi--aic7xxx_old.ko-main.cil.out.c.log">true</a></td>
+<td class="correct value">563.455s</td>
+<td class="correct value">471.014s</td>
+<td class="correct value">zeus01</td>
+<td class="correct value">6454820864</td>
+<td class="correct value">466.287s</td>
+<td class="correct value">16.331s</td>
+<td class="correct value">4</td>
+<td class="correct value">23.191s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_2029.logfiles/symEx-ref-leqImplication-locPrec.32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--scsi--aic7xxx_old.ko-main.cil.out.c.log">timeout</a></td>
+<td class="error value">903.460s</td>
+<td class="error value">844.245s</td>
+<td class="error value">zeus03</td>
+<td class="error value">5095436288</td>
+<td class="error value">841.237s</td>
+<td class="error value">25.215s</td>
+<td class="error value">4</td>
+<td class="error value">23.723s</td>
+</tr>
+<tr><td title="Click here to show source code"><a href="../svcomp15/ldv-linux-3.16-rc1/205_9a_array_safes_linux-3.16-rc1.tar.xz-205_9a-drivers--net--wireless--rtlwifi--btcoexist--btcoexist.ko-entry_point_true-unreach-call.cil.out.c">ldv-linux-3.16-rc1/205_9a_array_safes_linux-3.16-rc1.tar.xz-205_9a-drivers--net--wireless--rtlwifi--btcoexist--btcoexist.ko-entry_point_true-unreach-call.cil.out.c</a></td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-04_1020.logfiles/symEx-constraintsItpFirst.205_9a_array_safes_linux-3.16-rc1.tar.xz-205_9a-drivers--net--wireless--rtlwifi--btcoexist--btcoexist.ko-entry_point_true-unreach-call.cil.out.c.log">true</a></td>
+<td class="correct value">650.578s</td>
+<td class="correct value">500.174s</td>
+<td class="correct value">zeus06</td>
+<td class="correct value">8471060480</td>
+<td class="correct value">493.736s</td>
+<td class="correct value">20.569s</td>
+<td class="correct value">3</td>
+<td class="correct value">15.229s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-07_0845.logfiles/symEx-ref-locPrec.205_9a_array_safes_linux-3.16-rc1.tar.xz-205_9a-drivers--net--wireless--rtlwifi--btcoexist--btcoexist.ko-entry_point_true-unreach-call.cil.out.c.log">true</a></td>
+<td class="correct value">621.131s</td>
+<td class="correct value">484.896s</td>
+<td class="correct value">8082112512</td>
+<td class="correct value">zeus02</td>
+<td class="correct value">478.190s</td>
+<td class="correct value">15.442s</td>
+<td class="correct value">3</td>
+<td class="correct value">14.581s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_0837.logfiles/symEx-ref-leqImplication.205_9a_array_safes_linux-3.16-rc1.tar.xz-205_9a-drivers--net--wireless--rtlwifi--btcoexist--btcoexist.ko-entry_point_true-unreach-call.cil.out.c.log">true</a></td>
+<td class="correct value">693.565s</td>
+<td class="correct value">524.165s</td>
+<td class="correct value">zeus16</td>
+<td class="correct value">7707422720</td>
+<td class="correct value">517.029s</td>
+<td class="correct value">17.586s</td>
+<td class="correct value">3</td>
+<td class="correct value">12.558s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_2029.logfiles/symEx-ref-leqImplication-locPrec.205_9a_array_safes_linux-3.16-rc1.tar.xz-205_9a-drivers--net--wireless--rtlwifi--btcoexist--btcoexist.ko-entry_point_true-unreach-call.cil.out.c.log">timeout</a></td>
+<td class="error value">908.453s</td>
+<td class="error value">734.598s</td>
+<td class="error value">zeus03</td>
+<td class="error value">6616924160</td>
+<td class="error value">728.540s</td>
+<td class="error value">25.313s</td>
+<td class="error value">3</td>
+<td class="error value">13.236s</td>
+</tr>
+<tr><td title="Click here to show source code"><a href="../svcomp15/systemc/mem_slave_tlm.2_true-unreach-call_false-termination.cil.c">systemc/mem_slave_tlm.2_true-unreach-call_false-termination.cil.c</a></td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-04_1020.logfiles/symEx-constraintsItpFirst.mem_slave_tlm.2_true-unreach-call_false-termination.cil.c.log">timeout</a></td>
+<td class="error value">901.299s</td>
+<td class="error value">887.323s</td>
+<td class="error value">zeus10</td>
+<td class="error value">2247667712</td>
+<td class="error value">886.418s</td>
+<td class="error value">0.232s</td>
+<td class="error value">148</td>
+<td class="error value">878.061s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-07_0845.logfiles/symEx-ref-locPrec.mem_slave_tlm.2_true-unreach-call_false-termination.cil.c.log">true</a></td>
+<td class="correct value">880.199s</td>
+<td class="correct value">866.344s</td>
+<td class="correct value">2264690688</td>
+<td class="correct value">zeus24</td>
+<td class="correct value">865.719s</td>
+<td class="correct value">0.392s</td>
+<td class="correct value">148</td>
+<td class="correct value">856.162s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_0837.logfiles/symEx-ref-leqImplication.mem_slave_tlm.2_true-unreach-call_false-termination.cil.c.log">timeout</a></td>
+<td class="error value">901.385s</td>
+<td class="error value">886.518s</td>
+<td class="error value">zeus16</td>
+<td class="error value">1262366720</td>
+<td class="error value">885.594s</td>
+<td class="error value">0.269s</td>
+<td class="error value">148</td>
+<td class="error value">876.587s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_2029.logfiles/symEx-ref-leqImplication-locPrec.mem_slave_tlm.2_true-unreach-call_false-termination.cil.c.log">timeout</a></td>
+<td class="error value">901.457s</td>
+<td class="error value">885.811s</td>
+<td class="error value">zeus23</td>
+<td class="error value">1269530624</td>
+<td class="error value">884.844s</td>
+<td class="error value">0.243s</td>
+<td class="error value">148</td>
+<td class="error value">875.029s</td>
+</tr>
+<tr><td title="Click here to show source code"><a href="../svcomp15/seq-mthreaded/pals_lcr-var-start-time.3_false-unreach-call.1.ufo.UNBOUNDED.pals.c">seq-mthreaded/pals_lcr-var-start-time.3_false-unreach-call.1.ufo.UNBOUNDED.pals.c</a></td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-04_1020.logfiles/symEx-constraintsItpFirst.pals_lcr-var-start-time.3_false-unreach-call.1.ufo.UNBOUNDED.pals.c.log">timeout</a></td>
+<td class="error value">901.143s</td>
+<td class="error value">882.234s</td>
+<td class="error value">zeus08</td>
+<td class="error value">4392304640</td>
+<td class="error value">881.571s</td>
+<td class="error value">2.616s</td>
+<td class="error value">58</td>
+<td class="error value">476.372s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-07_0845.logfiles/symEx-ref-locPrec.pals_lcr-var-start-time.3_false-unreach-call.1.ufo.UNBOUNDED.pals.c.log">false(reach)</a></td>
+<td class="correct value">745.863s</td>
+<td class="correct value">729.431s</td>
+<td class="correct value">1813987328</td>
+<td class="correct value">zeus08</td>
+<td class="correct value">728.535s</td>
+<td class="correct value">1.585s</td>
+<td class="correct value">54</td>
+<td class="correct value">523.518s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_0837.logfiles/symEx-ref-leqImplication.pals_lcr-var-start-time.3_false-unreach-call.1.ufo.UNBOUNDED.pals.c.log">timeout</a></td>
+<td class="error value">901.196s</td>
+<td class="error value">882.483s</td>
+<td class="error value">zeus17</td>
+<td class="error value">4309786624</td>
+<td class="error value">881.559s</td>
+<td class="error value">2.886s</td>
+<td class="error value">58</td>
+<td class="error value">471.525s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_2029.logfiles/symEx-ref-leqImplication-locPrec.pals_lcr-var-start-time.3_false-unreach-call.1.ufo.UNBOUNDED.pals.c.log">false(reach)</a></td>
+<td class="correct value">778.963s</td>
+<td class="correct value">761.631s</td>
+<td class="correct value">zeus12</td>
+<td class="correct value">2161451008</td>
+<td class="correct value">760.713s</td>
+<td class="correct value">1.590s</td>
+<td class="correct value">54</td>
+<td class="correct value">550.399s</td>
+</tr>
+<tr><td title="Click here to show source code"><a href="../svcomp15/seq-mthreaded/pals_lcr-var-start-time.3_false-unreach-call.2.ufo.BOUNDED-6.pals.c">seq-mthreaded/pals_lcr-var-start-time.3_false-unreach-call.2.ufo.BOUNDED-6.pals.c</a></td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-04_1020.logfiles/symEx-constraintsItpFirst.pals_lcr-var-start-time.3_false-unreach-call.2.ufo.BOUNDED-6.pals.c.log">timeout</a></td>
+<td class="error value">901.792s</td>
+<td class="error value">883.242s</td>
+<td class="error value">zeus22</td>
+<td class="error value">2315694080</td>
+<td class="error value">882.211s</td>
+<td class="error value">2.336s</td>
+<td class="error value">56</td>
+<td class="error value">641.930s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-07_0845.logfiles/symEx-ref-locPrec.pals_lcr-var-start-time.3_false-unreach-call.2.ufo.BOUNDED-6.pals.c.log">false(reach)</a></td>
+<td class="correct value">887.606s</td>
+<td class="correct value">871.176s</td>
+<td class="correct value">1815580672</td>
+<td class="correct value">zeus06</td>
+<td class="correct value">870.328s</td>
+<td class="correct value">1.332s</td>
+<td class="correct value">52</td>
+<td class="correct value">693.912s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_0837.logfiles/symEx-ref-leqImplication.pals_lcr-var-start-time.3_false-unreach-call.2.ufo.BOUNDED-6.pals.c.log">timeout</a></td>
+<td class="error value">901.262s</td>
+<td class="error value">883.838s</td>
+<td class="error value">zeus10</td>
+<td class="error value">3287519232</td>
+<td class="error value">883.040s</td>
+<td class="error value">2.092s</td>
+<td class="error value">56</td>
+<td class="error value">654.613s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_2029.logfiles/symEx-ref-leqImplication-locPrec.pals_lcr-var-start-time.3_false-unreach-call.2.ufo.BOUNDED-6.pals.c.log">false(reach)</a></td>
+<td class="correct value">874.890s</td>
+<td class="correct value">858.883s</td>
+<td class="correct value">zeus06</td>
+<td class="correct value">1483673600</td>
+<td class="correct value">858.065s</td>
+<td class="correct value">1.230s</td>
+<td class="correct value">52</td>
+<td class="correct value">678.785s</td>
+</tr>
+<tr><td title="Click here to show source code"><a href="../svcomp15/seq-mthreaded/pals_lcr-var-start-time.3_false-unreach-call.2.ufo.UNBOUNDED.pals.c">seq-mthreaded/pals_lcr-var-start-time.3_false-unreach-call.2.ufo.UNBOUNDED.pals.c</a></td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-04_1020.logfiles/symEx-constraintsItpFirst.pals_lcr-var-start-time.3_false-unreach-call.2.ufo.UNBOUNDED.pals.c.log">timeout</a></td>
+<td class="error value">901.601s</td>
+<td class="error value">882.392s</td>
+<td class="error value">zeus03</td>
+<td class="error value">2819526656</td>
+<td class="error value">881.391s</td>
+<td class="error value">2.912s</td>
+<td class="error value">61</td>
+<td class="error value">528.041s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-07_0845.logfiles/symEx-ref-locPrec.pals_lcr-var-start-time.3_false-unreach-call.2.ufo.UNBOUNDED.pals.c.log">false(reach)</a></td>
+<td class="correct value">701.049s</td>
+<td class="correct value">685.851s</td>
+<td class="correct value">2129698816</td>
+<td class="correct value">zeus21</td>
+<td class="correct value">684.994s</td>
+<td class="correct value">1.466s</td>
+<td class="correct value">52</td>
+<td class="correct value">493.889s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_0837.logfiles/symEx-ref-leqImplication.pals_lcr-var-start-time.3_false-unreach-call.2.ufo.UNBOUNDED.pals.c.log">timeout</a></td>
+<td class="error value">901.720s</td>
+<td class="error value">882.539s</td>
+<td class="error value">zeus22</td>
+<td class="error value">3404124160</td>
+<td class="error value">881.779s</td>
+<td class="error value">2.747s</td>
+<td class="error value">61</td>
+<td class="error value">539.956s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_2029.logfiles/symEx-ref-leqImplication-locPrec.pals_lcr-var-start-time.3_false-unreach-call.2.ufo.UNBOUNDED.pals.c.log">false(reach)</a></td>
+<td class="correct value">675.135s</td>
+<td class="correct value">659.355s</td>
+<td class="correct value">zeus13</td>
+<td class="correct value">1998032896</td>
+<td class="correct value">658.518s</td>
+<td class="correct value">1.319s</td>
+<td class="correct value">52</td>
+<td class="correct value">477.870s</td>
+</tr>
+<tr><td title="Click here to show source code"><a href="../svcomp15/seq-mthreaded/pals_lcr.3_false-unreach-call.1.ufo.BOUNDED-6.pals.c">seq-mthreaded/pals_lcr.3_false-unreach-call.1.ufo.BOUNDED-6.pals.c</a></td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-04_1020.logfiles/symEx-constraintsItpFirst.pals_lcr.3_false-unreach-call.1.ufo.BOUNDED-6.pals.c.log">timeout</a></td>
+<td class="error value">901.331s</td>
+<td class="error value">885.100s</td>
+<td class="error value">zeus20</td>
+<td class="error value">674615296</td>
+<td class="error value">884.241s</td>
+<td class="error value">0.451s</td>
+<td class="error value">54</td>
+<td class="error value">857.017s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-07_0845.logfiles/symEx-ref-locPrec.pals_lcr.3_false-unreach-call.1.ufo.BOUNDED-6.pals.c.log">false(reach)</a></td>
+<td class="correct value">306.884s</td>
+<td class="correct value">295.484s</td>
+<td class="correct value">702496768</td>
+<td class="correct value">zeus05</td>
+<td class="correct value">294.710s</td>
+<td class="correct value">0.196s</td>
+<td class="correct value">37</td>
+<td class="correct value">281.172s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_0837.logfiles/symEx-ref-leqImplication.pals_lcr.3_false-unreach-call.1.ufo.BOUNDED-6.pals.c.log">timeout</a></td>
+<td class="error value">901.124s</td>
+<td class="error value">885.803s</td>
+<td class="error value">zeus22</td>
+<td class="error value">670265344</td>
+<td class="error value">885.049s</td>
+<td class="error value">0.249s</td>
+<td class="error value">54</td>
+<td class="error value">859.764s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_2029.logfiles/symEx-ref-leqImplication-locPrec.pals_lcr.3_false-unreach-call.1.ufo.BOUNDED-6.pals.c.log">false(reach)</a></td>
+<td class="correct value">296.466s</td>
+<td class="correct value">284.574s</td>
+<td class="correct value">zeus13</td>
+<td class="correct value">673751040</td>
+<td class="correct value">283.725s</td>
+<td class="correct value">0.224s</td>
+<td class="correct value">37</td>
+<td class="correct value">270.291s</td>
+</tr>
+<tr><td title="Click here to show source code"><a href="../svcomp15/seq-mthreaded/pals_lcr.3_false-unreach-call.1.ufo.UNBOUNDED.pals.c">seq-mthreaded/pals_lcr.3_false-unreach-call.1.ufo.UNBOUNDED.pals.c</a></td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-04_1020.logfiles/symEx-constraintsItpFirst.pals_lcr.3_false-unreach-call.1.ufo.UNBOUNDED.pals.c.log">timeout</a></td>
+<td class="error value">901.269s</td>
+<td class="error value">885.557s</td>
+<td class="error value">zeus23</td>
+<td class="error value">666296320</td>
+<td class="error value">884.837s</td>
+<td class="error value">0.331s</td>
+<td class="error value">61</td>
+<td class="error value">848.798s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-07_0845.logfiles/symEx-ref-locPrec.pals_lcr.3_false-unreach-call.1.ufo.UNBOUNDED.pals.c.log">false(reach)</a></td>
+<td class="correct value">204.864s</td>
+<td class="correct value">194.823s</td>
+<td class="correct value">671739904</td>
+<td class="correct value">zeus08</td>
+<td class="correct value">193.995s</td>
+<td class="correct value">0.163s</td>
+<td class="correct value">37</td>
+<td class="correct value">180.423s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_0837.logfiles/symEx-ref-leqImplication.pals_lcr.3_false-unreach-call.1.ufo.UNBOUNDED.pals.c.log">timeout</a></td>
+<td class="error value">901.368s</td>
+<td class="error value">885.167s</td>
+<td class="error value">zeus04</td>
+<td class="error value">782192640</td>
+<td class="error value">884.453s</td>
+<td class="error value">0.318s</td>
+<td class="error value">61</td>
+<td class="error value">848.043s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_2029.logfiles/symEx-ref-leqImplication-locPrec.pals_lcr.3_false-unreach-call.1.ufo.UNBOUNDED.pals.c.log">false(reach)</a></td>
+<td class="correct value">209.720s</td>
+<td class="correct value">200.057s</td>
+<td class="correct value">zeus16</td>
+<td class="correct value">666746880</td>
+<td class="correct value">199.278s</td>
+<td class="correct value">0.170s</td>
+<td class="correct value">37</td>
+<td class="correct value">185.409s</td>
+</tr>
+<tr><td title="Click here to show source code"><a href="../svcomp15/seq-mthreaded/pals_lcr.4_false-unreach-call.1.ufo.UNBOUNDED.pals.c">seq-mthreaded/pals_lcr.4_false-unreach-call.1.ufo.UNBOUNDED.pals.c</a></td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-04_1020.logfiles/symEx-constraintsItpFirst.pals_lcr.4_false-unreach-call.1.ufo.UNBOUNDED.pals.c.log">timeout</a></td>
+<td class="error value">901.639s</td>
+<td class="error value">885.430s</td>
+<td class="error value">zeus19</td>
+<td class="error value">665391104</td>
+<td class="error value">884.550s</td>
+<td class="error value">0.355s</td>
+<td class="error value">65</td>
+<td class="error value">854.205s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-07_0845.logfiles/symEx-ref-locPrec.pals_lcr.4_false-unreach-call.1.ufo.UNBOUNDED.pals.c.log">false(reach)</a></td>
+<td class="correct value">802.941s</td>
+<td class="correct value">789.105s</td>
+<td class="correct value">667348992</td>
+<td class="correct value">zeus09</td>
+<td class="correct value">788.059s</td>
+<td class="correct value">0.428s</td>
+<td class="correct value">50</td>
+<td class="correct value">695.262s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_0837.logfiles/symEx-ref-leqImplication.pals_lcr.4_false-unreach-call.1.ufo.UNBOUNDED.pals.c.log">timeout</a></td>
+<td class="error value">901.590s</td>
+<td class="error value">886.058s</td>
+<td class="error value">zeus21</td>
+<td class="error value">670322688</td>
+<td class="error value">885.204s</td>
+<td class="error value">0.375s</td>
+<td class="error value">65</td>
+<td class="error value">853.851s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_2029.logfiles/symEx-ref-leqImplication-locPrec.pals_lcr.4_false-unreach-call.1.ufo.UNBOUNDED.pals.c.log">false(reach)</a></td>
+<td class="correct value">796.739s</td>
+<td class="correct value">783.251s</td>
+<td class="correct value">zeus09</td>
+<td class="correct value">664608768</td>
+<td class="correct value">782.277s</td>
+<td class="correct value">0.506s</td>
+<td class="correct value">50</td>
+<td class="correct value">682.512s</td>
+</tr>
+<tr><td title="Click here to show source code"><a href="../svcomp15/seq-mthreaded/pals_lcr.3_true-unreach-call.ufo.BOUNDED-6.pals.c">seq-mthreaded/pals_lcr.3_true-unreach-call.ufo.BOUNDED-6.pals.c</a></td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-04_1020.logfiles/symEx-constraintsItpFirst.pals_lcr.3_true-unreach-call.ufo.BOUNDED-6.pals.c.log">timeout</a></td>
+<td class="error value">901.199s</td>
+<td class="error value">885.525s</td>
+<td class="error value">zeus18</td>
+<td class="error value">672718848</td>
+<td class="error value">884.769s</td>
+<td class="error value">0.341s</td>
+<td class="error value">55</td>
+<td class="error value">855.733s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-07_0845.logfiles/symEx-ref-locPrec.pals_lcr.3_true-unreach-call.ufo.BOUNDED-6.pals.c.log">true</a></td>
+<td class="correct value">298.649s</td>
+<td class="correct value">288.267s</td>
+<td class="correct value">693661696</td>
+<td class="correct value">zeus12</td>
+<td class="correct value">287.640s</td>
+<td class="correct value">0.167s</td>
+<td class="correct value">36</td>
+<td class="correct value">275.217s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_0837.logfiles/symEx-ref-leqImplication.pals_lcr.3_true-unreach-call.ufo.BOUNDED-6.pals.c.log">timeout</a></td>
+<td class="error value">901.133s</td>
+<td class="error value">885.283s</td>
+<td class="error value">zeus23</td>
+<td class="error value">793260032</td>
+<td class="error value">884.537s</td>
+<td class="error value">0.396s</td>
+<td class="error value">53</td>
+<td class="error value">855.789s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_2029.logfiles/symEx-ref-leqImplication-locPrec.pals_lcr.3_true-unreach-call.ufo.BOUNDED-6.pals.c.log">true</a></td>
+<td class="correct value">316.233s</td>
+<td class="correct value">305.102s</td>
+<td class="correct value">zeus11</td>
+<td class="correct value">675999744</td>
+<td class="correct value">304.380s</td>
+<td class="correct value">0.182s</td>
+<td class="correct value">36</td>
+<td class="correct value">290.120s</td>
+</tr>
+<tr><td title="Click here to show source code"><a href="../svcomp15/seq-pthread/cs_stack_false-unreach-call.i">seq-pthread/cs_stack_false-unreach-call.i</a></td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-04_1020.logfiles/symEx-constraintsItpFirst.cs_stack_false-unreach-call.i.log">false(reach)</a></td>
+<td class="correct value">406.349s</td>
+<td class="correct value">394.166s</td>
+<td class="correct value">zeus04</td>
+<td class="correct value">2344321024</td>
+<td class="correct value">393.209s</td>
+<td class="correct value">0.479s</td>
+<td class="correct value">10</td>
+<td class="correct value">376.099s</td>
+<td class="status correct" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-07_0845.logfiles/symEx-ref-locPrec.cs_stack_false-unreach-call.i.log">false(reach)</a></td>
+<td class="correct value">393.359s</td>
+<td class="correct value">380.713s</td>
+<td class="correct value">1204469760</td>
+<td class="correct value">zeus09</td>
+<td class="correct value">379.726s</td>
+<td class="correct value">0.417s</td>
+<td class="correct value">10</td>
+<td class="correct value">362.698s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_0837.logfiles/symEx-ref-leqImplication.cs_stack_false-unreach-call.i.log">timeout</a></td>
+<td class="error value">901.697s</td>
+<td class="error value">888.178s</td>
+<td class="error value">zeus23</td>
+<td class="error value">3590488064</td>
+<td class="error value">887.211s</td>
+<td class="error value">0.543s</td>
+<td class="error value">10</td>
+<td class="error value">865.353s</td>
+<td class="status error" title="Click here to show output of tool"><a href="symbolic-refiner.2015-07-06_2029.logfiles/symEx-ref-leqImplication-locPrec.cs_stack_false-unreach-call.i.log">timeout</a></td>
+<td class="error value">901.685s</td>
+<td class="error value">888.502s</td>
+<td class="error value">zeus08</td>
+<td class="error value">3614736384</td>
+<td class="error value">887.536s</td>
+<td class="error value">0.561s</td>
+<td class="error value">10</td>
+<td class="error value">865.729s</td>
+</tr>
+</tbody>
+
+<tfoot>
+<tr class="columnTitles">
+<td>../svcomp15/</td>
+<td colspan="1">status</td>
+<td colspan="1">cputime</td>
+<td colspan="1">walltime</td>
+<td colspan="1">host</td>
+<td colspan="1">memUsage</td>
+<td colspan="1">total</td>
+<td colspan="1">reached</td>
+<td colspan="1">refiners</td>
+<td colspan="1">time_refiners</td>
+<td colspan="1">status</td>
+<td colspan="1">cputime</td>
+<td colspan="1">walltime</td>
+<td colspan="1">memUsage</td>
+<td colspan="1">host</td>
+<td colspan="1">total</td>
+<td colspan="1">reached</td>
+<td colspan="1">refiners</td>
+<td colspan="1">time_refiners</td>
+<td colspan="1">status</td>
+<td colspan="1">cputime</td>
+<td colspan="1">walltime</td>
+<td colspan="1">host</td>
+<td colspan="1">memUsage</td>
+<td colspan="1">total</td>
+<td colspan="1">reached</td>
+<td colspan="1">refiners</td>
+<td colspan="1">time_refiners</td>
+<td colspan="1">status</td>
+<td colspan="1">cputime</td>
+<td colspan="1">walltime</td>
+<td colspan="1">host</td>
+<td colspan="1">memUsage</td>
+<td colspan="1">total</td>
+<td colspan="1">reached</td>
+<td colspan="1">refiners</td>
+<td colspan="1">time_refiners</td>
+</tr>
+<tr class="statistics">
+<td title="in total 13 true tasks, 13 false tasks">total tasks</td>
+<td >26</td>
+<td title="Min: 37.858, Max: 901.792, Average: 629.685, Median: 901.143">16371.812</td>
+<td title="Min: 32.022, Max: 899.214, Average: 607.076, Median: 883.242">15783.987</td>
+<td >-</td>
+<td title="Min: 377098240, Max: 8471060480, Average: 1922855542.154, Median: 766005248">49994244096</td>
+<td title="Min: 31.371, Max: 898.564, Average: 605.834, Median: 882.211">15751.676</td>
+<td title="Min: 0.002, Max: 20.978, Average: 2.765, Median: 0.355">71.893</td>
+<td title="Min: 2, Max: 148, Average: 31.231, Median: 10">812</td>
+<td title="Min: 0.767, Max: 897.057, Average: 359.464, Median: 46.653">9346.051</td>
+<td >26</td>
+<td title="Min: 36.454, Max: 902.315, Average: 646.318, Median: 802.941">16804.268</td>
+<td title="Min: 28.263, Max: 899.026, Average: 621.313, Median: 789.105">16154.148</td>
+<td title="Min: 403116032, Max: 8082112512, Average: 2510584595.692, Median: 1815580672">65275199488</td>
+<td >-</td>
+<td title="Min: 27.213, Max: 898.393, Average: 619.935, Median: 788.059">16118.311</td>
+<td title="Min: 0.002, Max: 25.176, Average: 2.742, Median: 0.497">71.296</td>
+<td title="Min: 2, Max: 148, Average: 28.962, Median: 29">753</td>
+<td title="Min: 0.870, Max: 896.893, Average: 457.072, Median: 523.518">11883.874</td>
+<td >26</td>
+<td title="Min: 36.520, Max: 901.720, Average: 643.806, Median: 901.133">16738.957</td>
+<td title="Min: 30.498, Max: 899.253, Average: 618.574, Median: 883.838">16082.928</td>
+<td >-</td>
+<td title="Min: 372756480, Max: 7707422720, Average: 2009085794.462, Median: 793260032">52236230656</td>
+<td title="Min: 29.863, Max: 898.616, Average: 617.296, Median: 883.040">16049.691</td>
+<td title="Min: 0.002, Max: 24.982, Average: 2.768, Median: 0.371">71.962</td>
+<td title="Min: 2, Max: 148, Average: 30.885, Median: 10">803</td>
+<td title="Min: 0.774, Max: 897.109, Average: 368.011, Median: 56.343">9568.283</td>
+<td >26</td>
+<td title="Min: 35.302, Max: 908.453, Average: 682.318, Median: 901.106">17740.266</td>
+<td title="Min: 27.203, Max: 899.206, Average: 658.427, Median: 844.245">17119.099</td>
+<td >-</td>
+<td title="Min: 351887360, Max: 7385968640, Average: 2475572775.385, Median: 2161451008">64364892160</td>
+<td title="Min: 26.167, Max: 898.592, Average: 657.155, Median: 841.237">17086.024</td>
+<td title="Min: 0.002, Max: 47.093, Average: 4.314, Median: 0.522">112.153</td>
+<td title="Min: 2, Max: 148, Average: 29.154, Median: 29">758</td>
+<td title="Min: 0.868, Max: 897.117, Average: 470.794, Median: 550.399">12240.649</td>
+</tr>
+<tr class="statistics">
+<td title="(property holds + result is true) OR (property does not hold + result is false)">&nbsp;&nbsp;&nbsp;&nbsp;correct results</td>
+<td >11</td>
+<td title="Min: 37.858, Max: 650.578, Average: 259.283, Median: 58.514">2852.117</td>
+<td title="Min: 32.022, Max: 525.066, Average: 223.294, Median: 51.747">2456.232</td>
+<td >-</td>
+<td title="Min: 623906816, Max: 8471060480, Average: 2654619089.455, Median: 651788288">29200809984</td>
+<td title="Min: 31.371, Max: 520.495, Average: 221.438, Median: 51.127">2435.818</td>
+<td title="Min: 0.091, Max: 20.978, Average: 5.505, Median: 0.119">60.558</td>
+<td title="Min: 3, Max: 31, Average: 7.727, Median: 5">85</td>
+<td title="Min: 15.229, Max: 376.099, Average: 61.123, Median: 28.674">672.358</td>
+<td >16</td>
+<td title="Min: 36.454, Max: 887.606, Average: 486.893, Median: 582.700">7790.290</td>
+<td title="Min: 28.263, Max: 871.176, Average: 452.458, Median: 484.896">7239.334</td>
+<td title="Min: 667348992, Max: 8082112512, Average: 2433561856.0, Median: 1563201536">38936989696</td>
+<td >-</td>
+<td title="Min: 27.213, Max: 870.328, Average: 450.78, Median: 478.190">7212.485</td>
+<td title="Min: 0.137, Max: 25.176, Average: 4.148, Median: 0.989">66.373</td>
+<td title="Min: 3, Max: 148, Average: 35.562, Median: 36">569</td>
+<td title="Min: 0.870, Max: 856.162, Average: 280.552, Median: 275.217">4488.840</td>
+<td >11</td>
+<td title="Min: 36.520, Max: 727.337, Average: 292.609, Median: 70.090">3218.700</td>
+<td title="Min: 30.498, Max: 595.476, Average: 251.406, Median: 62.454">2765.470</td>
+<td >-</td>
+<td title="Min: 470171648, Max: 7707422720, Average: 2532424610.909, Median: 629870592">27856670720</td>
+<td title="Min: 29.863, Max: 594.857, Average: 249.483, Median: 61.614">2744.312</td>
+<td title="Min: 0.003, Max: 24.982, Average: 5.501, Median: 0.125">60.510</td>
+<td title="Min: 2, Max: 31, Average: 7.0, Median: 5">77</td>
+<td title="Min: 12.558, Max: 593.372, Average: 81.715, Median: 28.646">898.867</td>
+<td >12</td>
+<td title="Min: 35.302, Max: 890.345, Average: 457.625, Median: 316.233">5491.505</td>
+<td title="Min: 27.203, Max: 888.277, Average: 446.278, Median: 305.102">5355.341</td>
+<td >-</td>
+<td title="Min: 624967680, Max: 2354040832, Average: 1244185600.0, Median: 1204756480">14930227200</td>
+<td title="Min: 26.167, Max: 887.677, Average: 445.367, Median: 304.380">5344.403</td>
+<td title="Min: 0.004, Max: 1.590, Average: 0.656, Median: 0.506">7.869</td>
+<td title="Min: 2, Max: 54, Average: 34.083, Median: 37">409</td>
+<td title="Min: 0.868, Max: 886.185, Average: 339.299, Median: 290.120">4071.590</td>
+</tr>
+<tr class="statistics">
+<td title="property holds + result is true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;correct true</td>
+<td >9</td>
+<td title="Min: 37.858, Max: 650.578, Average: 229.626, Median: 44.470">2066.633</td>
+<td title="Min: 32.022, Max: 525.066, Average: 188.222, Median: 38.177">1693.999</td>
+<td >-</td>
+<td title="Min: 623906816, Max: 8471060480, Average: 2837816661.333, Median: 627920896">25540349952</td>
+<td title="Min: 31.371, Max: 520.495, Average: 186.191, Median: 37.547">1675.717</td>
+<td title="Min: 0.091, Max: 20.978, Average: 6.561, Median: 0.118">59.048</td>
+<td title="Min: 3, Max: 9, Average: 4.889, Median: 5">44</td>
+<td title="Min: 15.229, Max: 46.653, Average: 29.732, Median: 27.985">267.585</td>
+<td >6</td>
+<td title="Min: 124.234, Max: 880.199, Average: 546.761, Median: 621.131">3280.567</td>
+<td title="Min: 118.670, Max: 866.344, Average: 476.297, Median: 497.202">2857.781</td>
+<td title="Min: 693661696, Max: 8082112512, Average: 4328429568.0, Median: 6311579648">25970577408</td>
+<td >-</td>
+<td title="Min: 117.947, Max: 865.719, Average: 473.48, Median: 492.491">2840.879</td>
+<td title="Min: 0.137, Max: 25.176, Average: 9.736, Median: 15.442">58.414</td>
+<td title="Min: 3, Max: 148, Average: 32.833, Median: 4">197</td>
+<td title="Min: 0.870, Max: 856.162, Average: 202.23, Median: 45.125">1213.379</td>
+<td >9</td>
+<td title="Min: 36.520, Max: 727.337, Average: 250.065, Median: 42.350">2250.583</td>
+<td title="Min: 30.498, Max: 586.496, Average: 201.098, Median: 36.497">1809.884</td>
+<td >-</td>
+<td title="Min: 622166016, Max: 7707422720, Average: 2785319139.556, Median: 629870592">25067872256</td>
+<td title="Min: 29.863, Max: 583.066, Average: 198.934, Median: 35.899">1790.405</td>
+<td title="Min: 0.091, Max: 24.982, Average: 6.617, Median: 0.125">59.550</td>
+<td title="Min: 3, Max: 9, Average: 4.889, Median: 5">44</td>
+<td title="Min: 12.558, Max: 56.343, Average: 30.761, Median: 27.334">276.849</td>
+<td >2</td>
+<td title="Min: 128.373, Max: 316.233, Average: 222.303, Median: 316.233">444.606</td>
+<td title="Min: 122.780, Max: 305.102, Average: 213.941, Median: 305.102">427.882</td>
+<td >-</td>
+<td title="Min: 675999744, Max: 2354040832, Average: 1515020288.0, Median: 2354040832">3030040576</td>
+<td title="Min: 121.969, Max: 304.380, Average: 213.174, Median: 304.380">426.349</td>
+<td title="Min: 0.178, Max: 0.182, Average: 0.18, Median: 0.182">0.360</td>
+<td title="Min: 3, Max: 36, Average: 19.5, Median: 36">39</td>
+<td title="Min: 0.868, Max: 290.120, Average: 145.494, Median: 290.120">290.988</td>
+</tr>
+<tr class="statistics">
+<td title="property does not hold + result is false">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;correct false</td>
+<td >2</td>
+<td title="Min: 379.135, Max: 406.349, Average: 392.742, Median: 406.349">785.485</td>
+<td title="Min: 368.067, Max: 394.166, Average: 381.116, Median: 394.166">762.233</td>
+<td >-</td>
+<td title="Min: 1316139008, Max: 2344321024, Average: 1830230016.0, Median: 2344321024">3660460032</td>
+<td title="Min: 366.892, Max: 393.209, Average: 380.05, Median: 393.209">760.101</td>
+<td title="Min: 0.479, Max: 1.031, Average: 0.755, Median: 1.031">1.510</td>
+<td title="Min: 10, Max: 31, Average: 20.5, Median: 31">41</td>
+<td title="Min: 28.674, Max: 376.099, Average: 202.386, Median: 376.099">404.773</td>
+<td >10</td>
+<td title="Min: 36.454, Max: 887.606, Average: 450.972, Median: 393.359">4509.723</td>
+<td title="Min: 28.263, Max: 871.176, Average: 438.155, Median: 380.713">4381.553</td>
+<td title="Min: 667348992, Max: 2129698816, Average: 1296641228.8, Median: 1539710976">12966412288</td>
+<td >-</td>
+<td title="Min: 27.213, Max: 870.328, Average: 437.161, Median: 379.726">4371.606</td>
+<td title="Min: 0.163, Max: 1.585, Average: 0.796, Median: 0.989">7.959</td>
+<td title="Min: 10, Max: 54, Average: 37.2, Median: 37">372</td>
+<td title="Min: 5.337, Max: 695.262, Average: 327.546, Median: 362.698">3275.461</td>
+<td >2</td>
+<td title="Min: 370.731, Max: 597.386, Average: 484.059, Median: 597.386">968.117</td>
+<td title="Min: 360.110, Max: 595.476, Average: 477.793, Median: 595.476">955.587</td>
+<td >-</td>
+<td title="Min: 470171648, Max: 2318626816, Average: 1394399232.0, Median: 2318626816">2788798464</td>
+<td title="Min: 359.050, Max: 594.857, Average: 476.954, Median: 594.857">953.907</td>
+<td title="Min: 0.003, Max: 0.957, Average: 0.48, Median: 0.957">0.960</td>
+<td title="Min: 2, Max: 31, Average: 16.5, Median: 31">33</td>
+<td title="Min: 28.646, Max: 593.372, Average: 311.009, Median: 593.372">622.018</td>
+<td >10</td>
+<td title="Min: 35.302, Max: 890.345, Average: 504.690, Median: 675.135">5046.899</td>
+<td title="Min: 27.203, Max: 888.277, Average: 492.746, Median: 659.355">4927.460</td>
+<td >-</td>
+<td title="Min: 624967680, Max: 2161451008, Average: 1190018662.4, Median: 1204756480">11900186624</td>
+<td title="Min: 26.167, Max: 887.677, Average: 491.805, Median: 658.518">4918.054</td>
+<td title="Min: 0.004, Max: 1.590, Average: 0.751, Median: 0.994">7.509</td>
+<td title="Min: 2, Max: 54, Average: 37.0, Median: 37">370</td>
+<td title="Min: 5.260, Max: 886.185, Average: 378.06, Median: 477.870">3780.602</td>
+</tr>
+<tr class="statistics">
+<td title="(property holds + result is false) OR (property does not hold + result is true)">&nbsp;&nbsp;&nbsp;&nbsp;incorrect results</td>
+<td >0</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >0</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >0</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >0</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+</tr>
+<tr class="statistics">
+<td title="property does not hold + result is true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;incorrect true</td>
+<td >0</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >0</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >0</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >0</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+</tr>
+<tr class="statistics">
+<td title="property holds + result is false">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;incorrect false</td>
+<td >0</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >0</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >0</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >0</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+<td >-</td>
+</tr>
+<tr class="statistics">
+<td title="in total 13 true tasks, 13 false tasks">score (26 tasks, max score: 39)</td>
+<td class="score">20</td>
+<td class="score">-</td>
+<td class="score">-</td>
+<td class="score">-</td>
+<td class="score">-</td>
+<td class="score">-</td>
+<td class="score">-</td>
+<td class="score">-</td>
+<td class="score">-</td>
+<td class="score">22</td>
+<td class="score">-</td>
+<td class="score">-</td>
+<td class="score">-</td>
+<td class="score">-</td>
+<td class="score">-</td>
+<td class="score">-</td>
+<td class="score">-</td>
+<td class="score">-</td>
+<td class="score">20</td>
+<td class="score">-</td>
+<td class="score">-</td>
+<td class="score">-</td>
+<td class="score">-</td>
+<td class="score">-</td>
+<td class="score">-</td>
+<td class="score">-</td>
+<td class="score">-</td>
+<td class="score">14</td>
+<td class="score">-</td>
+<td class="score">-</td>
+<td class="score">-</td>
+<td class="score">-</td>
+<td class="score">-</td>
+<td class="score">-</td>
+<td class="score">-</td>
+<td class="score">-</td>
+</tr>
+<tr class="run">
+<td>Run set</td>
+<td colspan="9">symEx-constraintsItpFirst</td>
+<td colspan="9">symEx-ref-locPrec</td>
+<td colspan="9">symEx-ref-leqImplication</td>
+<td colspan="9">symEx-ref-leqImplication-locPrec</td>
+</tr>
+</tfoot>
+</table>
+
+
+<!-- ################## Base JS ################## -->
+
+<script type="text/javascript" src="http://www.sosy-lab.org/lib/jquery/1.11.2/jquery.min.js"></script>
+
+<script type="text/javascript">
+// enable content that is only shown if JS is enabled
+$('.noscript').hide();
+$('.scriptonly').show();
+
+// All the data from the table head in nice JS data structures.
+var run_sets = [{"benchmarkname": "symbolic-refiner", "branch": "", "cores": "32", "cpu": "Intel Xeon E5-2650 v2 @ 2.60 GHz", "cpuCores": "2", "date": "2015-07-04 10:20:39 CEST", "freq": "2.6 GHz", "host": "[zeus01; zeus02; zeus03; zeus04; zeus05; zeus06; zeus07; zeus08; zeus09; zeus10; zeus11; zeus12; zeus13; zeus14; zeus15; zeus16; zeus17; zeus18; zeus19; zeus20; zeus21; zeus22; zeus23; zeus24]", "memlimit": "15000 MB", "name": "symEx-constraintsItpFirst", "options": "-heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic-refiner -setprop cpa.value.symbolic.refinement.strategy=CONSTRAINTS_FIRST -setprop cpa.constraints.lessOrEqualType=SUBSET -setprop cpa.value.refinement.pathSlicing=false -setprop cpa.value.refinement.prefixPreference=NONE", "os": "Linux 3.13.0-55-generic", "ram": "135 GB", "timelimit": "900 s", "tool": "CPAchecker", "toolmodule": "benchexec.tools.cpachecker", "version": "1.4-svn 17201M"}, {"benchmarkname": "symbolic-refiner", "branch": "", "cores": "32", "cpu": "Intel Xeon E5-2650 v2 @ 2.60 GHz", "cpuCores": "2", "date": "2015-07-07 08:45:54 CEST", "freq": "2.6 GHz", "host": "[zeus01; zeus02; zeus03; zeus04; zeus05; zeus06; zeus07; zeus08; zeus09; zeus10; zeus11; zeus12; zeus13; zeus14; zeus15; zeus16; zeus17; zeus18; zeus19; zeus20; zeus21; zeus22; zeus23; zeus24]", "memlimit": "15000 MB", "name": "symEx-ref-locPrec", "options": "-heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic-refiner -setprop cpa.value.symbolic.refinement.strategy=CONSTRAINTS_FIRST -setprop cpa.constraints.lessOrEqualType=SUBSET -setprop cpa.value.refinement.pathSlicing=false -setprop cpa.value.refinement.prefixPreference=NONE -setprop cpa.constraints.refinement.precisionType=LOCATION", "os": "Linux 3.13.0-57-generic", "ram": "135 GB", "timelimit": "900 s", "tool": "CPAchecker", "toolmodule": "benchexec.tools.cpachecker", "version": "1.4-svn 17230M"}, {"benchmarkname": "symbolic-refiner", "branch": "", "cores": "32", "cpu": "Intel Xeon E5-2650 v2 @ 2.60 GHz", "cpuCores": "2", "date": "2015-07-06 08:37:57 CEST", "freq": "2.6 GHz", "host": "[zeus01; zeus02; zeus03; zeus04; zeus05; zeus06; zeus07; zeus08; zeus09; zeus10; zeus11; zeus12; zeus13; zeus14; zeus15; zeus16; zeus17; zeus18; zeus19; zeus20; zeus21; zeus22; zeus23; zeus24]", "memlimit": "15000 MB", "name": "symEx-ref-leqImplication", "options": "-heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic-refiner -setprop cpa.value.symbolic.refinement.strategy=CONSTRAINTS_FIRST -setprop cpa.constraints.lessOrEqualType=IMPLICATION -setprop cpa.value.refinement.pathSlicing=false -setprop cpa.value.refinement.prefixPreference=NONE", "os": "Linux 3.13.0-55-generic", "ram": "135 GB", "timelimit": "900 s", "tool": "CPAchecker", "toolmodule": "benchexec.tools.cpachecker", "version": "1.4-svn 17223M"}, {"benchmarkname": "symbolic-refiner", "branch": "", "cores": "32", "cpu": "Intel Xeon E5-2650 v2 @ 2.60 GHz", "cpuCores": "2", "date": "2015-07-06 20:29:25 CEST", "freq": "2.6 GHz", "host": "[zeus01; zeus02; zeus03; zeus04; zeus05; zeus06; zeus07; zeus08; zeus09; zeus10; zeus11; zeus12; zeus13; zeus14; zeus15; zeus16; zeus17; zeus18; zeus19; zeus20; zeus21; zeus22; zeus23; zeus24]", "memlimit": "15000 MB", "name": "symEx-ref-leqImplication-locPrec", "options": "-heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic-refiner -setprop cpa.value.symbolic.refinement.strategy=CONSTRAINTS_FIRST -setprop cpa.constraints.lessOrEqualType=IMPLICATION -setprop cpa.value.refinement.pathSlicing=false -setprop cpa.value.refinement.prefixPreference=NONE -setprop cpa.constraints.refinement.precisionType=LOCATION", "os": "Linux 3.13.0-55-generic", "ram": "135 GB", "timelimit": "900 s", "tool": "CPAchecker", "toolmodule": "benchexec.tools.cpachecker", "version": "1.4-svn 17230M"}];   // list with the attributes of all run sets
+var columns = [["status", "cputime", "walltime", "host", "memUsage", "total", "reached", "refiners", "time_refiners"], ["status", "cputime", "walltime", "memUsage", "host", "total", "reached", "refiners", "time_refiners"], ["status", "cputime", "walltime", "host", "memUsage", "total", "reached", "refiners", "time_refiners"], ["status", "cputime", "walltime", "host", "memUsage", "total", "reached", "refiners", "time_refiners"]]; // nested list with all the columns headings
+var columnsToRunset = [];         // for each column of the table the runSet it belongs to (first column is 0)
+
+for (var i = 0; i < columns.length; i++) {
+  run_sets[i].columns = columns[i];
+}
+for (var i = 0; i < run_sets.length; i++) {
+  for (var j = 0; j < run_sets[i].columns.length; j++) {
+    columnsToRunset.push(run_sets[i]);
+  }
+}
+
+var currentlySelectedCell = null;
+
+// callback that is fired when user clicks on cellsWithUrls (see down below)
+function highlightCell(event) {
+  var target = event.target;
+  if (target.nodeName === 'A') {
+    target = target.parentNode;
+
+    // unhighlight currentlySelectedCell
+    if (currentlySelectedCell != null) {
+      currentlySelectedCell.style.borderColor = 'black';
+    }
+
+    // highlight cell that has been just clicked on
+    target.style.borderColor = 'red';
+    currentlySelectedCell = target;
+  }
+}
+
+function debug(logInfo) {
+  if (!true) {
+    console.log(logInfo);
+  }
+}
+
+function showContentPane() {
+  // add function for cleanup, first unbind any old function
+  $('#contentPaneBackground').unbind().click(hideContentPane).show();
+  $('#contentPane').show().focus();
+}
+
+function hideContentPane(event) {
+  // hide the content pane on mouse click outside the content pane
+  // or when pressing the "Esc" or "c" key with the content pane focused
+  if (event.type == "click" || escKeyPressed(event) || cKeyPressed(event)) {
+    $('#contentPaneBackground').hide();
+    $('#contentPane').hide().empty();
+  }
+}
+
+function escKeyPressed(event) {
+  return event.keyCode == 27;
+}
+
+function cKeyPressed(event) {
+  // only "c" is pressed, not in combination with Ctrl-key
+  return (event.keyCode == 67 && event.ctrlKey == false);
+}
+
+function fKeyPressed(event) {
+  // only "f" is pressed, not in combination with Ctrl-key
+  return (event.keyCode == 70 && event.ctrlKey == false);
+}
+
+// input: the index of the column in the table
+function getNameOfTest(column) {
+  var runSet = columnsToRunset[column-1];
+  return getNameOfTestDirect(runSet);
+}
+
+function getNameOfTestDirect(runSet) {
+  return runSet.tool + ' '
+       + (runSet.date ? runSet.date + ' ' : '')
+       + runSet.name
+       + (runSet.benchmarkname ? '.' + runSet.benchmarkname : '');
+}
+
+$(document).ready(function() {
+  $('body').keydown(hideContentPane);
+});
+
+</script>
+
+
+<!-- ################## Make links load via AJAX and show content in extra panel ################## -->
+
+<script type="text/javascript">
+
+function loadContentWrapper(event) {
+  var url = $(event.target).attr("href");
+  loadContent(url);
+  return false;
+}
+
+function loadContent(url) {
+  var contentPane = $('<pre id="content"></pre>').appendTo("#contentPane")
+
+  $.ajax({
+    async: false, // wait for isError
+    url: url,
+    cache: false,
+    dataType: "text",
+    beforeSend: function() {
+      showContentPane();
+      contentPane.html("loading...");
+    },
+    success: function(text) {
+      newtext = text.replace(/&/g, "&amp;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/\\n/g, "<br>");
+      contentPane.html(newtext);
+    },
+    error: function() {
+      contentPane.html("error while loading content.<br>" +
+        "this could be a problem of the 'same-origin-policy' of your browser.<br><br>" +
+        "only firefox seems to be able to access files from local directories<br>" +
+        "and this works only if the file is in the same directory as this website.<br><br>" +
+        "you can try to download the file: <a href=" + url + ">" + url + "</a>");
+    },
+  });
+}
+
+$(document).ready(function() {
+  var cellsWithUrls = $('#dataTable a');
+  cellsWithUrls.each(
+    function(index, elem) {
+      $(elem).click(highlightCell).click(loadContentWrapper);
+    });
+});
+</script>
+
+
+<!-- ################## Possibility to display an overlay-table
+                        for selecting displayed columns or showing other data
+                        by clicking on left-most cell in title row ################## -->
+
+<script type="text/javascript">
+
+// a two-dimensional array of all the cells in the table header,
+// but each cell occurs as often in a row as its colspan attribute says
+var headerAndFooterArray = null;
+
+function createHeaderAndFooterArray() {
+  headerAndFooterArray = [];
+  var rows = $('#dataTable > thead > tr, #dataTable > tfoot > tr');
+  for (var i=0; i<rows.length; i++) {
+    var rowIndices = expandColSpanToNums(rows[i]);
+    headerAndFooterArray.push(rowIndices);
+  }
+}
+
+function expandColSpanToNums(row) {
+  var list = [];
+  for (var i=0; i<row.cells.length; i++) {
+    for (var j=0; j<parseInt(row.cells[i].colSpan); j++) {
+      list.push($(row.cells[i]));
+    }
+  }
+  return list;
+}
+
+function incColspan(col) {
+  var span = parseInt(col.attr("colspan"));
+  if (span == 0) { col.show(); }
+  col.attr("colspan", span + 1);
+}
+
+function decColspan(col) {
+  var span = col.attr("colspan");
+  span = (span == undefined) ? 1 : parseInt(span);
+  col.attr("colspan", span - 1);
+  if (span == 1) { col.hide(); }
+}
+
+// this function shows or hides a column and enlarges or shrinks the header-columns
+// @param index: index of a column in row "columnTitle"
+function toggleColumn (shouldBeVisible, index) {
+    if (headerAndFooterArray == null) { createHeaderAndFooterArray(); }
+    var columnTitles = $('#columnTitles > td');
+    // if column is hidden (or visible), we do not hide (or show) it again
+    if ($(columnTitles[index]).is(":visible") != shouldBeVisible) {
+        for (var i=0; i<headerAndFooterArray.length; i++) {
+            var cell = headerAndFooterArray[i][index];
+            shouldBeVisible ? incColspan(cell) : decColspan(cell);
+        }
+        var childIndex = index+1; // first child is number 1
+        var children = $("#dataTable > tbody > tr > td:nth-child(" + childIndex + ")");
+        shouldBeVisible ? children.show() : children.hide();
+    }
+}
+
+// "id->cell", "id" is the columnIndex in the dataTable,
+// "cell" is the jQuery-object of the cell of the column-toggle-table
+var indexToCell = {};
+
+// this function toggles a list of cells and
+// makes the cells equally toggled to the first cell
+function toggleCells(indices) {
+    var checked = indexToCell[indices[0]].isChecked;
+    for (var i=0; i<indices.length; i++) {
+        var cell = indexToCell[indices[i]];
+        toggleColumn (!checked, indices[i]);
+        cell.removeClass(!checked ? 'hiddenCell' : 'visibleCell')
+            .addClass(checked ? 'hiddenCell' : 'visibleCell');
+        cell.isChecked = !checked;
+    }
+}
+
+
+// collect columns and store them in a datastructure,
+// this allows access to the columnsover the title and the index.
+// @param columnTitles: list of strings, will be filled.
+// @param titlesToColumns: map from column-title to a list of column-indices, will be filled.
+// @returns number of columns, equal to "sum(len(c) for c in columns)"
+function getColumns(columnTitles, titlesToColumns) {
+    var columnIndex = 1; // column 1 is the first data-column
+    for (var i = 0; i < run_sets.length; i++) {
+        var runSet = run_sets[i];
+        runSet.indexToColumn = {} // from runSet-column-index to table-index
+        runSet.indices = [] // equal to values from runSet.indexToColumn
+
+        var cols = columns[i];
+        for (var j = 0; j < cols.length; j++, columnIndex++) {
+            var title = cols[j];
+            var index;
+            if (title in titlesToColumns) {
+                titlesToColumns[title].push(columnIndex);
+                index = columnTitles.indexOf(title);
+            } else { // new title
+                titlesToColumns[title] = [columnIndex];
+                columnTitles.push(title);
+                index = columnTitles.length - 1; // index of last position
+            }
+            runSet.indexToColumn[index] = columnIndex;
+            runSet.indices.push(columnIndex);
+        }
+    }
+    return columnIndex;
+}
+
+
+// returns a list with values from start to end. example: range(2,6)==[2,3,4,5]
+function range(start, end) {
+    var list = []; for (var i=start; i<end; i++) { list.push(i); } return list;
+}
+
+
+function createColumnToggleView() {
+
+    // collect all columns
+    var columnTitles = [];
+    var titlesToColumns = {};
+    var columnIndex = getColumns(columnTitles, titlesToColumns);
+
+    // create header for table
+    var rowHeader = $('<tr>');
+
+    // create top-left cell
+    $('<td>')
+        .click( {indices: range(1, columnIndex) },
+                function(event) { toggleCells(event.data.indices); } )
+        .addClass('clickable')
+        .attr('title', 'Click here to toggle all columns')
+        .appendTo(rowHeader);
+
+    // create column-title-cells
+    for (var j = 0; j < columnTitles.length; j++) {
+        $('<td>').append(columnTitles[j])
+            .click( {indices: titlesToColumns[columnTitles[j]]},
+                    function(event) { toggleCells(event.data.indices); } )
+            .addClass('clickable')
+            .attr('title', 'Click here to toggle all columns with this title')
+            .appendTo(rowHeader);
+    }
+
+    var tableHTML = $('<table>').attr('id', 'tableViewTable')
+                    .append($('<thead>').append(rowHeader));
+
+    // create body for table
+    var tableBody = $('<tbody>').appendTo(tableHTML);
+    for (var i = 0; i < run_sets.length; i++) {
+        rowHTML = $('<tr>').appendTo(tableBody);
+        var runSet = run_sets[i];
+
+        // get indices of row and create rowTitle-cell
+        var rowTitle = runSet.tool + ' ' + (runSet.date ? runSet.date + ' ' : '') + runSet.name;
+        $('<td>').append(rowTitle)
+            .click( {indices: runSet.indices},
+                    function(event) { toggleCells(event.data.indices); } )
+            .addClass('clickable')
+            .attr('title', 'Click here to toggle all columns of this runSet')
+            .appendTo(rowHTML);
+
+        // get cells of row
+        var cols = columns[i];
+        for (var j = 0; j < columnTitles.length; j++) {
+            var cell = $('<td>').appendTo(rowHTML);
+            var index = runSet.indexToColumn[j];
+            if (index) {
+                indexToCell[index] = cell;
+                var childIndex = index + 1;
+                var checked = $('#columnTitles > td:nth-child(' + childIndex + ')').is(':visible');
+                cell.isChecked = checked;
+                cell.addClass(checked ? 'visibleCell' : 'hiddenCell')
+                    .click( {index: [index]},
+                            function(event) { toggleCells(event.data.index); } )
+                    .addClass('clickableCell');
+
+            }
+        }
+    }
+    $('<div>').attr('id', 'tableViewTableWrapper')
+              .append(tableHTML)
+              .appendTo($("#contentPane"));
+    showContentPane();
+}
+
+
+// shows a table with statistics
+// @param statisticsRow: which statistic to show?
+function createStatsView(statistics, currentIndex) {
+
+    var statisticsRow = statistics[currentIndex];
+
+    // collect all columns
+    var columnTitles = [];
+    var titlesToColumns = {};
+    var columnIndex = getColumns(columnTitles, titlesToColumns);
+
+    // create header for table
+    var rowHeader = $('<tr>');
+
+    // create top-left cell
+    var originalCell = $(statisticsRow.cells[0])
+    $('<td>').text(originalCell.text())
+             .appendTo(rowHeader)
+             .addClass('clickable')
+             .click(function(event) { // iterate through statistics
+                 $('#contentPaneBackground').click(); // cleanup
+                 createStatsView(statistics, (currentIndex + 1) % statistics.length);
+             } )
+             .attr('title', originalCell.attr('title'));
+
+     // create column-title-cells
+     for (var j = 0; j < columnTitles.length; j++) {
+         var title = (columnTitles[j] == 'status') ? '#files' : columnTitles[j];
+         $('<td>').append(title).appendTo(rowHeader);
+    }
+
+    var tableHTML = $('<table>').attr('id', 'tableViewTable')
+                    .append($('<thead>').append(rowHeader));
+
+    // create body for table
+    var tableBody = $('<tbody>').appendTo(tableHTML);
+    for (var i = 0; i < run_sets.length; i++) {
+        rowHTML = $('<tr>').appendTo(tableBody);
+        var runSet = run_sets[i];
+
+        // get indices of row and create rowTitle-cell
+        var rowTitle = runSet.tool + ' ' + (runSet.date ? runSet.date + ' ' : '') + runSet.name;
+        $('<td>').append(rowTitle)
+            .appendTo(rowHTML);
+
+        // get cells of row
+        var cols = columns[i];
+        for (var j = 0; j < columnTitles.length; j++) {
+            var cell = $('<td>').appendTo(rowHTML);
+            var index = runSet.indexToColumn[j];
+            if (index) {
+                originalCell = $(statisticsRow.cells[index]);
+                cell.text(originalCell.text()).attr('title', originalCell.attr('title'));
+            }
+        }
+    }
+    $('<div>').attr('id', 'tableViewTableWrapper')
+              .append(tableHTML)
+              .appendTo($("#contentPane"));
+    showContentPane();
+}
+
+$(document).ready(function() {
+  $('.columnTitles > td:first-child')
+    .addClass("clickable")
+    .attr("title", "Click here to toggle visibility of columns")
+    .click(function (event) {
+        return createColumnToggleView(); });
+
+  var statistics = $('.statistics');
+  statistics.each(function(index, statisticsRow) {
+            $(statisticsRow).find(':first')
+                .addClass('clickable')
+                .click(function (event) { return createStatsView(statistics, index); });
+       });
+});
+</script>
+
+<!-- ################## Possibility to select displayed rows by pressing f ################## -->
+
+<script type="text/javascript">
+
+function createRowFilterButtons() {
+  $("#contentPane").empty();
+
+  var buttonList = $('<form>', {id:'rowFilterButtons', onsubmit:'return false'})
+        .appendTo($("#contentPane"));
+  var columnIndex = 1; // columns start with 1
+  for (var i = 0; i < run_sets.length; i++) {
+    var runSet = run_sets[i];
+    var sublist = $('<ul>').text(getNameOfTest(columnIndex)).appendTo(buttonList);
+
+    for (var j = 0; j < runSet.columns.length; j++, columnIndex++) {
+      var target = 'check' + columnIndex;
+      var button = $('<input>', {
+                    type:'radio', name:'filter', id:target,
+                    onclick:('fillRowFilterField(' + columnIndex + ')')});
+      var label = $('<label>', {for:target}).text(runSet.columns[j]).addClass("clickable");
+      $('<li>').append(button).append(label).appendTo(sublist);
+    }
+  }
+
+  $('<button>').text('reset filter').attr('id', 'button-filter-reset')
+        .attr('title', 'Click here to restore the complete table')
+        .click(function(){
+                var dataRows = $('#dataTable > tbody')[0].rows;
+                for (var i = 0; i < dataRows.length; i++) {
+                    $(dataRows[i]).show();
+                }
+                // delete outdated elements and selections
+                removeFilterButtons();
+                $('#rowFilterButtons input').each(function(_, elem) {elem.checked=false;})
+            })
+        .appendTo($("#contentPane"));
+
+  showContentPane();
+}
+
+function fillRowFilterField(columnIndex) {
+
+    // determinate options
+    var options = [];
+    var columnName = $('#columnTitles')[0].cells[columnIndex].textContent;
+    if (columnName == 'status') {
+        options = options.concat(['correct', 'wrong', 'unknown']);
+    }
+    $('#dataTable > tbody > tr').filter(':visible').each(function(_, row) {
+        currentValue = row.cells[columnIndex].textContent;
+        if (jQuery.inArray(currentValue, options) === -1) {
+            options.push(currentValue);
+        }
+    });
+
+    // sort options, in most cases we have numbers
+    options.sort( function(a, b) {
+        if (a == null || isNaN(a)) return 1;
+        if (b == null || isNaN(b)) return -1;
+        return a - b;
+    } );
+
+    // delete old elements
+    removeFilterButtons();
+
+    // create new selection field with options
+    var rowFilter = $('<select>').attr('id', 'rowFilterSelector')
+        .attr('multiple', 'multiple').appendTo($('#contentPane'));
+    $.each(options, function(_, option) {
+        rowFilter.append(new Option(option, option));
+    });
+
+    $('<button>').text('select all').attr('id', 'button-filter-all')
+        .attr('title', 'Click here to select all values')
+        .click(function(){ $('#rowFilterSelector option').prop('selected',true); })
+        .appendTo($('#contentPane'));
+
+    $('<button>').text('select none').attr('id', 'button-filter-none')
+        .attr('title', 'Click here to deselect all values')
+        .click(function(){ $('#rowFilterSelector option').prop('selected',false); })
+        .appendTo($('#contentPane'));
+
+    $('<button>').text('apply filter').attr('id', 'button-filter-start')
+        .attr('title', 'Click here to filter all matching rows in the table. ' +
+                       'If you select multiple values, a row is shown, if any value matches')
+        .click(function(){
+                        hideRows(rowFilter.val() || [], columnIndex);
+                        // clean and hide contentPane
+                        $('#contentPaneBackground').hide();
+                        $('#contentPane').hide().empty();
+                    })
+        .appendTo($('#contentPane'));
+}
+
+function removeFilterButtons() {
+    $('#rowFilterSelector, #button-filter-all, #button-filter-none, #button-filter-start').remove();
+}
+
+/* this function hides all rows,
+in which the column with the columnIndex does not match one of the values. */
+function hideRows(values, columnIndex) {
+    var columnName = $('#columnTitles')[0].cells[columnIndex].textContent;
+
+    var dataRows = $('#dataTable > tbody')[0].rows;
+    for (var i = 0; i < dataRows.length; i++) {
+        var row = dataRows[i];
+        var isVisible = false;
+
+        // show all matching rows
+        if (jQuery.inArray(row.cells[columnIndex].textContent, values) != -1) {
+            isVisible = true;
+        }
+
+        // special case: show 'correct', 'wrong' and 'unknown' results
+        if (!isVisible && columnName == 'status') {
+            var classNames = row.cells[columnIndex].className.split(' ');
+            for (var j = 0; j < values.length; j++) {
+                var value = values[j];
+                switch (value) {
+                    case 'correct':
+                    case 'wrong':
+                        if (anyStartsWith(value, classNames)) {
+                            isVisible = true;
+                        }
+                        break;
+
+                    case 'unknown':
+                        if (!anyStartsWith('correct', classNames) && !anyStartsWith('wrong', classNames)) {
+                            isVisible = true;
+                        }
+                        break;
+
+                    default: // do nothing, inVisible=false
+                }
+            }
+        }
+        if (!isVisible) $(row).hide();
+    }
+}
+
+function anyStartsWith(key, values) {
+    for (var i = 0; i < values.length; i++) {
+        if (values[i].indexOf(key) == 0) { return true; }
+    }
+    return false;
+}
+
+$(document).ready(function() {
+  $('body').keydown(function (event) {
+                      if (fKeyPressed(event))
+                        return createRowFilterButtons();
+                      });
+});
+</script>
+
+<!-- ################## Everything related to showing plots of the data ################## -->
+
+<script type="text/javascript" src="http://www.sosy-lab.org/lib/jqplot/1.0.8/jquery.jqplot.min.js"></script>
+<script type="text/javascript" src="http://www.sosy-lab.org/lib/jqplot/1.0.8/plugins/jqplot.highlighter.min.js"></script>
+<script type="text/javascript" src="http://www.sosy-lab.org/lib/jqplot/1.0.8/plugins/jqplot.cursor.min.js"></script>
+<script type="text/javascript" src="http://www.sosy-lab.org/lib/jqplot/1.0.8/plugins/jqplot.canvasTextRenderer.min.js"></script>
+<script type="text/javascript" src="http://www.sosy-lab.org/lib/jqplot/1.0.8/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
+<script type="text/javascript" src="http://www.sosy-lab.org/lib/jqplot/1.0.8/plugins/jqplot.enhancedLegendRenderer.min.js"></script>
+<script type="text/javascript" src="http://www.sosy-lab.org/lib/jqplot/1.0.8/plugins/jqplot.logAxisRenderer.min.js"></script>
+<script type="text/javascript" src="http://www.sosy-lab.org/lib/jqplot/1.0.8/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
+<script type="text/javascript" src="http://www.sosy-lab.org/lib/jqplot/1.0.8/plugins/jqplot.canvasOverlay.min.js"></script>
+
+<script type="text/javascript">
+// Load JQPlot CSS lazily
+$(document).ready(function(){
+  if (document.createStyleSheet){
+    document.createStyleSheet('http://www.sosy-lab.org/lib/jqplot/1.0.8/jquery.jqplot.min.css');
+  } else {
+    $("head").append($("<link rel='stylesheet' type='text/css' href='http://www.sosy-lab.org/lib/jqplot/1.0.8/jquery.jqplot.min.css' media='screen'/>"));
+  }
+});
+
+// simple structure, that contains all data for the plot
+var graphData = {
+  target : null,
+  isRunSet : null,
+  filenames : null,
+  indices : null, // columns from table
+  data : null, // values are sorted if quantilePlot else not sorted, indizes always from 0 to N
+  originalData : null, // values are equal to data, but indizes are not sorted
+  integerOnly : null,
+  minValue : null,
+  maxValue : null,
+  isQuantile : true,
+  isLogScale : true,
+  showCorrectOnly : true,
+};
+
+// this function collects the indices of columns with target as cell above the column
+function getColumnIndicesForTarget(target) {
+  var columnIndizes = [];
+  var cells = document.getElementById('columnTitles').cells;
+
+  if (graphData.isRunSet) {
+    var index = $(target).index(); // index of runset relative to table-row
+    for (i = 1; i < cells.length; i++) { // skip first cell
+      if ($(cells[i]).is(":visible")) {
+        if ("status" != cells[i].textContent
+            && run_sets[index-1] === columnsToRunset[i-1]) {
+          columnIndizes.push(i);
+        }
+      }
+    }
+  } else {
+    for (i = 1; i < cells.length; i++) { // skip first cell
+      if ($(cells[i]).is(":visible")) {
+        if (target.textContent == cells[i].textContent) {
+          columnIndizes.push(i);
+        }
+      }
+    }
+  }
+
+  return columnIndizes;
+};
+
+// collectTableData collects some data for the graphData,
+// this function must be called as first function for working with the plot
+function collectTableData() {
+  var data = [];
+
+  graphData.indices = getColumnIndicesForTarget(graphData.target);
+  for (j = 0; j < graphData.indices.length; j++) {
+    data.push([]);
+  }
+
+  // reset graphData
+  graphData.filenames = [];
+  graphData.integerOnly = true;
+  graphData.minValue = Number.POSITIVE_INFINITY;
+  graphData.maxValue = Number.NEGATIVE_INFINITY;
+
+  var rows = $('#dataTable > tbody > tr:visible');
+  for (i = 0; i < rows.length; i++) {
+    var currentRow = rows[i];
+    graphData.filenames.push(currentRow.cells[0].textContent);
+
+    for (j = 0; j < graphData.indices.length; j++) {
+      var index = graphData.indices[j];
+      var currentCell = $(currentRow.cells[index]);
+      var value = getValue(currentCell, graphData.target.textContent);
+
+      // each array is of the form: [[id1, value1], [id2, value2], ...]
+      data[j].push([i, value]);
+    }
+  }
+
+  graphData.originalData = data;
+  graphData.data = graphData.isQuantile ? sortData(data) : data;
+};
+
+
+// this method returns sorted data for showQuantile().
+function sortData(data) {
+  var newData = [];
+  for (i = 0; i < data.length; i++) {
+    var line = data[i];
+
+    // line has the structur [[0, v0],[1, v1],[2, v2]]
+    // we sort the second entry of each element
+    // we sort 'inplace', important for highlighting points,
+    // compare numbers, NaN and Null are handled as positive infinity
+    line.sort( function(a, b) {
+      if (a[1] == null || isNaN(a[1])) return 1;
+      if (b[1] == null || isNaN(b[1])) return -1;
+      return a[1] - b[1];
+    } );
+
+    // create new indizes
+    var newLine = [];
+    for (j = 0; j < line.length; j++) {
+      newLine.push([j, line[j][1]]);
+    }
+
+    newData.push(newLine);
+  }
+  return newData;
+}
+
+
+// returns the textcontent of a cell as numeral
+function getValue(cell, title) {
+    var value;
+    if (graphData.showCorrectOnly && !cell.hasClass('correct')) {
+        value = Number.NaN;  // using 'null' as unknown value causes problems in the plot
+
+    } else if (title === 'status') {
+        if (cell.hasClass('correct'))     value = 1;
+        else if (cell.hasClass('wrong'))  value = -1;
+        else                              value = 0;
+
+    } else {
+        value = parseFloat(cell.text());
+        valueInt = parseInt(cell.text());
+
+        // collect some information, used later for tick-formatter
+        if (!isNaN(value)) {
+            if (value != valueInt){ graphData.integerOnly = false; }
+            if (value < graphData.minValue) { graphData.minValue = value; }
+            if (value > graphData.maxValue) { graphData.maxValue = value; }
+        }
+
+        if (graphData.isLogScale) {
+            if (value == 0) {
+                value = 0.00001; // zero is not part of log-scale, so we use a value that looks like zero in the graph
+            } else if (value < 0) {
+                value = Number.NaN; // values below zero are not supported in a log-scale graph at all
+            }
+        }
+    }
+    return value;
+}
+
+
+// this functions collects a list of pairs (a,b) where a and b are the entires for the scatterplot.
+// this function must be called as first function for working with the plot.
+// collectTableData collects some data for the graphData,
+// this function must be called as first function for working with the plot
+function collectTableDataForScatter(index1, title1, index2, title2) {
+  var data = [[]];
+
+  // reset graphData
+  graphData.indices = [];
+  graphData.filenames = [];
+  graphData.integerOnly = true;
+  graphData.minValue = Number.POSITIVE_INFINITY;
+  graphData.maxValue = Number.NEGATIVE_INFINITY;
+
+  var rows = $('#dataTable > tbody > tr:visible');
+  for (i = 0; i < rows.length; i++) {
+    var currentRow = rows[i];
+
+    var cell1 = $(currentRow.cells[index1]);
+    var value1 = getValue(cell1, title1);
+
+    var cell2 = $(currentRow.cells[index2]);
+    var value2 = getValue(cell2, title2);
+
+    // we need two real numbers
+    if (value1 != null && value2 != null && !isNaN(value1) && !isNaN(value2)) {
+        var filename = currentRow.cells[0].textContent;
+
+        // each array is of the form: [[id1, value1], [id2, value2], ...],
+        // the third entry is additional info and is used for the highlighter,
+        data[0].push([value1, value2, filename]);
+    }
+  }
+
+  graphData.originalData = data;
+  graphData.data = data;
+};
+
+
+// Create a list which indicates at which ticks to draw grid lines
+// and which labels to put at the x-axis.
+function getXTicks() {
+  var xTicks = [];
+  var maxLength = 40;
+
+  var numRows = graphData.filenames.length;
+  var labelStep = 1;
+  var gridStep = 1;
+  if (numRows > 30) { labelStep = 5; }
+  if (numRows > 200) { labelStep = 10; gridStep = 5; }
+  if (numRows > 1000) { labelStep = 20; gridStep = 10; }
+
+  function getLabel(name, index) {
+    if (graphData.isQuantile) {
+      return index.toString();
+    } else {
+      if (name.length > maxLength) { name = name.substring(0, maxLength) + "..."; }
+      return name;
+    }
+  }
+
+  for (i = 0; i < numRows; i++) {
+    if (!(i%gridStep)) {
+        xTicks.push([i, ((i%labelStep)?" ":getLabel(graphData.filenames[i], i))]);
+    }
+  }
+
+  return xTicks;
+}
+
+
+// get labels for y-direction
+function getYTicks() {
+  if (graphData.target.textContent == "status") {
+    return [[-1.5, " "], [-1, "wrong"], [0, "unknown"], [1, "correct"], [1.5, " "]];
+  } else {
+    return [];
+  }
+}
+
+// returns label of a runset: 'tool+runset+date'.
+function getLabels() {
+  var labels = [];
+  if (graphData.isRunSet) {
+      var cells = document.getElementById('columnTitles').cells;
+      for (i = 0; i < graphData.indices.length; i++) {
+        var index = graphData.indices[i];
+        labels.push(cells[index].textContent);
+      }
+  } else {
+      for (i = 0; i < graphData.indices.length; i++) {
+        var index = graphData.indices[i];
+        labels.push(getNameOfTest(index));
+      }
+  }
+  return labels;
+};
+
+
+function addLegendActions() {
+  var legendButtons = $('tr.jqplot-table-legend');
+  var seriesLines = $('canvas.jqplot-series-canvas');
+
+  // assertion
+  if (legendButtons.length != seriesLines.length) {
+    debug("ERROR: number of series does not match buttons!");
+  }
+
+  for (i = 0; i<legendButtons.length; i++) {
+    var currentButton = legendButtons[i];
+    var currentLine = seriesLines[i];
+
+    currentButton.onclick = function(event) {
+      var hideOpacity = 0.3;
+      if (this.style.opacity == hideOpacity) {
+        this.style.opacity = 1;
+      } else {
+        this.style.opacity = hideOpacity;
+      }
+    }
+
+    currentButton.onmouseover = function(line) {
+      return function(event) { line.style.zIndex = 5; }
+    }(currentLine);
+
+    currentButton.onmouseout = function(line) {
+      return function(event) { line.style.zIndex = 0; }
+    }(currentLine);
+  }
+}
+
+
+function highlightFormatter(str, seriesIndex, pointIndex) {
+    var numberOfFile = graphData.originalData[seriesIndex][pointIndex][0];
+    var filename = graphData.filenames[numberOfFile];
+    if (graphData.target.textContent == "status") {
+      if (str == 1)       str = "correct";
+      else if (str == 0)  str = "unknown";
+      else                str = "wrong";
+    }
+    return filename + "<br>" + str;
+}
+
+
+function highlightFormatterForScatter(str, seriesIndex, pointIndex, plot) {
+    var point = plot.series[seriesIndex].data[pointIndex]; // POINT=[x,y,filename]
+    // console.log(point);
+    if (graphData.target.textContent == "status") { // TODO not working, we have 2 independent values
+      if (str == 1)       str = "correct";
+      else if (str == 0)  str = "unknown";
+      else                str = "wrong";
+    }
+    return point[2] + "<br>X: " + point[0] + "<br>Y: " + point[1]; // + "<br>STR: " + str;
+}
+
+
+function getYTicksFormat() {
+    if (graphData.integerOnly) { return '%.0f'; }
+    if (graphData.isLogScale) {
+        if (graphData.minValue >= 1) { return '%.0f'; }
+        else if (graphData.minValue >= 0.1) { return '%.1f'; }
+        else { return '%.2f'; }
+    } else {
+        return (graphData.maxValue >= 10) ? '%.0f' : '%.2f';
+    }
+}
+
+
+function addButtons(target, callback, showQuantileButton) {
+    if (showQuantileButton) {
+        $('<button>', {id:'button-quantile'}).appendTo(target)
+            .click(function() { graphData.isQuantile = !graphData.isQuantile; callback();})
+            .text(graphData.isQuantile ? 'Switch to Direct Plot' : 'Switch to Quantile Plot');
+    }
+
+    $('<button>', {id:'button-logScale'}).appendTo(target)
+        .click(function() { graphData.isLogScale = !graphData.isLogScale; callback();})
+        .text(graphData.isLogScale ?  'Switch to Linear Scale' : 'Switch to Logarithmic Scale');
+
+    $('<button>', {id:'button-showCorrectOnly'}).appendTo(target)
+        .click(function() { graphData.showCorrectOnly = !graphData.showCorrectOnly; callback();})
+        .text(graphData.showCorrectOnly ?  'Switch to All Results' : 'Switch to Correct Results Only');
+}
+
+function getSelectorForScatter(identifier) {
+    var select = $('<select>', {class:'plot-selector'});
+    var columnIndex = 1; // columns start with 1
+    var cells = document.getElementById('columnTitles').cells;
+    for (var i = 0; i < run_sets.length; i++) {
+        var runSet = run_sets[i];
+        var group = $('<optgroup>', {label:getNameOfTestDirect(runSet)})
+                .appendTo(select);
+        for (var j = 0; j < runSet.columns.length; j++, columnIndex++) {
+            if ($(cells[columnIndex]).is(':visible')) {
+                var column = runSet.columns[j];
+                var option = $('<option>', {
+                                value:columnIndex,
+                                selected:(graphData.target[identifier] == columnIndex)})
+                            .text(column).appendTo(group);
+            }
+        }
+    }
+
+    select.change(function(){
+        var selectedValue = Number(select.find(':selected')[0].value);
+        graphData.target[identifier] = selectedValue;
+        showScatterPlot();
+    });
+
+    return select;
+}
+
+function showScatterPlot() {
+  $('#contentPaneBackground').trigger('click'); // cleanup
+  var contentPane = $('#contentPane').append('<div id="chart"></div>');
+  addButtons(contentPane, showScatterPlot, false);
+  showContentPane();
+
+  // the identifier '0/1' is the arrayindex in 'graphData.target',
+  // it identifies the first and second selector
+  var selector0 = getSelectorForScatter(0);
+  var selector1 = getSelectorForScatter(1);
+  var index0 = graphData.target[0];
+  var index1 = graphData.target[1];
+  var titles = $('#columnTitles').children();
+  var title0 = titles[index0].textContent;
+  var title1 = titles[index1].textContent;
+  var label0 = getNameOfTest(index0) + " " + title0;
+  var label1 = getNameOfTest(index1) + " " + title1;
+
+  collectTableDataForScatter(index0, title0, index1, title1);
+
+  var maxValue = graphData.maxValue * 100; // should be bigger than all measurable values
+  var minValue = graphData.isLogScale ? 0.0000001 : (-maxValue); // there is no zero in logscale
+
+  if (graphData.data[0].length == 0) {
+    // crude hack to avoid error in jqplot due to empty data
+    graphData.data[0].push(0);
+  }
+  var plot = $.jqplot('chart', graphData.data, {
+    title: 'ScatterPlot: ',
+    legend: {
+      show:false,
+    },
+    highlighter:{
+      yvalues: 2,   // we have one extra value in the array
+      show: true,
+      sizeAdjust: 10,
+      showMarker: true,
+      tooltipAxes: 'y',
+      tooltipLocation: 'n',
+      tooltipContentEditor: highlightFormatterForScatter, // functionPointer!
+      tooltipFormatString: '%s', // how to format the y-value
+      useAxesFormatters: false
+    },
+    seriesDefaults:{
+      showLine:false,
+      shadow: false,
+    },
+    cursor:{
+      show: false,
+      zoom: false,
+      showTooltip: false,
+    },
+    axes:{
+      xaxis:{
+        label:label0,
+        labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+        labelOptions:{ textColor:'Black' },
+        renderer: (graphData.isLogScale && title0 !== 'status') ? $.jqplot.LogAxisRenderer : $.jqplot.LinearAxisRenderer,
+        tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+        tickOptions: {
+          angle: -60,
+        }
+      },
+      yaxis:{
+        label:label1,
+        labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+        labelOptions:{ textColor:'Black' },
+        renderer: (graphData.isLogScale && title1 !== 'status') ? $.jqplot.LogAxisRenderer : $.jqplot.LinearAxisRenderer,
+        pad: 1.2,
+        tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+        tickOptions:{
+          formatString: getYTicksFormat()
+        }
+      }
+    },
+    canvasOverlay: {
+        show: true,
+        objects: [
+            {line: {
+                name: 'diagonalLine',
+                lineWidth: 1,
+                color: 'red',
+                shadow: false,
+                start: [minValue, minValue],
+                stop: [maxValue, maxValue],
+            } },
+        ]
+    }
+  });
+
+  $('.jqplot-title').empty()
+        .append('X: ').append(selector0)
+        .append('<span style="padding-left:50px"></span>') // some space between the selectors
+        .append('Y: ').append(selector1);
+
+  $('#contentPaneBackground').click(function(event) {
+    plot.destroy();
+    $('#chart').empty();
+  });
+};
+
+
+function getSelectorForQuantile() {
+    var select = $('<select>', {class:'plot-selector'});
+    var group = $('<optgroup>', {label:'Run sets'})
+            .appendTo(select);
+    for (var i = 0; i < run_sets.length; i++) {
+      var run_set = run_sets[i];
+      var name = getNameOfTestDirect(run_set);
+      $('<option>', { value:'runset' + (i+1), selected:(graphData.isRunSet && $(graphData.target).index() == i+1) })
+          .text(name).appendTo(group);
+    }
+    var group = $('<optgroup>', {label:'Columns'})
+            .appendTo(select);
+    var columns = []
+    var columnIndex = 1; // columns start with 1
+    var cells = document.getElementById('columnTitles').cells;
+    for (var i = 0; i < run_sets.length; i++) {
+        var run_set = run_sets[i];
+        for (var j = 0; j < run_set.columns.length; j++, columnIndex++) {
+            var column = run_set.columns[j];
+            if (columns[column] == null && $(cells[columnIndex]).is(':visible')) {
+              $('<option>', { value:'column' + columnIndex, selected:(!graphData.isRunSet && graphData.target.textContent == column) })
+                  .text(column).appendTo(group);
+              columns[column] = column;
+            }
+        }
+    }
+
+    select.change(function() {
+        var selection = select.find(':selected')[0].value;
+        var selectedValue = Number(selection.substring(6));
+        if (selection.substring(0, 6) == 'runset') {
+          var cells = document.getElementById('run').cells;
+          graphData.isRunSet = true;
+        } else if (selection.substring(0, 6) == 'column') {
+          var cells = document.getElementById('columnTitles').cells;
+          graphData.isRunSet = false;
+        } else {
+          return;
+        }
+        graphData.target = cells[selectedValue];
+        showPlot();
+    });
+
+    return select;
+}
+// this function collects the indices of columns with target as cell above the column
+function getColumnIndicesForTarget(target) {
+  var columnIndizes = [];
+  var cells = document.getElementById('columnTitles').cells;
+
+  if (graphData.isRunSet) {
+    var index = $(target).index(); // index of runset relative to table-row
+    for (i = 1; i < cells.length; i++) { // skip first cell
+      if ($(cells[i]).is(":visible")) {
+        if ("status" != cells[i].textContent
+            && run_sets[index-1] === columnsToRunset[i-1]) {
+          columnIndizes.push(i);
+        }
+      }
+    }
+  } else {
+    for (i = 1; i < cells.length; i++) { // skip first cell
+      if ($(cells[i]).is(":visible")) {
+        if (target.textContent == cells[i].textContent) {
+          columnIndizes.push(i);
+        }
+      }
+    }
+  }
+
+  return columnIndizes;
+};
+
+function showPlot() {
+  $('#contentPaneBackground').trigger('click'); // cleanup
+  $('#contentPane').append('<div id="chart"></div>');
+  addButtons($('#contentPane'), showPlot, true);
+  showContentPane();
+  var selector = getSelectorForQuantile();
+  collectTableData();
+
+  var plot = $.jqplot('chart', graphData.data, {
+    title: graphData.target.textContent,
+    legend: {
+      show:true,
+      placement: 'outsideGrid',
+      renderer: $.jqplot.EnhancedLegendRenderer,
+      labels: getLabels(),
+      location: 's',
+      rowSpacing: "0px",
+      showSwatches: true,
+    },
+    highlighter:{
+      show: true,
+      sizeAdjust: 10,
+      showMarker: true,
+      tooltipAxes: 'y',
+      tooltipLocation: 'n',
+      tooltipContentEditor: highlightFormatter, // functionPointer!
+      tooltipFormatString: '%s',
+      useAxesFormatters: false,
+      bringSeriesToFront: true,
+    },
+    seriesDefaults:{
+      shadow: false,
+    },
+    cursor:{
+      show: false,
+      zoom: false,
+      showTooltip: false,
+    },
+    axes:{
+      xaxis:{
+        ticks: getXTicks(),
+        tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+        tickOptions: {
+          fontSize: '9px',
+          angle: -60,
+        }
+      },
+      yaxis:{
+        ticks: getYTicks(),
+        renderer: (graphData.isLogScale && graphData.target.textContent !== 'status') ? $.jqplot.LogAxisRenderer : $.jqplot.LinearAxisRenderer,
+        pad: 1.2,
+        tickOptions:{
+          formatString: getYTicksFormat()
+        }
+      }
+    },
+  });
+
+  $('.jqplot-title').empty().append(selector);
+
+  addLegendActions();
+
+  $('#contentPaneBackground').click(function(event) {
+    plot.destroy();
+    $('#chart').empty();
+  });
+};
+
+function createQuantilePlotView(event) {
+  if (event == undefined) {
+    graphData.target = document.getElementById('columnTitles').cells[2]; // second column
+  } else {
+    graphData.target = event.target;
+  }
+  graphData.isRunSet = false;
+  showPlot();
+};
+
+function createScatterPlotView() {
+  graphData.target = [2,2]; // default indices of the columns in the plot
+  graphData.isRunSet = false;
+  showScatterPlot();
+};
+
+// this function adds the listeners to the table
+$(document).ready(function() {
+  $('.columnTitles > td:not(:first-child)') // do not use first column
+      .addClass("clickable")
+      .attr("title", "Click here to show a graph of this column")
+      .click(createQuantilePlotView);
+
+  $('.run > td:not(:first-child)') // do not use first column
+      .addClass("clickable")
+      .attr("title", "Click here to show a graph of this run-set")
+      .click(function (event) {
+            graphData.target = event.target;
+            graphData.isRunSet = true;
+            showPlot();
+      });
+
+  $('.run > td:first-child')
+      .addClass("clickable")
+      .attr("title", "Click here to show some scatter-graphs")
+      .click(createScatterPlotView);
+});
+
+</script>
+
+</body>
+</html>

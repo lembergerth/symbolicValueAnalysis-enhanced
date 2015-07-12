@@ -1,0 +1,153 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic-refiner -setprop cpa.value.symbolic.refinement.strategy=CONSTRAINTS_FIRST -setprop cpa.constraints.lessOrEqualType=SUBSET -setprop cegar.refiner=cpa.value.symbolic.refiner.delegation.SymbolicDelegatingRefiner -setprop cpa.value.refinement.pathSlicing=true -setprop cpa.value.refinement.prefixPreference=DOMAIN_GOOD_SHORT -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-linux-3.16-rc1/ALL.prp ../svcomp15/ldv-linux-3.16-rc1/43_2a_consumption_linux-3.16-rc1.tar.xz-43_2a-drivers--scsi--dc395x.ko-entry_point_true-unreach-call.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_31742859_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+lines 6055-6056: Function pointer *(ops->map_page) with type dma_addr_t  (*)(struct device *, struct page *, unsigned long, size_t , enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 6191: Function pointer *(ops->sync_sg_for_cpu) with type void (*)(struct device *, struct scatterlist *, int, enum dma_data_direction ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 6147: Function pointer *(ops->sync_single_for_device) with type void (*)(struct device *, dma_addr_t , size_t , enum dma_data_direction ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 6102: Function pointer *(ops->unmap_page) with type void (*)(struct device *, dma_addr_t , size_t , enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+line 8352: Ignoring call via function pointer dc395x_handle_interrupt::dc395x_statev for which no suitable target was found in line: (*dc395x_statev)(acb, srb, &scsi_status); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 8360: Ignoring call via function pointer dc395x_handle_interrupt::dc395x_statev for which no suitable target was found in line: (*dc395x_statev)(acb, srb, &scsi_status); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 7473: Ignoring call via function pointer dc395x_queue_command_lck::done for which no suitable target was found in line: (*done)(cmd); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                6935694 (count: 1382500, min: 0, max: 8, avg: 5.02)
+Number of global variables:                         6912490 (count: 1382500, min: 0, max: 5, avg: 5.00)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                 1706800
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                4.541s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     3.608s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 0
+Most constraints before refinement in state: 1
+Constraints after refinement in state: 0
+Constraints before refinement in state: 374
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 2229ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                 14.873s
+  Time for transition matches:                         5.653s
+  Time for transition assertions:                      0.000s
+  Time for transition actions:                         0.000s
+Automaton transfers with branching:                0
+Automaton transfer successors:                      2862029 (count: 2862029, min: 1, max: 1, avg: 1.00) [1 x 2862029]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            1511795
+Max size of waitlist:            55
+Average size of waitlist:        30
+Number of computed successors:   1706800
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         194934
+Number of times breaked:         5
+
+Total time for CPA algorithm:       104.712s (Max:    95.493s)
+  Time for choose from waitlist:      1.691s
+  Time for precision adjustment:     16.724s
+  Time for transfer relation:        49.391s
+  Time for stop operator:            23.652s
+  Time for adding to reached set:     3.783s
+
+SymbolicDelegatingRefiner statistics
+------------------------------------
+Explicit refinements: 5
+Successful explicit refinements: 5
+Symbolic refinements: 0
+Successful symbolic refinements: 0
+Overall explicit refinement time: 2698ms
+Average explicit refinement time: 539ms
+Overall symbolic refinement time: 0ms
+Average symbolic refinement time: 0ms
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                5
+Number of successful refinements:     5
+Number of failed refinements:         0
+Max. size of reached set before ref.: 62706
+Max. size of reached set after ref.:  57810
+Avg. size of reached set before ref.: 37459.00
+Avg. size of reached set after ref.:  11585.60
+
+Total time for CEGAR algorithm:     107.478s
+Time for refinements:                 2.699s
+Average time for refinement:          0.539s
+Max time for refinement:              1.218s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.917
+  Visited lines:          9023
+  Total lines:            9119
+  Line coverage:          0.989
+  Visited conditions:     1087
+  Total conditions:       1136
+  Condition coverage:     0.957
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     3644
+Number of CFA edges:             5313
+Number of relevant variables:    1437
+Number of functions:             205
+Number of loops:                 55
+Size of reached set:             1382500
+
+Time for analysis setup:          5.045s
+  Time for loading CPAs:          0.554s
+  Time for loading parser:        0.589s
+  Time for CFA construction:      3.824s
+    Time for parsing file(s):     1.080s
+    Time for AST to CFA:          1.497s
+    Time for CFA sanity check:    0.143s
+    Time for post-processing:     0.910s
+      Time for var class.:        0.000s
+Time for Analysis:              107.478s
+CPU time for analysis:          142.260s
+Total time for CPAchecker:      112.527s
+Total CPU time for CPAchecker:  151.420s
+
+Time for Garbage Collector:      27.977s (in 11 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               3672MB (  3501 MiB) max;   1592MB (  1519 MiB) avg;   4482MB (  4274 MiB) peak
+Used non-heap memory:             24MB (    23 MiB) max;     23MB (    22 MiB) avg;     24MB (    23 MiB) peak
+Used in PS Old Gen pool:        1435MB (  1368 MiB) max;    446MB (   426 MiB) avg;   1435MB (  1368 MiB) peak
+Allocated heap memory:          5330MB (  5084 MiB) max;   3669MB (  3499 MiB) avg
+Allocated non-heap memory:        41MB (    39 MiB) max;     28MB (    26 MiB) avg
+Total process virtual memory:  13597MB ( 12967 MiB) max;  13596MB ( 12966 MiB) avg
+
+Verification result: TRUE. No property violation found by chosen configuration.
+More details about the verification run can be found in the directory "./output".

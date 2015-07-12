@@ -1,0 +1,156 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic-refiner -setprop cpa.value.symbolic.refinement.strategy=CONSTRAINTS_FIRST -setprop cpa.constraints.lessOrEqualType=IMPLICATION -setprop cpa.value.refinement.pathSlicing=false -setprop cpa.value.refinement.prefixPreference=NONE -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-linux-3.4-simple/ALL.prp ../svcomp15/ldv-linux-3.4-simple/32_1_cilled_true-unreach-call_ok_nondet_linux-3.4-32_1-drivers--hid--hid-primax.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_-758434626_tempdir
+line 2408: Function pointer *__cil_tmp8 with type int (*)(struct hid_device *hdev) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 2355: Function pointer *__cil_tmp11 with type int (*)(struct hid_device *hdev) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+line 2481: Ignoring call via function pointer hid_hw_stop::__cil_tmp7 for which no suitable target was found in line: (*__cil_tmp7)(hdev); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+Skipping recursive function call from hid_hw_stop to px_remove (CallstackCPA:CallstackTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 2355: Ignoring call via function pointer hid_parse::__cil_tmp11 for which no suitable target was found in line: ret = (*__cil_tmp11)(hdev); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 2408: Ignoring call via function pointer hid_hw_start::__cil_tmp8 for which no suitable target was found in line: tmp = (*__cil_tmp8)(hdev); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+line 2444: Ignoring call via function pointer hid_hw_start::__cil_tmp14 for which no suitable target was found in line: (*__cil_tmp14)(hdev); (FunctionPointerCPA:FunctionPointerTransferRelation.getAbstractSuccessorsForEdge, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                                    161 (count: 163, min: 0, max: 1, avg: 0.99)
+Number of global variables:                             161 (count: 163, min: 0, max: 1, avg: 0.99)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                     365
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                0.030s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     0.045s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 0
+Most constraints before refinement in state: 0
+Constraints after refinement in state: 0
+Constraints before refinement in state: 0
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 3ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  0.027s
+Automaton transfers with branching:                0
+Automaton transfer successors:                         1481 (count: 1481, min: 1, max: 1, avg: 1.00) [1 x 1481]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            321
+Max size of waitlist:            11
+Average size of waitlist:        5
+Number of computed successors:   365
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         41
+Number of times breaked:         1
+
+Total time for CPA algorithm:         0.263s (Max:     0.167s)
+  Time for choose from waitlist:      0.004s
+  Time for precision adjustment:      0.052s
+  Time for transfer relation:         0.175s
+  Time for stop operator:             0.004s
+  Time for adding to reached set:     0.017s
+
+SymbolicValueAnalysisRefiner statistics
+---------------------------------------
+Total number of refinements:              1
+Total number of targets found:            1
+Time for completing refinement:           0.823s
+  Time for interpolation:                              0.767s
+  Number of interpolations:                               1
+  Number of interpolation queries:                      156 (count: 18, min: 0, max: 135, avg: 8.67)
+  Size of interpolant:                                   12 (count: 18, min: 0, max: 1, avg: 0.67)
+  Number of sliced prefixes:                              0 (count: 0, min: 0, max: 0, avg: 0.00)
+
+CEGAR algorithm statistics
+--------------------------
+Number of refinements:                1
+Number of successful refinements:     1
+Number of failed refinements:         0
+Max. size of reached set before ref.: 164
+Max. size of reached set after ref.:  2
+Avg. size of reached set before ref.: 164.00
+Avg. size of reached set after ref.:  2.00
+
+Total time for CEGAR algorithm:       1.134s
+Time for refinements:                 0.870s
+Average time for refinement:          0.870s
+Max time for refinement:              0.870s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.500
+  Visited lines:          2165
+  Total lines:            2213
+  Line coverage:          0.978
+  Visited conditions:     43
+  Total conditions:       64
+  Condition coverage:     0.672
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     226
+Number of CFA edges:             278
+Number of relevant variables:    97
+Number of functions:             20
+Number of loops:                 2
+Size of reached set:             163
+  Number of reached locations:   149 (66%)
+    Avg states per location:     1
+    Max states per location:     2 (at node N83)
+  Number of reached functions:   10 (50%)
+  Number of partitions:          163
+    Avg size of partitions:      1
+    Max size of partitions:      1
+  Number of target states:       0
+
+Time for analysis setup:          2.308s
+  Time for loading CPAs:          0.398s
+  Time for loading parser:        0.648s
+  Time for CFA construction:      1.180s
+    Time for parsing file(s):     0.550s
+    Time for AST to CFA:          0.319s
+    Time for CFA sanity check:    0.031s
+    Time for post-processing:     0.160s
+      Time for var class.:        0.000s
+Time for Analysis:                1.134s
+CPU time for analysis:            1.620s
+Total time for CPAchecker:        3.447s
+Total CPU time for CPAchecker:    5.510s
+
+Time for Garbage Collector:       0.000s (in 0 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:                179MB (   171 MiB) max;    124MB (   118 MiB) avg;    190MB (   181 MiB) peak
+Used non-heap memory:             20MB (    19 MiB) max;     14MB (    14 MiB) avg;     20MB (    19 MiB) peak
+Used in PS Old Gen pool:           0MB (     0 MiB) max;      0MB (     0 MiB) avg;      0MB (     0 MiB) peak
+Allocated heap memory:          2024MB (  1930 MiB) max;   2024MB (  1930 MiB) avg
+Allocated non-heap memory:        24MB (    23 MiB) max;     24MB (    23 MiB) avg
+Total process virtual memory:  13599MB ( 12969 MiB) max;  13586MB ( 12957 MiB) avg
+
+Verification result: TRUE. No property violation found by chosen configuration.
+More details about the verification run can be found in the directory "./output".

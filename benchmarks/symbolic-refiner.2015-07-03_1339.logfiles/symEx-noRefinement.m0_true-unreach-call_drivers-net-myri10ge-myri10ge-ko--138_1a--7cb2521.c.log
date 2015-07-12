@@ -1,0 +1,138 @@
+scripts/cpa.sh -heap 10000M -noout -setprop log.consoleLevel=WARNING -skipRecursion -valueAnalysis-symbolic -setprop cpa.constraints.lessOrEqualType=SUBSET -setprop cpa.value.symbolic.handlePointers=false -64 -timelimit 900s -stats -spec ../svcomp15/ldv-commit-tester/ALL.prp ../svcomp15/ldv-commit-tester/m0_true-unreach-call_drivers-net-myri10ge-myri10ge-ko--138_1a--7cb2521.c
+
+
+--------------------------------------------------------------------------------
+
+
+Running CPAchecker with Java heap of size 10000M.
+Running CPAchecker with the following extra VM options:  -Djava.io.tmpdir=/tmp/vcloud-vcloud-master/worker/tmp_-890858334_tempdir
+Inline assembler ignored, analysis is probably unsound! (CFABuilder.createCFA, WARNING)
+
+line 7115: Function pointer *(ops->alloc_coherent) with type void * (*)(struct device *, size_t , dma_addr_t *, gfp_t ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 7163: Function pointer *(ops->free_coherent) with type void (*)(struct device *, size_t , void *, dma_addr_t ) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 6963: Function pointer *(ops->map_page) with type dma_addr_t  (*)(struct device *, struct page *, unsigned long, size_t , enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+lines 6870-6871: Function pointer *(ops->map_page) with type dma_addr_t  (*)(struct device *, struct page *, unsigned long, size_t , enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 7005: Function pointer *(ops->unmap_page) with type void (*)(struct device *, dma_addr_t , size_t , enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+line 6917: Function pointer *(ops->unmap_page) with type void (*)(struct device *, dma_addr_t , size_t , enum dma_data_direction , struct dma_attrs *) is called, but no possible target functions were found. (CFunctionPointerResolver.replaceFunctionPointerCall, WARNING)
+
+The following configuration options were specified but are not used:
+ counterexample.checker.config
+ counterexample.checker 
+ (CPAchecker.printConfigurationWarnings, WARNING)
+
+Shutdown requested (The CPU-time limit of 900s has elapsed.), waiting for termination. (ForceTerminationOnShutdown$1.shutdownRequested, WARNING)
+
+Warning: Analysis stopped (The CPU-time limit of 900s has elapsed.) (ShutdownNotifier.shutdownIfNecessary, WARNING)
+
+ValueAnalysisCPA statistics
+---------------------------
+Number of variables:                               17693568 (count: 37233, min: 0, max: 486, avg: 475.21)
+Number of global variables:                        16195485 (count: 37233, min: 0, max: 435, avg: 434.98)
+
+ValueAnalysisPrecisionAdjustment statistics
+-------------------------------------------
+Number of abstraction computations:                   38390
+Total time for liveness abstraction:                   0.000s
+Total time for abstraction computation:                4.050s
+Total time for path thresholds:                        0.000s
+
+ConstraintsStrengthenOperator statistics
+----------------------------------------
+Total time for strengthening by ConstraintsCPA:     8.536s
+Replaced symbolic expressions: 0
+
+ConstraintsPrecisionAdjustment statistics
+-----------------------------------------
+Most constraints after refinement in state: 30
+Most constraints before refinement in state: 30
+Constraints after refinement in state: 225241
+Constraints before refinement in state: 225241
+Average time for constraints adjustment: 0ms
+Complete time for constraints adjustment: 350ms
+
+AutomatonAnalysis (SVCOMP) statistics
+-------------------------------------
+Number of states:                                  1
+Total time for successor computation:                  0.969s
+  Time for transition matches:                         0.399s
+  Time for transition assertions:                      0.000s
+  Time for transition actions:                         0.000s
+Automaton transfers with branching:                0
+Automaton transfer successors:                        45877 (count: 45877, min: 1, max: 1, avg: 1.00) [1 x 45877]
+
+CPA algorithm statistics
+------------------------
+Number of iterations:            35899
+Max size of waitlist:            1343
+Average size of waitlist:        687
+Number of computed successors:   38390
+Max successors for one state:    2
+Number of times merged:          0
+Number of times stopped:         1158
+Number of times breaked:         0
+
+Total time for CPA algorithm:       879.851s (Max:   879.851s)
+  Time for choose from waitlist:      0.194s
+  Time for precision adjustment:      5.028s
+  Time for transfer relation:        44.587s
+  Time for stop operator:           828.795s
+  Time for adding to reached set:     0.304s
+
+Code Coverage
+-----------------------------
+  Function coverage:      0.145
+  Visited lines:          6021
+  Total lines:            9998
+  Line coverage:          0.602
+  Visited conditions:     132
+  Total conditions:       1088
+  Condition coverage:     0.121
+
+CPAchecker general statistics
+-----------------------------
+Number of program locations:     3581
+Number of CFA edges:             4954
+Number of relevant variables:    1344
+Number of functions:             207
+Number of loops:                 61
+Size of reached set:             37233
+  Number of reached locations:   337 (9%)
+    Avg states per location:     110
+    Max states per location:     1022 (at node N2321)
+  Number of reached functions:   30 (14%)
+  Number of partitions:          22998
+    Avg size of partitions:      1
+    Max size of partitions:      1022 (with key [N2321 (before line 10342), Function myri10ge_tx_done called from node N2566, stack depth 3 [4421e895], stack [main, myri10ge_intr, myri10ge_tx_done], Init])
+  Number of target states:       0
+  Size of final wait list        1334
+
+Time for analysis setup:          6.052s
+  Time for loading CPAs:          0.860s
+  Time for loading parser:        0.627s
+  Time for CFA construction:      4.482s
+    Time for parsing file(s):     1.716s
+    Time for AST to CFA:          1.374s
+    Time for CFA sanity check:    0.176s
+    Time for post-processing:     0.940s
+      Time for var class.:        0.000s
+Time for Analysis:              879.851s
+CPU time for analysis:          889.570s
+Total time for CPAchecker:      885.912s
+Total CPU time for CPAchecker:  900.370s
+
+Time for Garbage Collector:       2.718s (in 79 runs)
+Garbage Collector(s) used:    PS MarkSweep, PS Scavenge
+Used heap memory:               2154MB (  2054 MiB) max;    621MB (   592 MiB) avg;   2248MB (  2144 MiB) peak
+Used non-heap memory:             23MB (    22 MiB) max;     22MB (    21 MiB) avg;     23MB (    22 MiB) peak
+Used in PS Old Gen pool:          95MB (    91 MiB) max;     64MB (    61 MiB) avg;     95MB (    91 MiB) peak
+Allocated heap memory:          3560MB (  3396 MiB) max;   2506MB (  2390 MiB) avg
+Allocated non-heap memory:        26MB (    24 MiB) max;     25MB (    24 MiB) avg
+Total process virtual memory:  13598MB ( 12968 MiB) max;  13596MB ( 12967 MiB) avg
+
+Verification result: UNKNOWN, incomplete analysis.
+More details about the verification run can be found in the directory "./output".
